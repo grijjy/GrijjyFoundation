@@ -1,0 +1,15 @@
+* text=auto
+
+# Pascal source files should use CRLF line endings to keep the Delphi IDE happy
+*.pas eol=crlf
+*.dpr eol=crlf
+*.dpk eol=crlf
+
+# iOS Entitlement Files MUST use LF endings or app won't run on device
+Entitlement.TemplateiOS.xml eol=lf
+
+# macOS shell scripts MUST use LF too
+*.sh eol=lf
+
+# customize language stats
+*.inc linguist-language=Pascal

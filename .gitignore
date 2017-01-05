@@ -1,0 +1,31 @@
+#OS X meta data
+._*
+#ignore thumbnails created by windows
+Thumbs.db
+#ignore Delphi build directories
+Android/
+iOSDevice/
+iOSDevice32/
+iOSDevice64/
+iOSSimulator/
+OSX32/
+Win32/
+Win64/
+#ignore Delphi build files
+*.obj
+*.exe
+*.dcu
+*.map
+*.deployproj
+#ignore Delphi temp and backup files
+*.~*
+#ignore Delphi local files
+*.dsk
+*.dproj.local
+*.identcache
+*.groupproj.local
+#ignore temporary help files
+HtmlHelp/
+Html/
+#ignore DUnitX output
+dunitx-results.xml
