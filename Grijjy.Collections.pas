@@ -890,7 +890,7 @@ begin
   if (FCount = 0) then
     Exit(False);
 
-  HashCode := FComparer.GetHashCode(AItem);
+  HashCode := FComparer.GetHashCode(AItem) and $7FFFFFFF;
   Mask := Length(FItems) - 1;
   Index := HashCode and Mask;
 
@@ -980,7 +980,7 @@ begin
   if (FCount >= FGrowThreshold) then
     Resize(Length(FItems) * 2);
 
-  HashCode := FComparer.GetHashCode(AItem);
+  HashCode := FComparer.GetHashCode(AItem) and $7FFFFFFF;
   Mask := Length(FItems) - 1;
   Index := HashCode and Mask;
 
@@ -1010,7 +1010,7 @@ begin
       But this simplifies the code and makes it faster. }
     Resize(Length(FItems) * 2);
 
-  HashCode := FComparer.GetHashCode(AItem);
+  HashCode := FComparer.GetHashCode(AItem) and $7FFFFFFF;
   Mask := Length(FItems) - 1;
   Index := HashCode and Mask;
 
@@ -1077,7 +1077,7 @@ begin
   if (FCount = 0) then
     Exit;
 
-  HashCode := FComparer.GetHashCode(AItem);
+  HashCode := FComparer.GetHashCode(AItem) and $7FFFFFFF;
   Mask := Length(FItems) - 1;
   Index := HashCode and Mask;
 
@@ -1196,7 +1196,7 @@ begin
   end;
 
   Mask := Length(FItems) - 1;
-  HashCode := FComparer.GetHashCode(AItem);
+  HashCode := FComparer.GetHashCode(AItem) and $7FFFFFFF;
   Index := HashCode and Mask;
 
   while True do
@@ -1715,7 +1715,7 @@ begin
   if (FCount >= FGrowThreshold) then
     Resize(Length(FItems) * 2);
 
-  HashCode := FComparer.GetHashCode(AKey);
+  HashCode := FComparer.GetHashCode(AKey) and $7FFFFFFF;
   Mask := Length(FItems) - 1;
   Index := HashCode and Mask;
 
@@ -1747,7 +1747,7 @@ begin
       But this simplifies the code and makes it faster. }
     Resize(Length(FItems) * 2);
 
-  HashCode := FComparer.GetHashCode(AKey);
+  HashCode := FComparer.GetHashCode(AKey) and $7FFFFFFF;
   Mask := Length(FItems) - 1;
   Index := HashCode and Mask;
 
@@ -1787,7 +1787,7 @@ begin
   if (FCount = 0) then
     Exit(False);
 
-  HashCode := FComparer.GetHashCode(AKey);
+  HashCode := FComparer.GetHashCode(AKey) and $7FFFFFFF;
   Mask := Length(FItems) - 1;
   Index := HashCode and Mask;
 
@@ -1871,7 +1871,7 @@ begin
   if (FCount = 0) then
     raise EListError.CreateRes(@SGenericItemNotFound);
 
-  HashCode := FComparer.GetHashCode(AKey);
+  HashCode := FComparer.GetHashCode(AKey) and $7FFFFFFF;
   Mask := Length(FItems) - 1;
   Index := HashCode and Mask;
 
@@ -1911,7 +1911,7 @@ begin
   if (FCount = 0) then
     Exit(False);
 
-  HashCode := FComparer.GetHashCode(AKey);
+  HashCode := FComparer.GetHashCode(AKey) and $7FFFFFFF;
   Mask := Length(FItems) - 1;
   Index := HashCode and Mask;
 
@@ -1987,7 +1987,7 @@ begin
     Exit(False);
 
   Mask := Length(FItems) - 1;
-  HashCode := FComparer.GetHashCode(AKey);
+  HashCode := FComparer.GetHashCode(AKey) and $7FFFFFFF;
   Index := HashCode and Mask;
 
   while True do
