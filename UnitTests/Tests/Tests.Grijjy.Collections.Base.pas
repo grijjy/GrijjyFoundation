@@ -10,7 +10,7 @@ uses
   DUnitX.TestFramework;
 
 type
-  TTestCollectionBase<T> = class
+  TTestCollectionBase<T> = class abstract
   private
     FTypeInfo: PTypeInfo;
     FTypeData: PTypeData;
@@ -257,7 +257,10 @@ begin
       end;
 
     tkClass:
-      Obj := TFoo.Create(AValue);
+      begin
+        System.Assert(TypeInfo(T) = TypeInfo(TFoo));
+        Obj := TFoo.Create(AValue);
+      end;
 
     tkClassRef:
       Cls := TFoo;
