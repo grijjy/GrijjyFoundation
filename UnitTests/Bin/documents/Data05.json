@@ -1,0 +1,4 @@
+{
+  "_id" : { "$oid" : "5443ed027327533cbf152add" },
+  "Value" : { "$binary": "VGhlIFF1aWNrIEJyb3duIEZveCBKdW1wcyBPdmVyIFRoZSBMYXp5IERvZw==", "$type": "00" }
+}

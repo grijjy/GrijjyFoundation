@@ -1,0 +1,4 @@
+{
+  "_id" : { "$oid" : "5443f0a77327533cbf152ae4" },
+  "Value": {"$regex": "A-Za-z", "$options": "gi"}
+}

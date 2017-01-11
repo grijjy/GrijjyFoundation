@@ -15,7 +15,9 @@ uses
   Tests.Grijjy.Collections.Sets in 'Tests\Tests.Grijjy.Collections.Sets.pas',
   Tests.Grijjy.Collections.RingBuffer in 'Tests\Tests.Grijjy.Collections.RingBuffer.pas',
   Tests.Grijjy.Collections.Lists in 'Tests\Tests.Grijjy.Collections.Lists.pas',
-  Tests.Grijjy.Collections.Dictionaries in 'Tests\Tests.Grijjy.Collections.Dictionaries.pas';
+  Tests.Grijjy.Collections.Dictionaries in 'Tests\Tests.Grijjy.Collections.Dictionaries.pas',
+  Tests.Grijjy.Bson in 'Tests\Tests.Grijjy.Bson.pas',
+  Tests.Grijjy.Bson.IO in 'Tests\Tests.Grijjy.Bson.IO.pas';
 
 var
   runner : ITestRunner;

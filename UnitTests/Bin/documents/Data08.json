@@ -1,0 +1,5 @@
+{
+  "_id" : { "$oid" : "5443ef7f7327533cbf152ae1" },
+  "Value1": true,
+  "Value2": false
+}
