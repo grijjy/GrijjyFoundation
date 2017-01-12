@@ -1,0 +1,831 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Bson: record TgoBsonDocument</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<a name="TgoBsonDocument"></a><h1 class="cio">record TgoBsonDocument</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Hierarchy</td><td>Fields</td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="Grijjy.Bson.html">Grijjy.Bson</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TgoBsonDocument = record</code></p>
+<h2 class="description">Description</h2>
+<p>
+A BSON document. A BSON document <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Contains">contains</a> key/value pairs, where the key is a String and the value can be any BSON value. It is similar to a Delphi dictionary or a JSON object. However, unlike Delphi dictionaries, a documents maintains insertion order and you can access <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Values">values</a> both by name and by index.</p>
+<h2 class="overview">Overview</h2>
+<a name="PasDoc-Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Create">Create</a></b>: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; overload; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Create">Create</a></b>(const AAllowDuplicateNames: Boolean): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; overload; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Create">Create</a></b>(const AElement: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; overload; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Create">Create</a></b>(const AName: String; const AValue: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; overload; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Parse">Parse</a></b>(const AJson: String): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#TryParse">TryParse</a></b>(const AJson: String; out ADocument: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Load">Load</a></b>(const ABson: TBytes): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#TryLoad">TryLoad</a></b>(const ABson: TBytes; out ADocument: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#LoadFromJsonFile">LoadFromJsonFile</a></b>(const AFilename: String): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#LoadFromJsonStream">LoadFromJsonStream</a></b>(const AStream: TStream): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#LoadFromBsonFile">LoadFromBsonFile</a></b>(const AFilename: String): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#LoadFromBsonStream">LoadFromBsonStream</a></b>(const AStream: TStream): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonDocument.html#SaveToJsonFile">SaveToJsonFile</a></b>(const AFilename: String); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonDocument.html#SaveToJsonFile">SaveToJsonFile</a></b>(const AFilename: String; const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonDocument.html#SaveToJsonStream">SaveToJsonStream</a></b>(const AStream: TStream); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonDocument.html#SaveToJsonStream">SaveToJsonStream</a></b>(const AStream: TStream; const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonDocument.html#SaveToBsonFile">SaveToBsonFile</a></b>(const AFilename: String);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonDocument.html#SaveToBsonStream">SaveToBsonStream</a></b>(const AStream: TStream);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Implicit">Implicit</a></b>(const A: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Equal">Equal</a></b>(const A, B: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonDocument.html#NotEqual">NotEqual</a></b>(const A, B: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#IsNil">IsNil</a></b>: Boolean; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonDocument.html#SetNil">SetNil</a></b>; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Clone">Clone</a></b>: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#DeepClone">DeepClone</a></b>: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#ToBson">ToBson</a></b>: TBytes; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#ToJson">ToJson</a></b>: String; overload; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#ToJson">ToJson</a></b>(const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>): String; overload; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Add">Add</a></b>(const AName: String; const AValue: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; overload; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Add">Add</a></b>(const AElement: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; overload; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Get">Get</a></b>(const AName: String; const ADefault: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#IndexOfName">IndexOfName</a></b>(const AName: String): Integer; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Contains">Contains</a></b>(const AName: String): Boolean; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#ContainsValue">ContainsValue</a></b>(const AValue: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Boolean; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#TryGetElement">TryGetElement</a></b>(const AName: String; out AElement: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>): Boolean; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#TryGetValue">TryGetValue</a></b>(const AName: String; out AValue: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Boolean; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Remove">Remove</a></b>(const AName: String); inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Delete">Delete</a></b>(const AIndex: Integer); inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Clear">Clear</a></b>; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Merge">Merge</a></b>(const AOtherDocument: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; const AOverwriteExistingElements: Boolean): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#ToArray">ToArray</a></b>: TArray&lt;<a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>&gt;; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonDocument.html#GetEnumerator">GetEnumerator</a></b>: TEnumerator; inline;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonDocument.html#AllowDuplicateNames">AllowDuplicateNames</a></b>: Boolean read GetAllowDuplicateNames write SetAllowDuplicateNames;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Count">Count</a></b>: Integer read GetCount;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Elements">Elements</a></b>[constAIndex:Integer]: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a> read GetElement;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Values">Values</a></b>[constAIndex:Integer]: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a> read GetValue write SetValue;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonDocument.html#ValuesByName">ValuesByName</a></b>[constAName:String]: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a> read GetValueByName write SetValueByName;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Create"></a><code>class function <b>Create</b>: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates an empty BSON document.
+
+<p></p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The empty BSON document</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Create"></a><code>class function <b>Create</b>(const AAllowDuplicateNames: Boolean): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates an empty BSON document.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AAllowDuplicateNames</dt>
+<dd>whether to allow duplicate names in the document. This should generally be False.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The empty BSON document</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Create"></a><code>class function <b>Create</b>(const AElement: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates a BSON document with a single element.
+
+<p>
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AElement</dt>
+<dd>the element to <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Add">add</a> to the document.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The BSON document</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentNilException</code></dt>
+<dd>if AElement.Value has not been assigned (if <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#IsNil">IsNil</a> returns True)</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Create"></a><code>class function <b>Create</b>(const AName: String; const AValue: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates a BSON document with a single element.
+
+<p> 
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the name of the element to <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Add">add</a> to the document.</dd>
+<dt>AValue</dt>
+<dd>the value of the element.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The BSON document</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentNilException</code></dt>
+<dd>if AValue has not been assigned (if <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#IsNil">IsNil</a> returns True)</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Parse"></a><code>class function <b>Parse</b>(const AJson: String): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#Parse">TgoBsonValue.Parse</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TryParse"></a><code>class function <b>TryParse</b>(const AJson: String; out ADocument: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#TryParse">TgoBsonValue.TryParse</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Load"></a><code>class function <b>Load</b>(const ABson: TBytes): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#Load">TgoBsonValue.Load</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TryLoad"></a><code>class function <b>TryLoad</b>(const ABson: TBytes; out ADocument: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#TryLoad">TgoBsonValue.TryLoad</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LoadFromJsonFile"></a><code>class function <b>LoadFromJsonFile</b>(const AFilename: String): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#LoadFromJsonFile">TgoBsonValue.LoadFromJsonFile</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LoadFromJsonStream"></a><code>class function <b>LoadFromJsonStream</b>(const AStream: TStream): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#LoadFromJsonStream">TgoBsonValue.LoadFromJsonStream</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LoadFromBsonFile"></a><code>class function <b>LoadFromBsonFile</b>(const AFilename: String): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#LoadFromBsonFile">TgoBsonValue.LoadFromBsonFile</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LoadFromBsonStream"></a><code>class function <b>LoadFromBsonStream</b>(const AStream: TStream): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#LoadFromBsonStream">TgoBsonValue.LoadFromBsonStream</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SaveToJsonFile"></a><code>procedure <b>SaveToJsonFile</b>(const AFilename: String); overload;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#SaveToJsonFile">TgoBsonValue.SaveToJsonFile</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SaveToJsonFile"></a><code>procedure <b>SaveToJsonFile</b>(const AFilename: String; const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>); overload;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#SaveToJsonFile">TgoBsonValue.SaveToJsonFile</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SaveToJsonStream"></a><code>procedure <b>SaveToJsonStream</b>(const AStream: TStream); overload;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#SaveToJsonStream">TgoBsonValue.SaveToJsonStream</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SaveToJsonStream"></a><code>procedure <b>SaveToJsonStream</b>(const AStream: TStream; const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>); overload;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#SaveToJsonStream">TgoBsonValue.SaveToJsonStream</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SaveToBsonFile"></a><code>procedure <b>SaveToBsonFile</b>(const AFilename: String);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#SaveToBsonFile">TgoBsonValue.SaveToBsonFile</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SaveToBsonStream"></a><code>procedure <b>SaveToBsonStream</b>(const AStream: TStream);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#SaveToBsonStream">TgoBsonValue.SaveToBsonStream</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Implicitly casts a BSON document to a BSON value.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Equal"></a><code>class operator <b>Equal</b>(const A, B: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#Equal">TgoBsonValue.Equal</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="NotEqual"></a><code>class operator <b>NotEqual</b>(const A, B: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#NotEqual">TgoBsonValue.NotEqual</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsNil"></a><code>function <b>IsNil</b>: Boolean; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#IsNil">TgoBsonValue.IsNil</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SetNil"></a><code>procedure <b>SetNil</b>; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#SetNil">TgoBsonValue.SetNil</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Clone"></a><code>function <b>Clone</b>: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#Clone">TgoBsonValue.Clone</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="DeepClone"></a><code>function <b>DeepClone</b>: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#DeepClone">TgoBsonValue.DeepClone</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToBson"></a><code>function <b>ToBson</b>: TBytes; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#ToBson">TgoBsonValue.ToBson</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToJson"></a><code>function <b>ToJson</b>: String; overload; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#ToJson">TgoBsonValue.ToJson</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToJson"></a><code>function <b>ToJson</b>(const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>): String; overload; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#ToJson">TgoBsonValue.ToJson</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Add"></a><code>function <b>Add</b>(const AName: String; const AValue: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; overload; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Adds an element to the document.
+
+<p> 
+
+<p>  <b>Note</b>: Names are case-sensitive</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the name of the element to <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Add">add</a> to the document.</dd>
+<dt>AValue</dt>
+<dd>the value of the element.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The document itself, so you can use it for chaining.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentNilException</code></dt>
+<dd>if AValue has not been assigned (<a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#IsNil">IsNil</a> returns True). EInvalidOperation if <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#AllowDuplicateNames">AllowDuplicateNames</a> = False and document already <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Contains">contains</a> element with given name.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Add"></a><code>function <b>Add</b>(const AElement: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; overload; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Adds an element to the document.
+
+<p>
+
+<p>  <b>Note</b>: Names are case-sensitive</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AElement</dt>
+<dd>the element to <code>add</code> to the document.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The document itself, so you can use it for chaining.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentNilException</code></dt>
+<dd>if AElement.Value has not been assigned (<a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#IsNil">IsNil</a> returns True). EInvalidOperation if <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#AllowDuplicateNames">AllowDuplicateNames</a> = False and document already <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Contains">contains</a> element with given name.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Get"></a><code>function <b>Get</b>(const AName: String; const ADefault: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Gets a value from the document by name, or a default value if the document does not contain an element with the given name.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the name of the value to <code>get</code>.</dd>
+<dt>ADefault</dt>
+<dd>the default value to return in case the document does not contain an element named AName.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The value associated with AName, or ADefault in case the document does not contain an element named AName.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IndexOfName"></a><code>function <b>IndexOfName</b>(const AName: String): Integer; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the index of the element with a given name.
+
+<p>
+
+<p> <b>Note</b>: Names are case-sensitive</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the name of the element to find.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The index of the element, or -1 of the document does not contain an element with the given name.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Contains"></a><code>function <b>Contains</b>(const AName: String): Boolean; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Checks whether the document <code>contains</code> an element with a given name.
+
+<p>
+
+<p> <b>Note</b>: Names are case-sensitive</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the name of the element to find.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if the document <code>contains</code> an element with the given name.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ContainsValue"></a><code>function <b>ContainsValue</b>(const AValue: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Boolean; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Checks whether the document <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Contains">contains</a> an element with a given value.
+
+<p>
+
+<p> <b>Note</b>: the <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Equal">Equal</a> operator of AValue is used to check if the value is in the document.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the value of the element to find.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if the document <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Contains">contains</a> an element with the given value.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TryGetElement"></a><code>function <b>TryGetElement</b>(const AName: String; out AElement: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>): Boolean; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to retrieve an element by name.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the name of the element to find.</dd>
+<dt>AELement</dt>
+<dd>is set to the corresponding element if found.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if the document <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Contains">contains</a> an element with the given name.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TryGetValue"></a><code>function <b>TryGetValue</b>(const AName: String; out AValue: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Boolean; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to retrieve a value by name.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the name of the value to find.</dd>
+<dt>AValue</dt>
+<dd>is set to the corresponding value if found.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if the document <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Contains">contains</a> an element with the given name.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Remove"></a><code>procedure <b>Remove</b>(const AName: String); inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Removes an element by name.
+
+<p>
+
+<p><b>Note</b>: In case <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#AllowDuplicateNames">AllowDuplicateNames</a> = True, then all <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Elements">elements</a> with this name are removed. The method does nothing if the document does not contain an element with the given name.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the name of the element to <code>remove</code>.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Delete"></a><code>procedure <b>Delete</b>(const AIndex: Integer); inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Deletes an element by index.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AIndex</dt>
+<dd>the index of the element to <code>delete</code>.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentOutOfRangeException</code></dt>
+<dd>in AIndex is out of bounds.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Clear"></a><code>procedure <b>Clear</b>; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Clears the document</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Merge"></a><code>function <b>Merge</b>(const AOtherDocument: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; const AOverwriteExistingElements: Boolean): <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Merges another document into this one.
+
+<p> 
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AOtherDocument</dt>
+<dd>the other document to <code>merge</code> with this one.</dd>
+<dt>AOverwriteExistingElements</dt>
+<dd>whether to overwrite existing element.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The document itself, so you can use it for chaining.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentNilException</code></dt>
+<dd>if AOtherDocument has not been assigned (<a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#IsNil">IsNil</a> returns True).</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToArray"></a><code>function <b>ToArray</b>: TArray&lt;<a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>&gt;; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Elements">elements</a> in then document as an array.
+
+<p></p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The array of <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Elements">elements</a></p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetEnumerator"></a><code>function <b>GetEnumerator</b>: TEnumerator; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Allow <code>for..in</code> enumeration of the <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Elements">elements</a> in the document.</p>
+</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="AllowDuplicateNames"></a><code>property <b>AllowDuplicateNames</b>: Boolean read GetAllowDuplicateNames write SetAllowDuplicateNames;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether duplicate element names are allowed. Should generally be False (the default).</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Count"></a><code>property <b>Count</b>: Integer read GetCount;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Number of <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Elements">elements</a> in the document. Could be larger than the number of names in the document in case <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#AllowDuplicateNames">AllowDuplicateNames</a> = True</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Elements"></a><code>property <b>Elements</b>[constAIndex:Integer]: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a> read GetElement;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+The <code>elements</code> in the document by index.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AIndex</dt>
+<dd>the index of the element to <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Get">get</a>.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentOutOfRangeException</code></dt>
+<dd>in AIndex is out of bounds.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Values"></a><code>property <b>Values</b>[constAIndex:Integer]: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a> read GetValue write SetValue;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+The <code>values</code> in the document by index.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AIndex</dt>
+<dd>the index of the value to <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Get">get</a> or set.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentOutOfRangeException</code></dt>
+<dd>in AIndex is out of bounds. EArgumentNilException when setting the value and AValue is not assigned (<a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#IsNil">IsNil</a> returns True)</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ValuesByName"></a><code>property <b>ValuesByName</b>[constAName:String]: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a> read GetValueByName write SetValueByName;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+The <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Values">values</a> in the document by name.
+
+<p>
+
+<p> <b>Note</b>: when getting a value and the name is not found, a <a class="normal" href="Grijjy.Bson.TgoBsonNull.html">TgoBsonNull</a> value is returned.
+
+<p><b>Note</b>: when setting a value, it will replace an existing value with the same name if found, or otherwise <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Add">add</a> it.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the name of the value to <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Get">get</a> or set.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentNilException</code></dt>
+<dd>when setting the value and AValue is not assigned (<a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#IsNil">IsNil</a> returns True)</dd>
+</dl>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:52</em>
+</span>
+</td></tr></table></body></html>

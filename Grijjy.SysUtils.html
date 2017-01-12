@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.SysUtils</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<h1 class="unit">Unit Grijjy.SysUtils</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Uses</td><td>Classes, Interfaces, Objects and Records</td><td><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></td><td>Types</td><td>Constants</td><td><a class="section" href="#PasDoc-Variables">Variables</a></td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="description">Description</h2>
+<p>
+System level utilities</p>
+<a name="PasDoc-Uses"></a><h2 class="overview">Overview</h2>
+<a name="PasDoc-FuncsProcs"></a><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.SysUtils.html#goGetMachineName">goGetMachineName</a></b>: String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.SysUtils.html#goGetCurrentProcessId">goGetCurrentProcessId</a></b>: UInt32;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.SysUtils.html#goToHexString">goToHexString</a></b>(const ABytes: TBytes): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.SysUtils.html#goParseHexString">goParseHexString</a></b>(const AString: String): TBytes;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.SysUtils.html#goTryParseHexString">goTryParseHexString</a></b>(const AString: String; out ABytes: TBytes): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.SysUtils.html#goCharToHex">goCharToHex</a></b>(const AChar: Char): Byte;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.SysUtils.html#goReverseBytes">goReverseBytes</a></b>(const ABytes: TBytes; const AIndex, ALength: Integer);</code></td>
+</tr>
+</table>
+<a name="PasDoc-Variables"></a><h3 class="summary">Variables</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.SysUtils.html#goUSFormatSettings">goUSFormatSettings</a></b>: TFormatSettings;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="goGetMachineName"></a><code>function <b>goGetMachineName</b>: String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the name of the machine.
+
+<p>Tech notes: </p>
+
+<ul class="compact_spacing">
+  <li><p>On Windows, returns result from GetComputerName.</p></li>
+  <li><p>On other platforms, returns result from Posix gethostname api</p></li>
+</ul>
+
+<p></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="goGetCurrentProcessId"></a><code>function <b>goGetCurrentProcessId</b>: UInt32;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the ID of the current process.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="goToHexString"></a><code>function <b>goToHexString</b>(const ABytes: TBytes): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Converts a byte array to a hex string.
+
+<p>
+
+<p> <b>Note</b>: the returned string is in lowercase format.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ABytes</dt>
+<dd>the array of bytes to convert.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">A string containing 2 hex digits for each converted byte.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="goParseHexString"></a><code>function <b>goParseHexString</b>(const AString: String): TBytes;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Converts a hex string to a byte array.
+
+<p>
+
+<p>  <b>Note</b>: AString may contain both lowercase and uppercase hex digits, and it may contain an even or odd number of characters. If the string contains an odd number of characters, then it is prefixed with an additional 0.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AString</dt>
+<dd>the string to convert.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The converted byte array.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentException</code></dt>
+<dd>if the string contains illegal characters.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="goTryParseHexString"></a><code>function <b>goTryParseHexString</b>(const AString: String; out ABytes: TBytes): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to convert a hex string to a byte array.
+
+<p> 
+
+<p> <b>Note</b>: AString may contain both lowercase and uppercase hex digits, and it may contain an even or odd number of characters. If the string contains an odd number of characters, then it is prefixed with an additional 0.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AString</dt>
+<dd>the string to convert.</dd>
+<dt>ABytes</dt>
+<dd>is set to the converted byte array.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True on success, False on failure.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="goCharToHex"></a><code>function <b>goCharToHex</b>(const AChar: Char): Byte;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Converts a digit to a byte.
+
+<p>
+
+<p>  <b>Note</b>: AChar may be both lowercase and uppercase.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AChar</dt>
+<dd>the character to convert.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The value of the hex digit.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentException</code></dt>
+<dd>if the characeter is an illegal hex character.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="goReverseBytes"></a><code>procedure <b>goReverseBytes</b>(const ABytes: TBytes; const AIndex, ALength: Integer);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Reverses the bytes in (part of) a byte array.
+
+<p>  
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ABytes</dt>
+<dd>the byte array.</dd>
+<dt>AIndex</dt>
+<dd>the index to start reversing.</dd>
+<dt>ALength</dt>
+<dd>the number of bytes to reverse.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentOutOfRangeException</code></dt>
+<dd>(AIndex + ALength) is out of range.</dd>
+</dl>
+</td></tr>
+</table>
+<h3 class="detail">Variables</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="goUSFormatSettings"></a><code><b>goUSFormatSettings</b>: TFormatSettings;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Format settings that always use a period ('.') as a decimal separator</p>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:53</em>
+</span>
+</td></tr></table></body></html>

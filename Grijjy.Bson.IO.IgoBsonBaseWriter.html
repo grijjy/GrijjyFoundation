@@ -1,0 +1,975 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Bson.IO: Interface IgoBsonBaseWriter</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<a name="IgoBsonBaseWriter"></a><h1 class="cio">Interface IgoBsonBaseWriter</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="Grijjy.Bson.IO.html">Grijjy.Bson.IO</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type IgoBsonBaseWriter = interface(IInterface)</code></p>
+<h2 class="description">Description</h2>
+<p>
+Base interface for <a class="normal" href="Grijjy.Bson.IO.IgoBsonWriter.html">IgoBsonWriter</a>, <a class="normal" href="Grijjy.Bson.IO.IgoJsonWriter.html">IgoJsonWriter</a> and <a class="normal" href="Grijjy.Bson.IO.IgoBsonDocumentWriter.html">IgoBsonDocumentWriter</a></p>
+<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt>GUID['{4525DC0D-C54E-47B2-85BE-4C09A8F5DF54}']</dt>
+  <dd></dd>
+</dl>
+<a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">IInterface</li>
+<li class="thisitem">IgoBsonBaseWriter</li></ul><h2 class="overview">Overview</h2>
+<a name="PasDoc-Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#GetState">GetState</a></b>: <a  href="Grijjy.Bson.IO.html#TgoBsonWriterState">TgoBsonWriterState</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteValue">WriteValue</a></b>(const AValue: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteBinaryData">WriteBinaryData</a></b>(const AValue: <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteRegularExpression">WriteRegularExpression</a></b>(const AValue: <a  href="Grijjy.Bson.TgoBsonRegularExpression.html">TgoBsonRegularExpression</a>); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteRegularExpression">WriteRegularExpression</a></b>(const AName: String; const AValue: <a  href="Grijjy.Bson.TgoBsonRegularExpression.html">TgoBsonRegularExpression</a>); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteName">WriteName</a></b>(const AName: String);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteBoolean">WriteBoolean</a></b>(const AValue: Boolean); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteBoolean">WriteBoolean</a></b>(const AName: String; const AValue: Boolean); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteInt32">WriteInt32</a></b>(const AValue: Integer); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteInt32">WriteInt32</a></b>(const AName: String; const AValue: Integer); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteInt64">WriteInt64</a></b>(const AValue: Int64); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteInt64">WriteInt64</a></b>(const AName: String; const AValue: Int64); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteDouble">WriteDouble</a></b>(const AValue: Double); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteDouble">WriteDouble</a></b>(const AName: String; const AValue: Double); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteString">WriteString</a></b>(const AValue: String); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteString">WriteString</a></b>(const AName, AValue: String); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteDateTime">WriteDateTime</a></b>(const AMillisecondsSinceEpoch: Int64); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteDateTime">WriteDateTime</a></b>(const AName: String; const AMillisecondsSinceEpoch: Int64); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteBytes">WriteBytes</a></b>(const AValue: TBytes); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteBytes">WriteBytes</a></b>(const AName: String; const AValue: TBytes); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteTimestamp">WriteTimestamp</a></b>(const AValue: Int64); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteTimestamp">WriteTimestamp</a></b>(const AName: String; const AValue: Int64); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteObjectId">WriteObjectId</a></b>(const AValue: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteObjectId">WriteObjectId</a></b>(const AName: String; const AValue: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteJavaScript">WriteJavaScript</a></b>(const ACode: String); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteJavaScript">WriteJavaScript</a></b>(const AName, ACode: String); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteJavaScriptWithScope">WriteJavaScriptWithScope</a></b>(const ACode: String); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteJavaScriptWithScope">WriteJavaScriptWithScope</a></b>(const AName, ACode: String); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteNull">WriteNull</a></b>; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteNull">WriteNull</a></b>(const AName: String); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteUndefined">WriteUndefined</a></b>; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteUndefined">WriteUndefined</a></b>(const AName: String); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteMaxKey">WriteMaxKey</a></b>; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteMaxKey">WriteMaxKey</a></b>(const AName: String); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteMinKey">WriteMinKey</a></b>; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteMinKey">WriteMinKey</a></b>(const AName: String); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteSymbol">WriteSymbol</a></b>(const AValue: String); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteSymbol">WriteSymbol</a></b>(const AName, AValue: String); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteStartArray">WriteStartArray</a></b>; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteStartArray">WriteStartArray</a></b>(const AName: String); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteEndArray">WriteEndArray</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteStartDocument">WriteStartDocument</a></b>; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteStartDocument">WriteStartDocument</a></b>(const AName: String); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteEndDocument">WriteEndDocument</a></b>;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#State">State</a></b>: <a  href="Grijjy.Bson.IO.html#TgoBsonWriterState">TgoBsonWriterState</a> read <a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#GetState">GetState</a>;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetState"></a><code>function <b>GetState</b>: <a  href="Grijjy.Bson.IO.html#TgoBsonWriterState">TgoBsonWriterState</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteValue"></a><code>procedure <b>WriteValue</b>(const AValue: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a BSON value.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the BSON value to write.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentNilException</code></dt>
+<dd>if AValue has not been assigned (IsNil returns True).</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteBinaryData"></a><code>procedure <b>WriteBinaryData</b>(const AValue: <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a BSON binary.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the BSON binary to write.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentNilException</code></dt>
+<dd>if AValue has not been assigned (IsNil returns True).</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteRegularExpression"></a><code>procedure <b>WriteRegularExpression</b>(const AValue: <a  href="Grijjy.Bson.TgoBsonRegularExpression.html">TgoBsonRegularExpression</a>); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a BSON Regular Expression.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the BSON Regular Expression to write.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentNilException</code></dt>
+<dd>if AValue has not been assigned (IsNil returns True).</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteRegularExpression"></a><code>procedure <b>WriteRegularExpression</b>(const AName: String; const AValue: <a  href="Grijjy.Bson.TgoBsonRegularExpression.html">TgoBsonRegularExpression</a>); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes both an element name and a BSON Regular Expression.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+<dt>AValue</dt>
+<dd>the BSON Regular Expression to write.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentNilException</code></dt>
+<dd>if AValue has not been assigned (IsNil returns True).</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteName"></a><code>procedure <b>WriteName</b>(const AName: String);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes the name of an element.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteBoolean"></a><code>procedure <b>WriteBoolean</b>(const AValue: Boolean); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a Boolean value.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the Boolean value.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteBoolean"></a><code>procedure <b>WriteBoolean</b>(const AName: String; const AValue: Boolean); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair with a Boolean value. Can only be used when inside a document.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+<dt>AValue</dt>
+<dd>the Boolean value.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteInt32"></a><code>procedure <b>WriteInt32</b>(const AValue: Integer); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a 32-bit Integer value.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the Integer value.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteInt32"></a><code>procedure <b>WriteInt32</b>(const AName: String; const AValue: Integer); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair with a 32-bit Integer value. Can only be used when inside a document.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+<dt>AValue</dt>
+<dd>the Integer value.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteInt64"></a><code>procedure <b>WriteInt64</b>(const AValue: Int64); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a 64-bit Integer value.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the Integer value.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteInt64"></a><code>procedure <b>WriteInt64</b>(const AName: String; const AValue: Int64); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair with a 64-bit Integer value. Can only be used when inside a document.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+<dt>AValue</dt>
+<dd>the Integer value.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteDouble"></a><code>procedure <b>WriteDouble</b>(const AValue: Double); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a Double value.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the Double value.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteDouble"></a><code>procedure <b>WriteDouble</b>(const AName: String; const AValue: Double); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair with a Double value. Can only be used when inside a document.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+<dt>AValue</dt>
+<dd>the Double value.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteString"></a><code>procedure <b>WriteString</b>(const AValue: String); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a String value.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the String value.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteString"></a><code>procedure <b>WriteString</b>(const AName, AValue: String); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair with a String value. Can only be used when inside a document.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+<dt>AValue</dt>
+<dd>the String value.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteDateTime"></a><code>procedure <b>WriteDateTime</b>(const AMillisecondsSinceEpoch: Int64); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a DateTime value.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AMillisecondsSinceEpoch</dt>
+<dd>the number of UTC milliseconds since the Unix epoch</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteDateTime"></a><code>procedure <b>WriteDateTime</b>(const AName: String; const AMillisecondsSinceEpoch: Int64); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair with a DateTime value. Can only be used when inside a document.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+<dt>AMillisecondsSinceEpoch</dt>
+<dd>the number of UTC milliseconds since the Unix epoch</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteBytes"></a><code>procedure <b>WriteBytes</b>(const AValue: TBytes); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a byte array as binary data of sub type Binary
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ABytes</dt>
+<dd>the bytes to write</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteBytes"></a><code>procedure <b>WriteBytes</b>(const AName: String; const AValue: TBytes); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair with binary date. Can only be used when inside a document.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+<dt>ABytes</dt>
+<dd>the bytes to write</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteTimestamp"></a><code>procedure <b>WriteTimestamp</b>(const AValue: Int64); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a Timestamp value.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the Timestamp value.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteTimestamp"></a><code>procedure <b>WriteTimestamp</b>(const AName: String; const AValue: Int64); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair with a Timestamp value. Can only be used when inside a document.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+<dt>AValue</dt>
+<dd>the Timestamp value.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteObjectId"></a><code>procedure <b>WriteObjectId</b>(const AValue: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes an ObjectId value.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the ObjectId value.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteObjectId"></a><code>procedure <b>WriteObjectId</b>(const AName: String; const AValue: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair with an ObjectId value. Can only be used when inside a document.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+<dt>AValue</dt>
+<dd>the ObjectId value.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteJavaScript"></a><code>procedure <b>WriteJavaScript</b>(const ACode: String); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a JavaScript.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ACode</dt>
+<dd>the JavaScript code.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteJavaScript"></a><code>procedure <b>WriteJavaScript</b>(const AName, ACode: String); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair with a JavaScript. Can only be used when inside a document.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+<dt>ACode</dt>
+<dd>the JavaScript code.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteJavaScriptWithScope"></a><code>procedure <b>WriteJavaScriptWithScope</b>(const ACode: String); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a JavaScript with scope.
+
+<p>
+
+<p><b>Note</b>: call <a class="normal" href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteStartDocument">WriteStartDocument</a> to start writing the scope.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ACode</dt>
+<dd>the JavaScript code.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteJavaScriptWithScope"></a><code>procedure <b>WriteJavaScriptWithScope</b>(const AName, ACode: String); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair with a JavaScript with scope. Can only be used when inside a document.
+
+<p> 
+
+<p><b>Note</b>: call <a class="normal" href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#WriteStartDocument">WriteStartDocument</a> to start writing the scope.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+<dt>ACode</dt>
+<dd>the JavaScript code.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteNull"></a><code>procedure <b>WriteNull</b>; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a BSON Null value</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteNull"></a><code>procedure <b>WriteNull</b>(const AName: String); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair with a BSON Null value. Can only be used when inside a document.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteUndefined"></a><code>procedure <b>WriteUndefined</b>; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a BSON Undefined value.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteUndefined"></a><code>procedure <b>WriteUndefined</b>(const AName: String); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair with a BSON Undefined value. Can only be used when inside a document.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteMaxKey"></a><code>procedure <b>WriteMaxKey</b>; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a BSON MaxKey value</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteMaxKey"></a><code>procedure <b>WriteMaxKey</b>(const AName: String); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair with a BSON MaxKey value. Can only be used when inside a document.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteMinKey"></a><code>procedure <b>WriteMinKey</b>; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a BSON MinKey value</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteMinKey"></a><code>procedure <b>WriteMinKey</b>(const AName: String); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair with a BSON MinKey value. Can only be used when inside a document.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteSymbol"></a><code>procedure <b>WriteSymbol</b>(const AValue: String); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a BSON Symbol.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the symbol.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteSymbol"></a><code>procedure <b>WriteSymbol</b>(const AName, AValue: String); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair with a BSON Symbol. Can only be used when inside a document.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+<dt>AValue</dt>
+<dd>the symbol.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteStartArray"></a><code>procedure <b>WriteStartArray</b>; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes the start of a BSON Array</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteStartArray"></a><code>procedure <b>WriteStartArray</b>(const AName: String); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair, where the value starts a BSON Array. Can only be used when inside a document.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteEndArray"></a><code>procedure <b>WriteEndArray</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes the end of a BSON Array</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteStartDocument"></a><code>procedure <b>WriteStartDocument</b>; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes the start of a BSON Document</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteStartDocument"></a><code>procedure <b>WriteStartDocument</b>(const AName: String); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a name/value pair, where the value starts a BSON Document. Can only be used when inside a document.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the element name.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WriteEndDocument"></a><code>procedure <b>WriteEndDocument</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes the end of a BSON Document</p>
+</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="State"></a><code>property <b>State</b>: <a  href="Grijjy.Bson.IO.html#TgoBsonWriterState">TgoBsonWriterState</a> read <a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html#GetState">GetState</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+The current <code>state</code> of the writer</p>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:53</em>
+</span>
+</td></tr></table></body></html>

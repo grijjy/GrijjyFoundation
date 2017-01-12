@@ -1,0 +1,625 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Bson</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<h1 class="unit">Unit Grijjy.Bson</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Uses</td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></td><td>Functions and Procedures</td><td><a class="section" href="#PasDoc-Types">Types</a></td><td><a class="section" href="#PasDoc-Constants">Constants</a></td><td>Variables</td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="description">Description</h2>
+<p>
+A light-weight and fast BSON and JSON object model, with support for efficiently parsing and writing in JSON and BSON format.
+
+<p>The code in this unit is fully compatible with the BSON and JSON used by MongoDB. It supports all JSON extensions used by MongoDB.
+
+<p>However, this unit does <b>not</b> have any dependencies on the MongoDB units and can be used as a stand-alone BSON/JSON library. It is therefore also suitable as a general purpose JSON library.
+
+<p><b>Quick Start</b>
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">var</span>
+    Doc: TgoBsonDocument;
+    A: TgoBsonArray;
+    Json: <span class="pascal_keyword">String</span>;
+    Bson: TBytes;
+  <span class="pascal_keyword">begin</span>
+    Doc := TgoBsonDocument.Create;
+    Doc.Add(<span class="pascal_string">'Hello'</span>, <span class="pascal_string">'World'</span>);
+
+    A := TgoBsonArray.Create([<span class="pascal_string">'awesome'</span>, <span class="pascal_float">5.05</span>, <span class="pascal_numeric">1986</span>]);
+    Doc.Add(<span class="pascal_string">'BSON'</span>, A);
+
+    Json := Doc.ToJson; <span class="pascal_comment">// Returns:</span>
+    <span class="pascal_comment">// { &quot;hello&quot; : &quot;world&quot;,</span>
+    <span class="pascal_comment">//   &quot;BSON&quot;: [&quot;awesone&quot;, 5.05, 1986] }</span>
+
+    Bson := Doc.ToBson; <span class="pascal_comment">// Saves to binary BSON</span>
+
+    Doc := TgoBsonDocument.Parse(<span class="pascal_string">'{ &quot;Answer&quot; : 42 }'</span>);
+    WriteLn(Doc[<span class="pascal_string">'Answer'</span>]); <span class="pascal_comment">// Outputs 42</span>
+    Doc[<span class="pascal_string">'Answer'</span>] := <span class="pascal_string">'Unknown'</span>;
+    Doc[<span class="pascal_string">'Pi'</span>] := <span class="pascal_float">3.14</span>;
+    WriteLn(Doc.ToJson); <span class="pascal_comment">// Outputs { &quot;Answer&quot; : &quot;Unknown&quot;, &quot;Pi&quot; : 3.14 }</span>
+  <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p><b>Object Model</b>
+
+<p>The root type in the BSON object model is <a class="normal" href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>. <a class="normal" href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a> is a record type which can hold any type of BSON value. Some implicit class operators make it easy to assign basic types:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">var</span>
+    Value: TgoBsonValue;
+  <span class="pascal_keyword">begin</span>
+    Value := True;                           <span class="pascal_comment">// Creates a Boolean value</span>
+    Value := <span class="pascal_numeric">1</span>;                              <span class="pascal_comment">// Creates an Integer value</span>
+    Value := <span class="pascal_float">3.14</span>;                           <span class="pascal_comment">// Creates a Double value</span>
+    Value := <span class="pascal_string">'Foo'</span>;                          <span class="pascal_comment">// Creates a String value</span>
+    Value := TBytes.Create(<span class="pascal_numeric">1</span>, <span class="pascal_numeric">2</span>, <span class="pascal_numeric">3</span>);         <span class="pascal_comment">// Creates a binary (TBytes) value</span>
+    Value := TgoObjectId.GenerateNewId;      <span class="pascal_comment">// Creates an ObjectId value</span>
+  <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>Note that you can change the type later by assigning a value of another type. You can also go the other way around:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">var</span>
+    Value: TgoBsonValue;
+    FloatVal: Double;
+  <span class="pascal_keyword">begin</span>
+    Value := <span class="pascal_float">3.14</span>;              <span class="pascal_comment">// Creates a Double value</span>
+    FloatVal := Value;          <span class="pascal_comment">// Uses implicit cast</span>
+    FloatVal := Value.AsDouble; <span class="pascal_comment">// Or more explicit cast</span>
+    Value := <span class="pascal_numeric">42</span>;                <span class="pascal_comment">// Creates an Integer value</span>
+    FloatVal := Value;          <span class="pascal_comment">// Converts an Integer BSON value to a Double</span>
+    FloatVal := Value.AsDouble; <span class="pascal_comment">// Raises exception because types don't match exactly</span>
+
+    <span class="pascal_keyword">if</span> (Value.BsonType = TgoBsonType.Double) <span class="pascal_keyword">then</span>
+      FloatVal := Value.AsDouble; <span class="pascal_comment">// Now it is safe to cast</span>
+
+    <span class="pascal_comment">// Or identical:</span>
+    <span class="pascal_keyword">if</span> (Value.IsDouble) <span class="pascal_keyword">then</span>
+      FloatVal := Value.AsDouble;
+  <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>Note that the implicit operators will try to convert if the types don't match exactly. For example, a BSON value containing an Integer value can be implicitly converted to a Double. If the conversion fails, it returns a zero value (or empty string).
+
+<p>The &quot;As*&quot; methods however will raise an exception if the types don't match exactly. You should use these methods if you know that the type you request matches the value's type exactly. These methods are a bit more efficient than the implicit operators.
+
+<p>You can check the value type using the BsonType-property or one of the &quot;Is*&quot; methods.
+
+<p>For non-basic types, there are value types that are &quot;derived&quot; from <a class="normal" href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>: </p>
+
+<ul class="compact_spacing">
+  <li><p><a class="normal" href="Grijjy.Bson.TgoBsonNull.html">TgoBsonNull</a>: the special &quot;null&quot; value</p></li>
+  <li><p><a class="normal" href="Grijjy.Bson.TgoBsonArray.html">TgoBsonArray</a>: an array of other BSON values.</p></li>
+  <li><p><a class="normal" href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>: a document containing key/value pairs, where the key is a string and the value can be any BSON value. This is usually the main starting point in Mongo, since all database &quot;records&quot; are represented as BSON documents in Mongo. A document is similar to a dictionary in many programming languages, or the &quot;object&quot; type in JSON.</p></li>
+  <li><p><a class="normal" href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>: arbitrary binary data. Is also used to store GUID's (but not ObjectId's).</p></li>
+  <li><p><a class="normal" href="Grijjy.Bson.TgoBsonDateTime.html">TgoBsonDateTime</a>: a date/time value with support for conversion to and from UTC (Universal) time. Is always stored in UTC format (as the number of UTC milliseconds since the Unix epoch).</p></li>
+  <li><p><a class="normal" href="Grijjy.Bson.TgoBsonRegularExpression.html">TgoBsonRegularExpression</a>: a regular expression with options.</p></li>
+  <li><p><a class="normal" href="Grijjy.Bson.TgoBsonJavaScript.html">TgoBsonJavaScript</a>: a piece of JavaScript code.</p></li>
+  <li><p><a class="normal" href="Grijjy.Bson.TgoBsonJavaScriptWithScope.html">TgoBsonJavaScriptWithScope</a>: a piece of JavaScript code with a scope (a set of variables with values, as defined in another document).</p></li>
+  <li><p><a class="normal" href="Grijjy.Bson.TgoBsonTimestamp.html">TgoBsonTimestamp</a>: special internal type used by MongoDB replication and sharding.</p></li>
+  <li><p><a class="normal" href="Grijjy.Bson.TgoBsonMaxKey.html">TgoBsonMaxKey</a>: special type which compares higher than all other possible BSON element values.</p></li>
+  <li><p><a class="normal" href="Grijjy.Bson.TgoBsonMinKey.html">TgoBsonMinKey</a>: special type which compares lower than all other possible BSON element values.</p></li>
+  <li><p><a class="normal" href="Grijjy.Bson.TgoBsonUndefined.html">TgoBsonUndefined</a>: an undefined value (deprecated by BSON)</p></li>
+  <li><p><a class="normal" href="Grijjy.Bson.TgoBsonSymbol.html">TgoBsonSymbol</a>: a symbol from a lookup table (deprecated by BSON)</p></li>
+</ul>
+
+<p> Note that these are not &quot;real&quot; derived types, since they are implemented as Delphi records (which do not support inheritance). But the implicit operators make it possible to treat each of these types as a <a class="normal" href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>. For example
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">var</span>
+    MyArray: TgoBsonArray;
+    Value: TgoBsonValue;
+  <span class="pascal_keyword">begin</span>
+    MyArray := TgoBsonArray.Create([<span class="pascal_numeric">1</span>, <span class="pascal_float">3.14</span>, <span class="pascal_string">'Foo'</span>, False]);
+    Value := MyArray; <span class="pascal_comment">// &quot;subtypes&quot; are compatible with TgoBsonValue</span>
+
+    <span class="pascal_comment">// Or shorter:</span>
+    Value := TgoBsonArray.Create([<span class="pascal_numeric">1</span>, <span class="pascal_float">3.14</span>, <span class="pascal_string">'Foo'</span>, False]);
+  <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p><b>Arrays</b>
+
+<p>The example above also shows that arrays can be created very easily. An array contains a collection of BSON values of any type. Since BSON values can be implicitly created from basic types, you can pass multiple types in the array constructor. In the example above, 4 BSON values will be added to the array of types Integer, Double, String and Boolean.
+
+<p>You can also add items using the Add or AddRange methods:
+
+<p></p>
+
+<pre class="longcode">
+  MyArray := TgoBsonArray.Create;
+  MyArray.Add(<span class="pascal_numeric">1</span>);
+  MyArray.Add(<span class="pascal_float">3.14</span>);
+  MyArray.Add(<span class="pascal_string">'Foo'</span>);</pre>
+
+<p>
+
+<p>Some methods return the array (or document) itself, so they can be used for chaining (aka as a &quot;fluent interface&quot;). The example above is equivalent to:
+
+<p></p>
+
+<pre class="longcode">
+  MyArray := TgoBsonArray.Create;
+  MyArray.Add(<span class="pascal_numeric">1</span>).Add(<span class="pascal_float">3.14</span>).Add(<span class="pascal_string">'Foo'</span>);</pre>
+
+<p>
+
+<p>You can change values (and types) like this:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_comment">// Changes entry 1 from Double to Boolean</span>
+  MyArray[<span class="pascal_numeric">1</span>] := True;</pre>
+
+<p>
+
+<p><b>Documents</b>
+
+<p>Documents (or dictionaries) can also be created easily:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">var</span>
+    Doc: TgoBsonDocument;
+  <span class="pascal_keyword">begin</span>
+    Doc := TgoBsonDocument.Create(<span class="pascal_string">'Answer'</span>, <span class="pascal_numeric">42</span>);
+  <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>This creates a document with a single entry called 'Answer' with a value of 42. Keep in mind that the value can be any BSON type:
+
+<p></p>
+
+<pre class="longcode">
+  Doc := TgoBsonDocument.Create(<span class="pascal_string">'Answer'</span>, TgoBsonArray.Create([<span class="pascal_numeric">42</span>, False]));</pre>
+
+<p>
+
+<p>You can Add, Remove and Delete (Adds can be fluent):
+
+<p></p>
+
+<pre class="longcode">
+  Doc := TgoBsonDocument.Create;
+  Doc.Add(<span class="pascal_string">'Answer'</span>, <span class="pascal_numeric">42</span>);
+  Doc.Add(<span class="pascal_string">'Pi'</span>, <span class="pascal_float">3.14</span>).Add(<span class="pascal_string">'Pie'</span>, <span class="pascal_string">'Yummi'</span>);
+
+  <span class="pascal_comment">// Deletes second item (Pi):</span>
+  Doc.Delete(<span class="pascal_numeric">1</span>);
+
+  <span class="pascal_comment">// Removes first item (Answer):</span>
+  Doc.Remove(<span class="pascal_string">'Answer'</span>);</pre>
+
+<p>
+
+<p>Like Delphi dictionaries, the Add method will raise an exception if an item with the given name already exists. Unlike Delphi dictionaries however, you can easily set an item using its default accessor:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_comment">// Adds Answer:</span>
+  Doc[<span class="pascal_string">'Answer'</span>] := <span class="pascal_numeric">42</span>;
+
+  <span class="pascal_comment">// Adds Pi:</span>
+  Doc[<span class="pascal_string">'Pi'</span>] := <span class="pascal_float">3.14</span>;
+
+  <span class="pascal_comment">// Updates Answer:</span>
+  Doc[<span class="pascal_string">'Answer'</span>] := <span class="pascal_string">'Everything'</span>;</pre>
+
+<p>
+
+<p>This adds the item if it does not yet exists, or replaces it otherwise (there is no (need for an) AddOrSet method).
+
+<p>Also unlike Delphi dictionaries, documents maintain insertion order and you can also access the items by index:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_comment">// Returns item by name:</span>
+  V := Doc[<span class="pascal_string">'Pi'</span>];
+
+  <span class="pascal_comment">// Returns item by index:</span>
+  V := Doc.Values[<span class="pascal_numeric">1</span>];</pre>
+
+<p>
+
+<p>Documents can be easily parsed from JSON:
+
+<p></p>
+
+<pre class="longcode">
+  Doc := TgoBsonDocument.Parse(<span class="pascal_string">'{ &quot;Answer&quot; : 42 }'</span>);</pre>
+
+<p>
+
+<p>The parser understands standard JSON as well as the MongoDB JSON extensions.
+
+<p>You can also load a document from a BSON byte array:
+
+<p></p>
+
+<pre class="longcode">
+  Bytes := LoadSomeBSONData();
+  Doc := TgoBsonDocument.Load(Bytes);</pre>
+
+<p>
+
+<p>These methods will raise exceptions if the JSON or BSON data is invalid.
+
+<p><b>Memory Management</b>
+
+<p>All memory management in this library is automatic. You never need to (and you never must) destroy any objects yourself.
+
+<p>The object model types (<a class="normal" href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a> and friends) are all Delphi records. The actual implementations of these records use interfaces to manage memory.
+
+<p>There is no concept of ownership in the object model. An array does <b>not</b> own its elements and a document does <b>not</b> own its elements. So you are free to add the same value to multiple arrays and/or documents without ownership concerns:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">var</span>
+    Array1, Array2, SubArray, Doc1, Doc2: TgoBsonValue;
+  <span class="pascal_keyword">begin</span>
+    SubArray := TgoBsonArray.Create([<span class="pascal_numeric">42</span>, <span class="pascal_string">'Foo'</span>, True]);
+    Array1 := TgoBsonArray.Create;
+    Array2 := TgoBsonArray.Create([<span class="pascal_numeric">123</span>, <span class="pascal_string">'Abc'</span>]);
+    Doc1 := TgoBsonDocument.Create;
+    Doc2 := TgoBsonDocument.Create(<span class="pascal_string">'Pi'</span>, <span class="pascal_float">3.14</span>);
+
+    Array1.Add(SubArray);
+    Array2.Add(SubArray);      <span class="pascal_comment">// Add same value to other container</span>
+    Doc1.Add(<span class="pascal_string">'Bar'</span>, SubArray); <span class="pascal_comment">// And again</span>
+    Doc2.Add(<span class="pascal_string">'Baz'</span>, SubArray); <span class="pascal_comment">// And again</span>
+  <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>Non-object model types are defined as interfaces, so their memory is managed automatically as well. For example JSON/BSON readers and writer are interfaces:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">var</span>
+    Reader: IgoJsonReader;
+    Value: TgoBsonValue;
+  <span class="pascal_keyword">begin</span>
+    Reader := TgoJsonReader.Create(<span class="pascal_string">'{ &quot;Pi&quot; : 3.14 }'</span>);
+    Value := Reader.ReadValue;
+    Assert(Value.IsDocument);
+    Assert(Value.AsDocument[<span class="pascal_string">'Pi'</span>] = <span class="pascal_float">3.14</span>);
+  <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>Just keep in mind that you must always declare your variable (Reader) as an interface type (<a class="normal" href="Grijjy.Bson.IO.IgoJsonReader.html">IgoJsonReader</a>), but you construct it using the class type (<a class="normal" href="Grijjy.Bson.IO.TgoJsonReader.html">TgoJsonReader</a>).
+
+<p><b>JSON and BSON reading and writing</b>
+
+<p>For easy storing, all BSON values have methods called ToJson and ToBson to store its value into JSON or BSON format:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">var</span>
+    A: TgoBsonValue;
+    B: TBytes;
+  <span class="pascal_keyword">begin</span>
+    A := <span class="pascal_numeric">42</span>;
+    WriteLn(A.ToJson); <span class="pascal_comment">// Outputs '42'</span>
+
+    A := <span class="pascal_string">'Foo'</span>;
+    WriteLn(A.ToJson); <span class="pascal_comment">// Outputs '&quot;Foo&quot;'</span>
+
+    A := TgoBsonArray.Create([<span class="pascal_numeric">1</span>, <span class="pascal_string">'Foo'</span>, True]);
+    WriteLn(A.ToJson); <span class="pascal_comment">// Outputs '[1, &quot;Foo&quot;, true]'</span>
+
+    A := TgoBsonDocument.Create(<span class="pascal_string">'Pi'</span>, <span class="pascal_float">3.14</span>);
+    WriteLn(A.ToJson); <span class="pascal_comment">// Outputs '{ &quot;Pi&quot; : 3.14 }'</span>
+    B := A.ToBson;     <span class="pascal_comment">// Outputs document in BSON format</span>
+  <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>When outputting to JSON, you can optionally supply a settings record to customize the output: </p>
+
+<ul class="compact_spacing">
+  <li><p>Whether to pretty-print the output</p></li>
+  <li><p>What strings to use for indentation and line breaks</p></li>
+  <li><p>Whether to output standard JSON or use the MongoDB shell syntax extension</p></li>
+</ul>
+
+<p> If you don's supply any settings, then output will be in Strict JSON format without pretty printing.
+
+<p>Easy loading is only supported at the Value, Document and Array level, using the Parse and Load methods:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">var</span>
+    Doc: TgoBsonDocument;
+    Bytes: TBytes;
+  <span class="pascal_keyword">begin</span>
+    Doc := TgoBsonDocument.Parse(<span class="pascal_string">'{ &quot;Pi&quot; : 3.14 }'</span>);
+    Bytes := LoadSomeBSONData();
+    Doc := TgoBsonDocument.Load(Bytes);
+  <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>You can load other types using the <a class="normal" href="Grijjy.Bson.IO.IgoJsonReader.html">IgoJsonReader</a> and <a class="normal" href="Grijjy.Bson.IO.IgoBsonReader.html">IgoBsonReader</a> interfaces:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">var</span>
+    Reader: IgoBsonReader;
+    Value: TgoBsonValue;
+    Bytes: TBytes;
+  <span class="pascal_keyword">begin</span>
+    Bytes := LoadSomeBSONData();
+    Reader := TgoBsonReader.Create(Bytes);
+    Value := Reader.ReadValue;
+  <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>The JSON reader and writer supports both the &quot;strict&quot; JSON syntax, as well as the &quot;Mongo Shell&quot; syntax (see <a  href="https://docs.mongodb.org/manual/reference/mongodb-extended-json/">https://docs.mongodb.org/manual/reference/mongodb-extended-json/</a>). Extended JSON is supported for both reading and writing. This library supports all the current extensions, as well as some deprecated legacy extensions. The JSON reader accepts both key names with double quotes (as per JSON spec) as without quotes.
+
+<p><b>Manual reading and writing</b>
+
+<p>For all situations, the methods ToJson, ToBson, Parse and Load can take care of reading and writing any kind of JSON and BSON data.
+
+<p>However, you can use the reading and writing interfaces directly if you want for some reason. One reason may be that you want the fastest performance when creating BSON payloads, without the overhead of creating a document object model in memory.
+
+<p>For information, see the unit Grijjy.Bson.IO
+
+<p><b>Serialization</b>
+
+<p>For even easier reading and writing, you can use serialization to directory store a Delphi record or object in JSON or BSON format (or convert it to a <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>).
+
+<p>For information, see the unit Grijjy.Bson.Serialization</p>
+<a name="PasDoc-Uses"></a><h2 class="overview">Overview</h2>
+<a name="PasDoc-Classes"></a><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoJsonWriterSettings.html"><code>TgoJsonWriterSettings</code></a></td>
+<td class="itemdesc">Settings for a <a class="normal" href="Grijjy.Bson.IO.IgoJsonWriter.html">IgoJsonWriter</a></td>
+</tr>
+<tr class="list2">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoObjectId.html"><code>TgoObjectId</code></a></td>
+<td class="itemdesc">Represents an ObjectId.</td>
+</tr>
+<tr class="list">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoBsonValue.html"><code>TgoBsonValue</code></a></td>
+<td class="itemdesc">The base &quot;class&quot; for all BSON values.</td>
+</tr>
+<tr class="list2">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoBsonArray.html"><code>TgoBsonArray</code></a></td>
+<td class="itemdesc">An array of other BSON values</td>
+</tr>
+<tr class="list">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoBsonElement.html"><code>TgoBsonElement</code></a></td>
+<td class="itemdesc">An element in a <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a></td>
+</tr>
+<tr class="list2">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoBsonDocument.html"><code>TgoBsonDocument</code></a></td>
+<td class="itemdesc">A BSON document.</td>
+</tr>
+<tr class="list">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoBsonBinaryData.html"><code>TgoBsonBinaryData</code></a></td>
+<td class="itemdesc">A blob of binary data</td>
+</tr>
+<tr class="list2">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoBsonNull.html"><code>TgoBsonNull</code></a></td>
+<td class="itemdesc">Represents the BSON Null <a class="normal" href="Grijjy.Bson.TgoBsonNull.html#Value">value</a></td>
+</tr>
+<tr class="list">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoBsonUndefined.html"><code>TgoBsonUndefined</code></a></td>
+<td class="itemdesc">Represents the BSON Undefined <a class="normal" href="Grijjy.Bson.TgoBsonUndefined.html#Value">value</a></td>
+</tr>
+<tr class="list2">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoBsonDateTime.html"><code>TgoBsonDateTime</code></a></td>
+<td class="itemdesc">A BSON DateTime value</td>
+</tr>
+<tr class="list">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoBsonTimestamp.html"><code>TgoBsonTimestamp</code></a></td>
+<td class="itemdesc">A BSON <a class="normal" href="Grijjy.Bson.TgoBsonTimestamp.html#Timestamp">Timestamp</a>.</td>
+</tr>
+<tr class="list2">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoBsonRegularExpression.html"><code>TgoBsonRegularExpression</code></a></td>
+<td class="itemdesc">A BSON Regular Expression</td>
+</tr>
+<tr class="list">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoBsonJavaScript.html"><code>TgoBsonJavaScript</code></a></td>
+<td class="itemdesc">A piece of JavaScript <a class="normal" href="Grijjy.Bson.TgoBsonJavaScript.html#Code">code</a></td>
+</tr>
+<tr class="list2">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoBsonJavaScriptWithScope.html"><code>TgoBsonJavaScriptWithScope</code></a></td>
+<td class="itemdesc">A piece of JavaScript <a class="normal" href="Grijjy.Bson.TgoBsonJavaScriptWithScope.html#Code">code</a> with a <a class="normal" href="Grijjy.Bson.TgoBsonJavaScriptWithScope.html#Scope">scope</a> (a set of variables with values, as defined in another document).</td>
+</tr>
+<tr class="list">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoBsonSymbol.html"><code>TgoBsonSymbol</code></a></td>
+<td class="itemdesc">A symbol from a lookup table (deprecated by BSON).</td>
+</tr>
+<tr class="list2">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoBsonSymbolTable.html"><code>TgoBsonSymbolTable</code></a></td>
+<td class="itemdesc">A table used to <a class="normal" href="Grijjy.Bson.TgoBsonSymbolTable.html#Lookup">lookup</a> <a class="normal" href="Grijjy.Bson.TgoBsonSymbol.html">TgoBsonSymbol</a> values</td>
+</tr>
+<tr class="list">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoBsonMaxKey.html"><code>TgoBsonMaxKey</code></a></td>
+<td class="itemdesc">Represents the BSON MaxKey <a class="normal" href="Grijjy.Bson.TgoBsonMaxKey.html#Value">value</a></td>
+</tr>
+<tr class="list2">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoBsonMinKey.html"><code>TgoBsonMinKey</code></a></td>
+<td class="itemdesc">Represents the BSON MinKey <a class="normal" href="Grijjy.Bson.TgoBsonMinKey.html#Value">value</a></td>
+</tr>
+<tr class="list">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.TgoBsonValueHelper.html"><code>TgoBsonValueHelper</code></a></td>
+<td class="itemdesc">Adds methods to <a class="normal" href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a></td>
+</tr>
+</table>
+<a name="PasDoc-Types"></a><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.html#TgoBsonType">TgoBsonType</a></b> = (...);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.html#TgoBsonBinarySubType">TgoBsonBinarySubType</a></b> = (...);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.html#TgoJsonOutputMode">TgoJsonOutputMode</a></b> = (...);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.html#PgoObjectId">PgoObjectId</a></b> = &circ;<a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Constants"></a><h3 class="summary">Constants</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.html#RS_BSON_NIL_EXPECTED">RS_BSON_NIL_EXPECTED</a></b> = 'Only nil pointers can be converted to BSON values';</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TgoBsonType"></a><code><b>TgoBsonType</b> = (...);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Supported BSON types. As returned by <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#BsonType">TgoBsonValue.BsonType</a>. Tech note: Ordinal values must match BSON spec (<a  href="http://bsonspec.org">http://bsonspec.org</a>)</p>
+<h6 class="description_section">Values</h6>
+<ul>
+<li>
+EndOfDocument = $00: Not a real BSON type. Used to signal the end of a document.</li>
+<li>
+Double = $01: A BSON double</li>
+<li>
+String = $02: A BSON string</li>
+<li>
+Document = $03: A BSON document (see <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>)</li>
+<li>
+Array = $04: A BSON array (see <a class="normal" href="Grijjy.Bson.TgoBsonArray.html">TgoBsonArray</a>)</li>
+<li>
+Binary = $05: BSON binary data (see <a class="normal" href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>)</li>
+<li>
+Undefined = $06: A BSON undefined value (see <a class="normal" href="Grijjy.Bson.TgoBsonUndefined.html">TgoBsonUndefined</a>)</li>
+<li>
+ObjectId = $07: A ObjectId, generally used with MongoDB (see <a class="normal" href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>)</li>
+<li>
+Boolean = $08: A BSON boolean</li>
+<li>
+DateTime = $09: A BSON DateTime (see <a class="normal" href="Grijjy.Bson.TgoBsonDateTime.html">TgoBsonDateTime</a>)</li>
+<li>
+Null = $0A: A BSON null value (see <a class="normal" href="Grijjy.Bson.TgoBsonNull.html">TgoBsonNull</a>)</li>
+<li>
+RegularExpression = $0B: A BSON regular expression (see <a class="normal" href="Grijjy.Bson.TgoBsonRegularExpression.html">TgoBsonRegularExpression</a>)</li>
+<li>
+JavaScript = $0D: BSON JavaScript code (see <a class="normal" href="Grijjy.Bson.TgoBsonJavaScript.html">TgoBsonJavaScript</a>)</li>
+<li>
+Symbol = $0E: A BSON Symbol (see <a class="normal" href="Grijjy.Bson.TgoBsonSymbol.html">TgoBsonSymbol</a>, deprecated)</li>
+<li>
+JavaScriptWithScope = $0F: BSON JavaScript code with a scope (see <a class="normal" href="Grijjy.Bson.TgoBsonJavaScriptWithScope.html">TgoBsonJavaScriptWithScope</a>)</li>
+<li>
+Int32 = $10: A BSON 32-bit integer</li>
+<li>
+Timestamp = $11: A BSON Timestamp (see <a class="normal" href="Grijjy.Bson.TgoBsonTimestamp.html">TgoBsonTimestamp</a>)</li>
+<li>
+Int64 = $12: A BSON 64-bit integer</li>
+<li>
+MaxKey = $7F: A BSON MaxKey value (see <a class="normal" href="Grijjy.Bson.TgoBsonMaxKey.html">TgoBsonMaxKey</a>)</li>
+<li>
+MinKey = $FF: A BSON MinKey value (see <a class="normal" href="Grijjy.Bson.TgoBsonMinKey.html">TgoBsonMinKey</a>)</li>
+</ul>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TgoBsonBinarySubType"></a><code><b>TgoBsonBinarySubType</b> = (...);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Supported BSON binary sub types. As returned by <a class="normal" href="Grijjy.Bson.TgoBsonBinaryData.html#SubType">TgoBsonBinaryData.SubType</a>. Tech note: Ordinal values must match BSON spec (<a  href="http://bsonspec.org">http://bsonspec.org</a>)</p>
+<h6 class="description_section">Values</h6>
+<ul>
+<li>
+Binary = $00: Binary data in an arbitrary format</li>
+<li>
+Function = $01: A function</li>
+<li>
+OldBinary = $02: Obsolete binary type</li>
+<li>
+UuidLegacy = $03: A UUID/GUID in driver dependent legacy byte order</li>
+<li>
+UuidStandard = $04: A UUID/GUID in standard network byte order (big endian)</li>
+<li>
+MD5 = $05: A MD5 hash</li>
+<li>
+UserDefined = $80: User defined type</li>
+</ul>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TgoJsonOutputMode"></a><code><b>TgoJsonOutputMode</b> = (...);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+The output mode of a <a class="normal" href="Grijjy.Bson.IO.IgoJsonWriter.html">IgoJsonWriter</a>, as set using <a class="normal" href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>.</p>
+<h6 class="description_section">Values</h6>
+<ul>
+<li>
+Strict: Outputs strict JSON</li>
+<li>
+Shell: Outputs a format that can be used by the MongoDB shell</li>
+</ul>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="PgoObjectId"></a><code><b>PgoObjectId</b> = &circ;<a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Constants</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_NIL_EXPECTED"></a><code><b>RS_BSON_NIL_EXPECTED</b> = 'Only nil pointers can be converted to BSON values';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:52</em>
+</span>
+</td></tr></table></body></html>

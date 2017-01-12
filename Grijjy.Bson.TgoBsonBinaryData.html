@@ -1,0 +1,280 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Bson: record TgoBsonBinaryData</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<a name="TgoBsonBinaryData"></a><h1 class="cio">record TgoBsonBinaryData</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Hierarchy</td><td>Fields</td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="Grijjy.Bson.html">Grijjy.Bson</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TgoBsonBinaryData = record</code></p>
+<h2 class="description">Description</h2>
+<p>
+A blob of binary data</p>
+<h2 class="overview">Overview</h2>
+<a name="PasDoc-Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonBinaryData.html#Create">Create</a></b>: <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>; overload; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonBinaryData.html#Create">Create</a></b>(const AData: TBytes): <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>; overload; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonBinaryData.html#Create">Create</a></b>(const AData: TBytes; const ASubType: <a  href="Grijjy.Bson.html#TgoBsonBinarySubType">TgoBsonBinarySubType</a>): <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>; overload; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonBinaryData.html#Implicit">Implicit</a></b>(const A: <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonBinaryData.html#Equal">Equal</a></b>(const A, B: <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonBinaryData.html#NotEqual">NotEqual</a></b>(const A, B: <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonBinaryData.html#IsNil">IsNil</a></b>: Boolean; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonBinaryData.html#SetNil">SetNil</a></b>; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonBinaryData.html#Clone">Clone</a></b>: <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonBinaryData.html#DeepClone">DeepClone</a></b>: <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonBinaryData.html#ToBson">ToBson</a></b>: TBytes; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonBinaryData.html#ToJson">ToJson</a></b>: String; overload; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonBinaryData.html#ToJson">ToJson</a></b>(const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>): String; overload; inline;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonBinaryData.html#SubType">SubType</a></b>: <a  href="Grijjy.Bson.html#TgoBsonBinarySubType">TgoBsonBinarySubType</a> read GetSubType;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonBinaryData.html#Count">Count</a></b>: Integer read GetCount;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonBinaryData.html#Bytes">Bytes</a></b>[constAIndex:Integer]: Byte read GetByte write SetByte;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonBinaryData.html#AsBytes">AsBytes</a></b>: TBytes read GetAsBytes;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Create"></a><code>class function <b>Create</b>: <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates an empty BSON binary.
+
+<p></p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The empty BSON binary</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Create"></a><code>class function <b>Create</b>(const AData: TBytes): <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates a BSON binary from a byte array.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AData</dt>
+<dd>the <a class="normal" href="Grijjy.Bson.TgoBsonBinaryData.html#Bytes">bytes</a> to populate the binary with.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The BSON binary</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Create"></a><code>class function <b>Create</b>(const AData: TBytes; const ASubType: <a  href="Grijjy.Bson.html#TgoBsonBinarySubType">TgoBsonBinarySubType</a>): <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates a BSON binary from a byte array.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AData</dt>
+<dd>the <a class="normal" href="Grijjy.Bson.TgoBsonBinaryData.html#Bytes">bytes</a> to populate the binary with.</dd>
+<dt>ASubType</dt>
+<dd>the type of binary data in AData.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The BSON binary</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Implicitly casts a BSON binary to a BSON value.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Equal"></a><code>class operator <b>Equal</b>(const A, B: <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#Equal">TgoBsonValue.Equal</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="NotEqual"></a><code>class operator <b>NotEqual</b>(const A, B: <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#NotEqual">TgoBsonValue.NotEqual</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsNil"></a><code>function <b>IsNil</b>: Boolean; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#IsNil">TgoBsonValue.IsNil</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SetNil"></a><code>procedure <b>SetNil</b>; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#SetNil">TgoBsonValue.SetNil</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Clone"></a><code>function <b>Clone</b>: <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#Clone">TgoBsonValue.Clone</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="DeepClone"></a><code>function <b>DeepClone</b>: <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#DeepClone">TgoBsonValue.DeepClone</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToBson"></a><code>function <b>ToBson</b>: TBytes; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#ToBson">TgoBsonValue.ToBson</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToJson"></a><code>function <b>ToJson</b>: String; overload; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#ToJson">TgoBsonValue.ToJson</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToJson"></a><code>function <b>ToJson</b>(const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>): String; overload; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+See <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#ToJson">TgoBsonValue.ToJson</a></p>
+</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SubType"></a><code>property <b>SubType</b>: <a  href="Grijjy.Bson.html#TgoBsonBinarySubType">TgoBsonBinarySubType</a> read GetSubType;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+The type of binary data this object contains</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Count"></a><code>property <b>Count</b>: Integer read GetCount;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Number of <a class="normal" href="Grijjy.Bson.TgoBsonBinaryData.html#Bytes">bytes</a> in the binary data</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Bytes"></a><code>property <b>Bytes</b>[constAIndex:Integer]: Byte read GetByte write SetByte;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+The <code>bytes</code> in the binary data.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AIndex</dt>
+<dd>the index of the byte to get or set.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentOutOfRangeException</code></dt>
+<dd>in AIndex is out of bounds.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="AsBytes"></a><code>property <b>AsBytes</b>: TBytes read GetAsBytes;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the binary as a byte array</p>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:52</em>
+</span>
+</td></tr></table></body></html>

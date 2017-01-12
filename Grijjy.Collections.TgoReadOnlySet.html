@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Collections: Class TgoReadOnlySet</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<a name="TgoReadOnlySet"></a><h1 class="cio">Class TgoReadOnlySet</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="Grijjy.Collections.html">Grijjy.Collections</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TgoReadOnlySet&lt;T&gt; = class(TEnumerable&lt;T&gt;)</code></p>
+<h2 class="description">Description</h2>
+<p>
+Generic read-only set. Provides a read-only view of a <a class="normal" href="Grijjy.Collections.TgoSet.html">TgoSet</a>&lt;T&gt;</p>
+<a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TEnumerable</li>
+<li class="thisitem">TgoReadOnlySet</li></ul><h2 class="overview">Overview</h2>
+<a name="PasDoc-Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoReadOnlySet.html#ToArray">ToArray</a></b>: TArray&lt;T&gt;; override; final;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoReadOnlySet.html#DoGetEnumerator">DoGetEnumerator</a></b>: TEnumerator&lt;T&gt;; override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a  href="Grijjy.Collections.TgoReadOnlySet.html#Create">Create</a></b>; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a  href="Grijjy.Collections.TgoReadOnlySet.html#Create">Create</a></b>(const AComparer: IEqualityComparer&lt;T&gt;); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoReadOnlySet.html#Contains">Contains</a></b>(const AItem: T): Boolean;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Collections.TgoReadOnlySet.html#Count">Count</a></b>: Integer read FCount;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ToArray"></a><code>function <b>ToArray</b>: TArray&lt;T&gt;; override; final;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Copies the items in the set to a dynamic array</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="DoGetEnumerator"></a><code>function <b>DoGetEnumerator</b>: TEnumerator&lt;T&gt;; override;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Allow <code>for..in</code> enumeration of the items in the set.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates a read-only set using a default comparer.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>(const AComparer: IEqualityComparer&lt;T&gt;); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates a read-only set using a custom comparer.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AComparer</dt>
+<dd>the comparer to use to check for item equality. Pass nil to use the default comparer.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Contains"></a><code>function <b>Contains</b>(const AItem: T): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Checks if the set <code>contains</code> a given item. This is an O(1) operation that uses the set's comparer to check for equality.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AItem</dt>
+<dd>the item to check.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if the set <code>contains</code> AItem, False if not.</p></td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Count"></a><code>property <b>Count</b>: Integer read FCount;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+The number of items in the set</p>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:53</em>
+</span>
+</td></tr></table></body></html>

@@ -1,0 +1,410 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Collections: Class TgoRingBuffer</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<a name="TgoRingBuffer"></a><h1 class="cio">Class TgoRingBuffer</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="Grijjy.Collections.html">Grijjy.Collections</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TgoRingBuffer&lt;T:record&gt; = class(TObject)</code></p>
+<h2 class="description">Description</h2>
+<p>
+A ring buffer (aka &quot;circular buffer&quot;). This is a fixed-size buffer as if it were connected end-to-end. Lends itself for buffering data streams.
+
+<p>This is a generic implementation that you can use to buffer any value type (such as integers, bytes, floats and records). It does <b>not</b> work with reference types (such as strings, objects and interfaces).
+
+<p>All &quot;<a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Count">Count</a>&quot;s used in this class refer the a number of elements (of type T), and <b>not</b> to a number of bytes (unless T is an 8-bit value).</p>
+<a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TObject</li>
+<li class="thisitem">TgoRingBuffer</li></ul><h2 class="overview">Overview</h2>
+<a name="PasDoc-Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a  href="Grijjy.Collections.TgoRingBuffer.html#Create">Create</a></b>(const ACapacity: Integer);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoRingBuffer.html#Write">Write</a></b>(const AData: TArray&lt;T&gt;): Integer; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoRingBuffer.html#Write">Write</a></b>(const AData: array of T): Integer; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoRingBuffer.html#Write">Write</a></b>(const AData: TArray&lt;T&gt;; const AIndex, ACount: Integer): Integer; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoRingBuffer.html#Write">Write</a></b>(const AData: array of T; const AIndex, ACount: Integer): Integer; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoRingBuffer.html#TryWrite">TryWrite</a></b>(const AData: TArray&lt;T&gt;): Boolean; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoRingBuffer.html#TryWrite">TryWrite</a></b>(const AData: array of T): Boolean; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoRingBuffer.html#TryWrite">TryWrite</a></b>(const AData: TArray&lt;T&gt;; const AIndex, ACount: Integer): Boolean; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoRingBuffer.html#TryWrite">TryWrite</a></b>(const AData: array of T; const AIndex, ACount: Integer): Boolean; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoRingBuffer.html#Read">Read</a></b>(var AData: TArray&lt;T&gt;): Integer; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoRingBuffer.html#Read">Read</a></b>(var AData: array of T): Integer; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoRingBuffer.html#Read">Read</a></b>(var AData: TArray&lt;T&gt;; const AIndex, ACount: Integer): Integer; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoRingBuffer.html#Read">Read</a></b>(var AData: array of T; const AIndex, ACount: Integer): Integer; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoRingBuffer.html#TryRead">TryRead</a></b>(var AData: TArray&lt;T&gt;): Boolean; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoRingBuffer.html#TryRead">TryRead</a></b>(var AData: array of T): Boolean; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoRingBuffer.html#TryRead">TryRead</a></b>(var AData: TArray&lt;T&gt;; const AIndex, ACount: Integer): Boolean; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoRingBuffer.html#TryRead">TryRead</a></b>(var AData: array of T; const AIndex, ACount: Integer): Boolean; overload;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Collections.TgoRingBuffer.html#Capacity">Capacity</a></b>: Integer <a  href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> FCapacity;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Collections.TgoRingBuffer.html#Count">Count</a></b>: Integer <a  href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> FCount;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Collections.TgoRingBuffer.html#Available">Available</a></b>: Integer <a  href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> GetAvailable;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>(const ACapacity: Integer);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates a ring buffer of a given size.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ACapacity</dt>
+<dd>the number of elements (of type T) that the buffer will hold.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Write"></a><code>function <b>Write</b>(const AData: TArray&lt;T&gt;): Integer; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a data array to the buffer.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AData</dt>
+<dd>the data to <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Write">write</a> to the buffer.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The number of elements written to the buffer. This may be less than the length of AData in case the buffer has become full.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Write"></a><code>function <b>Write</b>(const AData: array of T): Integer; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Write"></a><code>function <b>Write</b>(const AData: TArray&lt;T&gt;; const AIndex, ACount: Integer): Integer; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Writes a segment of a data array to the buffer.
+
+<p>  
+
+<p> AIndex and ACount must point to a valid segment in the array.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AData</dt>
+<dd>array containing the data to <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Write">write</a> to the buffer.</dd>
+<dt>AIndex</dt>
+<dd>start index into AData.</dd>
+<dt>ACount</dt>
+<dd>number of elements in AData to <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Write">write</a> to the buffer, starting at AIndex.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The number of elements written to the buffer. This may be less than ACount in case the buffer has become full.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Write"></a><code>function <b>Write</b>(const AData: array of T; const AIndex, ACount: Integer): Integer; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="TryWrite"></a><code>function <b>TryWrite</b>(const AData: TArray&lt;T&gt;): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Tries to <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Write">write</a> a data array to the buffer. Either the entire operation will succeed or fail. Unlike <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Write">Write</a>, no data will be written if this operation would lead to an overflow.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AData</dt>
+<dd>the data to <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Write">write</a> to the buffer.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if the data was successfully written, or False in case the buffer would overflow if the data would be written. In that case, no data is written to the buffer at all.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="TryWrite"></a><code>function <b>TryWrite</b>(const AData: array of T): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="TryWrite"></a><code>function <b>TryWrite</b>(const AData: TArray&lt;T&gt;; const AIndex, ACount: Integer): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Tries to <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Write">write</a> a segment of a data array to the buffer. Either the entire operation will succeed or fail. Unlike <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Write">Write</a>, no data will be written if this operation would lead to an overflow.
+
+<p>  
+
+<p> AIndex and ACount must point to a valid segment in the array.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AData</dt>
+<dd>array containing the data to <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Write">write</a> to the buffer.</dd>
+<dt>AIndex</dt>
+<dd>start index into AData.</dd>
+<dt>ACount</dt>
+<dd>number of elements in AData to <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Write">write</a> to the buffer, starting at AIndex.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if the data was successfully written, or False in case the buffer would overflow if the data would be written. In that case, no data is written to the buffer at all.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="TryWrite"></a><code>function <b>TryWrite</b>(const AData: array of T; const AIndex, ACount: Integer): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Read"></a><code>function <b>Read</b>(var AData: TArray&lt;T&gt;): Integer; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads to a data array from the buffer.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AData</dt>
+<dd>the data array that will be filled with data <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> from the buffer. It will try to <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> Length(AData) elements to fill the entire array.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The number of elements <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> from buffer. This may be less than the length of AData in case the buffer did not have enough data <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Available">available</a>.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Read"></a><code>function <b>Read</b>(var AData: array of T): Integer; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Read"></a><code>function <b>Read</b>(var AData: TArray&lt;T&gt;; const AIndex, ACount: Integer): Integer; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads to a segment of a data array from the buffer.
+
+<p>  
+
+<p> AIndex and ACount must point to a valid segment in the array.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AData</dt>
+<dd>the data array that will be filled with data <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> from the buffer.</dd>
+<dt>AIndex</dt>
+<dd>start index into AData.</dd>
+<dt>ACount</dt>
+<dd>the number of elements to <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> into AData, starting at AIndex.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The number of elements <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> from buffer. This may be less than ACount in case the buffer did not have enough data <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Available">available</a>.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Read"></a><code>function <b>Read</b>(var AData: array of T; const AIndex, ACount: Integer): Integer; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="TryRead"></a><code>function <b>TryRead</b>(var AData: TArray&lt;T&gt;): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Tries to <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> to a data array from the buffer. Either the entire operation will succeed or fail. Unlike <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">Read</a>, no data will be <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> if the buffer does not have enough data <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Available">available</a>.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AData</dt>
+<dd>the data array that will be filled with data <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> from the buffer. It will try to <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> Length(AData) elements to fill the entire array.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if the data was successfully <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a>, or False if the buffer does not have enough data <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Available">available</a> to <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> the requested amount. In that case, no data is <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> from the buffer at all.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="TryRead"></a><code>function <b>TryRead</b>(var AData: array of T): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="TryRead"></a><code>function <b>TryRead</b>(var AData: TArray&lt;T&gt;; const AIndex, ACount: Integer): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Tries to <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> to a segment of a data array from the buffer. Either the entire operation will succeed or fail. Unlike <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">Read</a>, no data will be <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> if the buffer does not have enough data <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Available">available</a>.
+
+<p>  
+
+<p> AIndex and ACount must point to a valid segment in the array.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AData</dt>
+<dd>the data array that will be filled with data <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> from the buffer.</dd>
+<dt>AIndex</dt>
+<dd>start index into AData.</dd>
+<dt>ACount</dt>
+<dd>the number of elements to <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> into AData, starting at AIndex.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if the data was successfully <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a>, or False if the buffer does not have enough data <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Available">available</a> to <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> the requested amount. In that case, no data is <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> from the buffer at all.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="TryRead"></a><code>function <b>TryRead</b>(var AData: array of T; const AIndex, ACount: Integer): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Capacity"></a><code>property <b>Capacity</b>: Integer <a  href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> FCapacity;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+The <code>capacity</code> of the ring buffer (in number of elements), as passed to the constructor.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Count"></a><code>property <b>Count</b>: Integer <a  href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> FCount;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+The number of elements currently in the buffer (<a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Available">available</a> for reading).</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Available"></a><code>property <b>Available</b>: Integer <a  href="Grijjy.Collections.TgoRingBuffer.html#Read">read</a> GetAvailable;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+The number of elements <code>available</code> for writing (= <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Capacity">Capacity</a> - <a class="normal" href="Grijjy.Collections.TgoRingBuffer.html#Count">Count</a>).</p>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:53</em>
+</span>
+</td></tr></table></body></html>

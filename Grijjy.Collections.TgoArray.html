@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Collections: Class TgoArray</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<a name="TgoArray"></a><h1 class="cio">Class TgoArray</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td>Properties</td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="Grijjy.Collections.html">Grijjy.Collections</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TgoArray&lt;T&gt; = class(TObject)</code></p>
+<h2 class="description">Description</h2>
+<p>
+Various utilities that operate on generic dynamic arrays. Mostly used internally by various generic collections.</p>
+<a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TObject</li>
+<li class="thisitem">TgoArray</li></ul><h2 class="overview">Overview</h2>
+<a name="PasDoc-Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a  href="Grijjy.Collections.TgoArray.html#Move">Move</a></b>(var AArray: TArray&lt;T&gt;; const AFromIndex, AToIndex, ACount: Integer); overload; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a  href="Grijjy.Collections.TgoArray.html#Move">Move</a></b>(const AFromArray: TArray&lt;T&gt;; const AFromIndex: Integer; var AToArray: TArray&lt;T&gt;; const AToIndex, ACount: Integer); overload; static;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a  href="Grijjy.Collections.TgoArray.html#Finalize">Finalize</a></b>(var AArray: TArray&lt;T&gt;; const AIndex: Integer); overload; static; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a  href="Grijjy.Collections.TgoArray.html#Finalize">Finalize</a></b>(var AArray: TArray&lt;T&gt;; const AIndex, ACount: Integer); overload; static; inline;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Move"></a><code>class procedure <b>Move</b>(var AArray: TArray&lt;T&gt;; const AFromIndex, AToIndex, ACount: Integer); overload; static;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Moves items within an array.
+
+<p>   
+
+<p>You should use this utility instead of System.Move since it correctly handles elements with [weak] references.
+
+<p><b>Note</b>: no range checking is performed on the arguments.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AArray</dt>
+<dd>the array</dd>
+<dt>AFromIndex</dt>
+<dd>the source index into AArray</dd>
+<dt>AToIndex</dt>
+<dd>the destination index into AArray</dd>
+<dt>ACount</dt>
+<dd>the number of elements to <a class="normal" href="Grijjy.Collections.TgoArray.html#Move">move</a>.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Move"></a><code>class procedure <b>Move</b>(const AFromArray: TArray&lt;T&gt;; const AFromIndex: Integer; var AToArray: TArray&lt;T&gt;; const AToIndex, ACount: Integer); overload; static;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Moves items from one array to another.
+
+<p>    
+
+<p>You should use this utility instead of System.Move since it correctly handles elements with [weak] references.
+
+<p><b>Note</b>: no range checking is performed on the arguments.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AFromArray</dt>
+<dd>the source array</dd>
+<dt>AFromIndex</dt>
+<dd>the source index into AFromArray</dd>
+<dt>AToArray</dt>
+<dd>the destination array</dd>
+<dt>AToIndex</dt>
+<dd>the destination index into AToArray</dd>
+<dt>ACount</dt>
+<dd>the number of elements to <code>move</code>.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Finalize"></a><code>class procedure <b>Finalize</b>(var AArray: TArray&lt;T&gt;; const AIndex: Integer); overload; static; inline;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Finalizes an element in an array.
+
+<p> 
+
+<p>You should call this utility to mark an element in an array as &quot;unused&quot;. This prevents memory problems when the array contains elements that are reference counted or contain [weak] references. In those cases, the element will be set to all zero's. If the array contains &quot;regular&quot; elements, then this method does nothing.
+
+<p><b>Note</b>: no range checking is performed on the arguments.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AArray</dt>
+<dd>the array containing the element to <a class="normal" href="Grijjy.Collections.TgoArray.html#Finalize">finalize</a>.</dd>
+<dt>AIndex</dt>
+<dd>the index of the element to <a class="normal" href="Grijjy.Collections.TgoArray.html#Finalize">finalize</a>.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Finalize"></a><code>class procedure <b>Finalize</b>(var AArray: TArray&lt;T&gt;; const AIndex, ACount: Integer); overload; static; inline;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Finalizes a range ofelements in an array.
+
+<p>  
+
+<p>You should call this utility to mark an element in an array as &quot;unused&quot;. This prevents memory problems when the array contains elements that are reference counted or contain [weak] references. In those cases, the element will be set to all zero's. If the array contains &quot;regular&quot; elements, then this method does nothing.
+
+<p><b>Note</b>: no range checking is performed on the arguments.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AArray</dt>
+<dd>the array containing the elements to <code>finalize</code>.</dd>
+<dt>AIndex</dt>
+<dd>the index of the first element to <code>finalize</code>.</dd>
+<dt>ACount</dt>
+<dd>the number of elements to <code>finalize</code>.</dd>
+</dl>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:53</em>
+</span>
+</td></tr></table></body></html>

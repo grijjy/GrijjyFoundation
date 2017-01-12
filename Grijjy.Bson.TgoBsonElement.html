@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Bson: record TgoBsonElement</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<a name="TgoBsonElement"></a><h1 class="cio">record TgoBsonElement</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Hierarchy</td><td>Fields</td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="Grijjy.Bson.html">Grijjy.Bson</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TgoBsonElement = record</code></p>
+<h2 class="description">Description</h2>
+<p>
+An element in a <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a></p>
+<h2 class="overview">Overview</h2>
+<a name="PasDoc-Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonElement.html#Create">Create</a></b>(const AName: String; const AValue: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonElement.html#Equal">Equal</a></b>(const A, B: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonElement.html#NotEqual">NotEqual</a></b>(const A, B: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonElement.html#Clone">Clone</a></b>: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonElement.html#DeepClone">DeepClone</a></b>: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonElement.html#Name">Name</a></b>: String read FName;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonElement.html#Value">Value</a></b>: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a> read FImpl;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Create"></a><code>class function <b>Create</b>(const AName: String; const AValue: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates a document element.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AName</dt>
+<dd>the <a class="normal" href="Grijjy.Bson.TgoBsonElement.html#Name">name</a> of the element.</dd>
+<dt>AValue</dt>
+<dd>the <a class="normal" href="Grijjy.Bson.TgoBsonElement.html#Value">value</a> of the element.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentNilException</code></dt>
+<dd>if AValue has not been assigned (if IsNil returns True).</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Equal"></a><code>class operator <b>Equal</b>(const A, B: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tests 2 document elements for equality. Elements are <code>equal</code> if both their names (case-sensitive) and values are <code>equal</code>.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="NotEqual"></a><code>class operator <b>NotEqual</b>(const A, B: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tests 2 document elements for inequality.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Clone"></a><code>function <b>Clone</b>: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates a shallow <code>clone</code> of the element. The returned element will contain a reference to the existing <a class="normal" href="Grijjy.Bson.TgoBsonElement.html#Value">value</a>.
+
+<p></p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The <code>clone</code></p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="DeepClone"></a><code>function <b>DeepClone</b>: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates a deep <a class="normal" href="Grijjy.Bson.TgoBsonElement.html#Clone">clone</a> of the element. The returned element will contain a deep <a class="normal" href="Grijjy.Bson.TgoBsonElement.html#Clone">clone</a> of the existing <a class="normal" href="Grijjy.Bson.TgoBsonElement.html#Value">value</a>.
+
+<p></p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The deep <a class="normal" href="Grijjy.Bson.TgoBsonElement.html#Clone">clone</a></p></td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Name"></a><code>property <b>Name</b>: String read FName;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+<code>Name</code> of the element</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Value"></a><code>property <b>Value</b>: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a> read FImpl;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+<code>Value</code> of the element</p>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:52</em>
+</span>
+</td></tr></table></body></html>

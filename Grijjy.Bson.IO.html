@@ -1,0 +1,515 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Bson.IO</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<h1 class="unit">Unit Grijjy.Bson.IO</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Uses</td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></td><td>Functions and Procedures</td><td><a class="section" href="#PasDoc-Types">Types</a></td><td><a class="section" href="#PasDoc-Constants">Constants</a></td><td>Variables</td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="description">Description</h2>
+<p>
+JSON and BSON reading and writing.
+
+<p><b>Quick Start</b>
+
+<p>Consider this JSON document:
+
+<p></p>
+
+<pre class="preformatted">
+    { &quot;x&quot; : 1,
+      &quot;y&quot; : 2,
+      &quot;z&quot; : [ 3.14, true] }
+  </pre>
+
+<p>
+
+<p>You can serialize it manually to BSON like this:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">var</span>
+    Writer: IgoBsonWriter;
+    Bson: TBytes;
+  <span class="pascal_keyword">begin</span>
+    Writer := TgoBsonWriter.Create;
+    Writer.WriteStartDocument;
+
+    Writer.WriteName(<span class="pascal_string">'x'</span>);
+    Writer.WriteInt32(<span class="pascal_numeric">1</span>);
+
+    Writer.WriteInt32(<span class="pascal_string">'y'</span>, <span class="pascal_numeric">2</span>); <span class="pascal_comment">// Writes name and value in single call</span>
+
+    Writer.WriteName(<span class="pascal_string">'z'</span>);
+    Writer.WriteStartArray;
+    Writer.WriteDouble(<span class="pascal_float">3.14</span>);
+    Writer.WriteBoolean(True);
+    Writer.WriteEndArray;
+
+    Writer.WriteEndDocument;
+
+    Bson := Writer.ToBson;
+  <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>Likewise, you can serialize to JSON by using the <a class="normal" href="Grijjy.Bson.IO.IgoJsonWriter.html">IgoJsonWriter</a> interface instead.
+
+<p>You can also manually deserialize by using the <a class="normal" href="Grijjy.Bson.IO.IgoBsonReader.html">IgoBsonReader</a> and <a class="normal" href="Grijjy.Bson.IO.IgoJsonReader.html">IgoJsonReader</a> interfaces. However, these are a bit more complicated to use since you don't know the deserialized BSON types in advance.
+
+<p>You can look at the unit tests in the unit Tests.Grijjy.Bson.IO for examples of manual serialization and deserialization.</p>
+<a name="PasDoc-Uses"></a><h2 class="overview">Overview</h2>
+<a name="PasDoc-Classes"></a><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Bson.IO.EgoJsonParserError.html"><code>EgoJsonParserError</code></a></td>
+<td class="itemdesc">Type of exception that is raised when parsing an invalid JSON source.</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="Grijjy.Bson.IO.IgoBsonBaseWriter.html"><code>IgoBsonBaseWriter</code></a></td>
+<td class="itemdesc">Base interface for <a class="normal" href="Grijjy.Bson.IO.IgoBsonWriter.html">IgoBsonWriter</a>, <a class="normal" href="Grijjy.Bson.IO.IgoJsonWriter.html">IgoJsonWriter</a> and <a class="normal" href="Grijjy.Bson.IO.IgoBsonDocumentWriter.html">IgoBsonDocumentWriter</a></td>
+</tr>
+<tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="Grijjy.Bson.IO.IgoBsonWriter.html"><code>IgoBsonWriter</code></a></td>
+<td class="itemdesc">Interface for writing BSON values to binary BSON format.</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="Grijjy.Bson.IO.IgoJsonWriter.html"><code>IgoJsonWriter</code></a></td>
+<td class="itemdesc">Interface for writing BSON values to JSON format.</td>
+</tr>
+<tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="Grijjy.Bson.IO.IgoBsonDocumentWriter.html"><code>IgoBsonDocumentWriter</code></a></td>
+<td class="itemdesc">Interface for writing BSON values to a BSON <a class="normal" href="Grijjy.Bson.IO.IgoBsonDocumentWriter.html#Document">document</a>.</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="Grijjy.Bson.IO.IgoBsonReaderBookmark.html"><code>IgoBsonReaderBookmark</code></a></td>
+<td class="itemdesc">A bookmark that can be used to return a reader to the current position and <a class="normal" href="Grijjy.Bson.IO.IgoBsonReaderBookmark.html#State">state</a>.</td>
+</tr>
+<tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="Grijjy.Bson.IO.IgoBsonBaseReader.html"><code>IgoBsonBaseReader</code></a></td>
+<td class="itemdesc">Base interface for <a class="normal" href="Grijjy.Bson.IO.IgoBsonReader.html">IgoBsonReader</a>, <a class="normal" href="Grijjy.Bson.IO.IgoJsonReader.html">IgoJsonReader</a> and <a class="normal" href="Grijjy.Bson.IO.IgoBsonDocumentReader.html">IgoBsonDocumentReader</a></td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="Grijjy.Bson.IO.IgoBsonReader.html"><code>IgoBsonReader</code></a></td>
+<td class="itemdesc">Interface for reading BSON values from binary BSON format.</td>
+</tr>
+<tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="Grijjy.Bson.IO.IgoJsonReader.html"><code>IgoJsonReader</code></a></td>
+<td class="itemdesc">Interface for reading BSON values from JSON format.</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="Grijjy.Bson.IO.IgoBsonDocumentReader.html"><code>IgoBsonDocumentReader</code></a></td>
+<td class="itemdesc">Interface for reading BSON values from a BSON Document.</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Bson.IO.TgoBsonBaseWriter.html"><code>TgoBsonBaseWriter</code></a></td>
+<td class="itemdesc">Abstract base class of <a class="normal" href="Grijjy.Bson.IO.TgoBsonWriter.html">TgoBsonWriter</a> and <a class="normal" href="Grijjy.Bson.IO.TgoJsonWriter.html">TgoJsonWriter</a>.</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Bson.IO.TgoBsonWriter.html"><code>TgoBsonWriter</code></a></td>
+<td class="itemdesc">Stock implementation of the <a class="normal" href="Grijjy.Bson.IO.IgoBsonWriter.html">IgoBsonWriter</a> interface.</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Bson.IO.TgoJsonWriter.html"><code>TgoJsonWriter</code></a></td>
+<td class="itemdesc">Stock implementation of the <a class="normal" href="Grijjy.Bson.IO.IgoJsonWriter.html">IgoJsonWriter</a> interface.</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Bson.IO.TgoBsonDocumentWriter.html"><code>TgoBsonDocumentWriter</code></a></td>
+<td class="itemdesc">Stock implementation of the <a class="normal" href="Grijjy.Bson.IO.IgoBsonDocumentWriter.html">IgoBsonDocumentWriter</a> interface.</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Bson.IO.TgoBsonBaseReader.html"><code>TgoBsonBaseReader</code></a></td>
+<td class="itemdesc">Abstract base class of <a class="normal" href="Grijjy.Bson.IO.TgoBsonReader.html">TgoBsonReader</a> and <a class="normal" href="Grijjy.Bson.IO.TgoJsonReader.html">TgoJsonReader</a>.</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Bson.IO.TgoBsonReader.html"><code>TgoBsonReader</code></a></td>
+<td class="itemdesc">Stock implementation of the <a class="normal" href="Grijjy.Bson.IO.IgoBsonReader.html">IgoBsonReader</a> interface.</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Bson.IO.TgoJsonReader.html"><code>TgoJsonReader</code></a></td>
+<td class="itemdesc">Stock implementation of the <a class="normal" href="Grijjy.Bson.IO.IgoJsonReader.html">IgoJsonReader</a> interface.</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Bson.IO.TgoBsonDocumentReader.html"><code>TgoBsonDocumentReader</code></a></td>
+<td class="itemdesc">Stock implementation of the <a class="normal" href="Grijjy.Bson.IO.IgoBsonDocumentReader.html">IgoBsonDocumentReader</a> interface.</td>
+</tr>
+</table>
+<a name="PasDoc-Types"></a><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#TgoBsonWriterState">TgoBsonWriterState</a></b> = (...);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#TgoBsonReaderState">TgoBsonReaderState</a></b> = (...);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#TgoBsonContextType">TgoBsonContextType</a></b> = (...);</code></td>
+</tr>
+</table>
+<a name="PasDoc-Constants"></a><h3 class="summary">Constants</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_NOT_SUPPORTED">RS_BSON_NOT_SUPPORTED</a></b> = 'Unsupported feature';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_INVALID_WRITER_STATE">RS_BSON_INVALID_WRITER_STATE</a></b> = 'Cannot write Bson/Json element in current state';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_INVALID_READER_STATE">RS_BSON_INVALID_READER_STATE</a></b> = 'Cannot read Bson/Json element in current state';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_INVALID_DATA">RS_BSON_INVALID_DATA</a></b> = 'Bson/Json data is invalid';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_INT_EXPECTED">RS_BSON_INT_EXPECTED</a></b> = 'Integer value expected';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_UNEXPECTED_TOKEN">RS_BSON_UNEXPECTED_TOKEN</a></b> = 'Unexpected token';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_TOKEN_EXPECTED">RS_BSON_TOKEN_EXPECTED</a></b> = 'Expected token with value &quot;%s&quot; but got &quot;%s&quot;';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_STRING_EXPECTED">RS_BSON_STRING_EXPECTED</a></b> = 'String value expected';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_STRING_WITH_VALUE_EXPECTED">RS_BSON_STRING_WITH_VALUE_EXPECTED</a></b> = 'Expected string with value &quot;%s&quot; but got &quot;%s&quot;';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_INT_OR_STRING_EXPECTED">RS_BSON_INT_OR_STRING_EXPECTED</a></b> = 'Integer or string value expected';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_COLON_EXPECTED">RS_BSON_COLON_EXPECTED</a></b> = 'Colon (&quot;:&quot;) expected';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_COMMA_EXPECTED">RS_BSON_COMMA_EXPECTED</a></b> = 'Comma (&quot;,&quot;) expected';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_QUOTE_EXPECTED">RS_BSON_QUOTE_EXPECTED</a></b> = 'Double quotes (&quot;) expected';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_CLOSE_BRACKET_EXPECTED">RS_BSON_CLOSE_BRACKET_EXPECTED</a></b> = 'Close bracket (&quot;]&quot;) expected';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_CLOSE_BRACE_EXPECTED">RS_BSON_CLOSE_BRACE_EXPECTED</a></b> = 'Curly close brace (&quot;}&quot;) expected';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_COMMA_OR_CLOSE_BRACE_EXPECTED">RS_BSON_COMMA_OR_CLOSE_BRACE_EXPECTED</a></b> = 'Comma (&quot;,&quot;) or curly close brace (&quot;}&quot;) expected';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_STRING_OR_CLOSE_BRACE_EXPECTED">RS_BSON_STRING_OR_CLOSE_BRACE_EXPECTED</a></b> = 'String or curly close brace (&quot;}&quot;) expected';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_INVALID_NUMBER">RS_BSON_INVALID_NUMBER</a></b> = 'Invalid number';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_INVALID_STRING">RS_BSON_INVALID_STRING</a></b> = 'Invalid character string';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_INVALID_DATE">RS_BSON_INVALID_DATE</a></b> = 'Invalid date value';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_INVALID_GUID">RS_BSON_INVALID_GUID</a></b> = 'Invalid GUID value';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_INVALID_NEW_STATEMENT">RS_BSON_INVALID_NEW_STATEMENT</a></b> = 'Invalid &quot;new&quot; statement';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_INVALID_EXTENDED_JSON">RS_BSON_INVALID_EXTENDED_JSON</a></b> = 'Invalid extended JSON';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_INVALID_BINARY_TYPE">RS_BSON_INVALID_BINARY_TYPE</a></b> = 'Invalid binary type';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_INVALID_REGEX">RS_BSON_INVALID_REGEX</a></b> = 'Invalid regular expression';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_INVALID_UNICODE_CODEPOINT">RS_BSON_INVALID_UNICODE_CODEPOINT</a></b> = 'Invalid Unicode codepoint';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.IO.html#RS_BSON_JS_DATETIME_STRING_NOT_SUPPORTED">RS_BSON_JS_DATETIME_STRING_NOT_SUPPORTED</a></b> = 'JavaScript date/time strings are not supported';</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TgoBsonWriterState"></a><code><b>TgoBsonWriterState</b> = (...);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+State of a <a class="normal" href="Grijjy.Bson.IO.IgoBsonBaseWriter.html">IgoBsonBaseWriter</a></p>
+<h6 class="description_section">Values</h6>
+<ul>
+<li>
+Initial: Initial state</li>
+<li>
+Name: The writer is positioned to write a name</li>
+<li>
+Value: The writer is positioned to write a value</li>
+<li>
+ScopeDocument: The writer is positioned to write a scope document (call WriteStartDocument to start writing the scope document).</li>
+<li>
+Done: The writer is done</li>
+<li>
+Closed: The writer is closed</li>
+</ul>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TgoBsonReaderState"></a><code><b>TgoBsonReaderState</b> = (...);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+State of a <a class="normal" href="Grijjy.Bson.IO.IgoBsonBaseReader.html">IgoBsonBaseReader</a></p>
+<h6 class="description_section">Values</h6>
+<ul>
+<li>
+Initial: Initial state</li>
+<li>
+Type: The reader is positioned at the type of an element or value</li>
+<li>
+Name: The reader is positioned at the name of an element</li>
+<li>
+Value: The reader is positioned at the value</li>
+<li>
+ScopeDocument: The reader is positioned at a scope document</li>
+<li>
+EndOfDocument: The reader is positioned at the end of a document</li>
+<li>
+EndOfArray: The reader is positioned at the end of an array</li>
+<li>
+Done: The reader has finished reading a document</li>
+<li>
+Closed: The reader is closed</li>
+</ul>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TgoBsonContextType"></a><code><b>TgoBsonContextType</b> = (...);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Used internally by BSON/JSON readers and writers to represent the current context.</p>
+<h6 class="description_section">Values</h6>
+<ul>
+<li>
+TopLevel: The top level of a BSON document</li>
+<li>
+Document: A (possible embedded) BSON document</li>
+<li>
+Array: A BSON array</li>
+<li>
+JavaScriptWithScope: A JavaScript w/Scope BSON value</li>
+<li>
+ScopeDocument: The scope document of a JavaScript w/Scope BSON value</li>
+</ul>
+</td></tr>
+</table>
+<h3 class="detail">Constants</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_NOT_SUPPORTED"></a><code><b>RS_BSON_NOT_SUPPORTED</b> = 'Unsupported feature';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_INVALID_WRITER_STATE"></a><code><b>RS_BSON_INVALID_WRITER_STATE</b> = 'Cannot write Bson/Json element in current state';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_INVALID_READER_STATE"></a><code><b>RS_BSON_INVALID_READER_STATE</b> = 'Cannot read Bson/Json element in current state';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_INVALID_DATA"></a><code><b>RS_BSON_INVALID_DATA</b> = 'Bson/Json data is invalid';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_INT_EXPECTED"></a><code><b>RS_BSON_INT_EXPECTED</b> = 'Integer value expected';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_UNEXPECTED_TOKEN"></a><code><b>RS_BSON_UNEXPECTED_TOKEN</b> = 'Unexpected token';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_TOKEN_EXPECTED"></a><code><b>RS_BSON_TOKEN_EXPECTED</b> = 'Expected token with value &quot;%s&quot; but got &quot;%s&quot;';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_STRING_EXPECTED"></a><code><b>RS_BSON_STRING_EXPECTED</b> = 'String value expected';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_STRING_WITH_VALUE_EXPECTED"></a><code><b>RS_BSON_STRING_WITH_VALUE_EXPECTED</b> = 'Expected string with value &quot;%s&quot; but got &quot;%s&quot;';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_INT_OR_STRING_EXPECTED"></a><code><b>RS_BSON_INT_OR_STRING_EXPECTED</b> = 'Integer or string value expected';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_COLON_EXPECTED"></a><code><b>RS_BSON_COLON_EXPECTED</b> = 'Colon (&quot;:&quot;) expected';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_COMMA_EXPECTED"></a><code><b>RS_BSON_COMMA_EXPECTED</b> = 'Comma (&quot;,&quot;) expected';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_QUOTE_EXPECTED"></a><code><b>RS_BSON_QUOTE_EXPECTED</b> = 'Double quotes (&quot;) expected';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_CLOSE_BRACKET_EXPECTED"></a><code><b>RS_BSON_CLOSE_BRACKET_EXPECTED</b> = 'Close bracket (&quot;]&quot;) expected';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_CLOSE_BRACE_EXPECTED"></a><code><b>RS_BSON_CLOSE_BRACE_EXPECTED</b> = 'Curly close brace (&quot;}&quot;) expected';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_COMMA_OR_CLOSE_BRACE_EXPECTED"></a><code><b>RS_BSON_COMMA_OR_CLOSE_BRACE_EXPECTED</b> = 'Comma (&quot;,&quot;) or curly close brace (&quot;}&quot;) expected';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_STRING_OR_CLOSE_BRACE_EXPECTED"></a><code><b>RS_BSON_STRING_OR_CLOSE_BRACE_EXPECTED</b> = 'String or curly close brace (&quot;}&quot;) expected';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_INVALID_NUMBER"></a><code><b>RS_BSON_INVALID_NUMBER</b> = 'Invalid number';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_INVALID_STRING"></a><code><b>RS_BSON_INVALID_STRING</b> = 'Invalid character string';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_INVALID_DATE"></a><code><b>RS_BSON_INVALID_DATE</b> = 'Invalid date value';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_INVALID_GUID"></a><code><b>RS_BSON_INVALID_GUID</b> = 'Invalid GUID value';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_INVALID_NEW_STATEMENT"></a><code><b>RS_BSON_INVALID_NEW_STATEMENT</b> = 'Invalid &quot;new&quot; statement';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_INVALID_EXTENDED_JSON"></a><code><b>RS_BSON_INVALID_EXTENDED_JSON</b> = 'Invalid extended JSON';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_INVALID_BINARY_TYPE"></a><code><b>RS_BSON_INVALID_BINARY_TYPE</b> = 'Invalid binary type';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_INVALID_REGEX"></a><code><b>RS_BSON_INVALID_REGEX</b> = 'Invalid regular expression';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_INVALID_UNICODE_CODEPOINT"></a><code><b>RS_BSON_INVALID_UNICODE_CODEPOINT</b> = 'Invalid Unicode codepoint';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RS_BSON_JS_DATETIME_STRING_NOT_SUPPORTED"></a><code><b>RS_BSON_JS_DATETIME_STRING_NOT_SUPPORTED</b> = 'JavaScript date/time strings are not supported';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:53</em>
+</span>
+</td></tr></table></body></html>

@@ -1,0 +1,765 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Bson.IO: Interface IgoBsonBaseReader</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<a name="IgoBsonBaseReader"></a><h1 class="cio">Interface IgoBsonBaseReader</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="Grijjy.Bson.IO.html">Grijjy.Bson.IO</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type IgoBsonBaseReader = interface(IInterface)</code></p>
+<h2 class="description">Description</h2>
+<p>
+Base interface for <a class="normal" href="Grijjy.Bson.IO.IgoBsonReader.html">IgoBsonReader</a>, <a class="normal" href="Grijjy.Bson.IO.IgoJsonReader.html">IgoJsonReader</a> and <a class="normal" href="Grijjy.Bson.IO.IgoBsonDocumentReader.html">IgoBsonDocumentReader</a></p>
+<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt>GUID['{A0592C3C-5E24-4424-9662-EA7F33BB1B9A}']</dt>
+  <dd></dd>
+</dl>
+<a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">IInterface</li>
+<li class="thisitem">IgoBsonBaseReader</li></ul><h2 class="overview">Overview</h2>
+<a name="PasDoc-Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#GetState">GetState</a></b>: <a  href="Grijjy.Bson.IO.html#TgoBsonReaderState">TgoBsonReaderState</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#EndOfStream">EndOfStream</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#GetCurrentBsonType">GetCurrentBsonType</a></b>: <a  href="Grijjy.Bson.html#TgoBsonType">TgoBsonType</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#GetBookmark">GetBookmark</a></b>: <a  href="Grijjy.Bson.IO.IgoBsonReaderBookmark.html">IgoBsonReaderBookmark</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReturnToBookmark">ReturnToBookmark</a></b>(const ABookmark: <a  href="Grijjy.Bson.IO.IgoBsonReaderBookmark.html">IgoBsonReaderBookmark</a>);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadDocument">ReadDocument</a></b>: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadArray">ReadArray</a></b>: <a  href="Grijjy.Bson.TgoBsonArray.html">TgoBsonArray</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadValue">ReadValue</a></b>: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadBinaryData">ReadBinaryData</a></b>: <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadRegularExpression">ReadRegularExpression</a></b>: <a  href="Grijjy.Bson.TgoBsonRegularExpression.html">TgoBsonRegularExpression</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadBsonType">ReadBsonType</a></b>: <a  href="Grijjy.Bson.html#TgoBsonType">TgoBsonType</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadName">ReadName</a></b>: String;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#SkipName">SkipName</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#SkipValue">SkipValue</a></b>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadBoolean">ReadBoolean</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadInt32">ReadInt32</a></b>: Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadInt64">ReadInt64</a></b>: Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadDouble">ReadDouble</a></b>: Double;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadString">ReadString</a></b>: String;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadDateTime">ReadDateTime</a></b>: Int64;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadTimestamp">ReadTimestamp</a></b>: Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadObjectId">ReadObjectId</a></b>: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadBytes">ReadBytes</a></b>: TBytes;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadJavaScript">ReadJavaScript</a></b>: String;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadJavaScriptWithScope">ReadJavaScriptWithScope</a></b>: String;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadNull">ReadNull</a></b>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadUndefined">ReadUndefined</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadMaxKey">ReadMaxKey</a></b>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadMinKey">ReadMinKey</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadSymbol">ReadSymbol</a></b>: String;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadStartArray">ReadStartArray</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadEndArray">ReadEndArray</a></b>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadStartDocument">ReadStartDocument</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadEndDocument">ReadEndDocument</a></b>;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#State">State</a></b>: <a  href="Grijjy.Bson.IO.html#TgoBsonReaderState">TgoBsonReaderState</a> read <a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#GetState">GetState</a>;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetState"></a><code>function <b>GetState</b>: <a  href="Grijjy.Bson.IO.html#TgoBsonReaderState">TgoBsonReaderState</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="EndOfStream"></a><code>function <b>EndOfStream</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Whether the reader is at the end of the stream.
+
+<p></p>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if at end of stream</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetCurrentBsonType"></a><code>function <b>GetCurrentBsonType</b>: <a  href="Grijjy.Bson.html#TgoBsonType">TgoBsonType</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Gets the current BSON type in the stream.
+
+<p> <b>Note</b>: calls <a class="normal" href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadBsonType">ReadBsonType</a> if necessary.</p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The current BSON type.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetBookmark"></a><code>function <b>GetBookmark</b>: <a  href="Grijjy.Bson.IO.IgoBsonReaderBookmark.html">IgoBsonReaderBookmark</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Gets a bookmark to the reader's current position and <a class="normal" href="Grijjy.Bson.IO.IgoBsonBaseReader.html#State">state</a>.
+
+<p> You can use the returned bookmark to restore the <a class="normal" href="Grijjy.Bson.IO.IgoBsonBaseReader.html#State">state</a> using <a class="normal" href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReturnToBookmark">ReturnToBookmark</a>.</p>
+<h6 class="description_section">Returns</h6>
+<p class="return">A bookmark.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReturnToBookmark"></a><code>procedure <b>ReturnToBookmark</b>(const ABookmark: <a  href="Grijjy.Bson.IO.IgoBsonReaderBookmark.html">IgoBsonReaderBookmark</a>);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Returns the reader to previously bookmarked position and <a class="normal" href="Grijjy.Bson.IO.IgoBsonBaseReader.html#State">state</a>.
+
+<p>AParameters: ABookmark: the bookmark to return to. This value has previously been acquired using <a class="normal" href="Grijjy.Bson.IO.IgoBsonBaseReader.html#GetBookmark">GetBookmark</a>.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadDocument"></a><code>function <b>ReadDocument</b>: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a BSON Document from the stream.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read BSON Document.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a BSON Document, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadArray"></a><code>function <b>ReadArray</b>: <a  href="Grijjy.Bson.TgoBsonArray.html">TgoBsonArray</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a BSON Array from the stream.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read BSON Array.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a BSON Array, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadValue"></a><code>function <b>ReadValue</b>: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a BSON value from the stream.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read BSON value.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a BSON value, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadBinaryData"></a><code>function <b>ReadBinaryData</b>: <a  href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a BSON Binary from the stream.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read BSON Binary.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a BSON Binary, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadRegularExpression"></a><code>function <b>ReadRegularExpression</b>: <a  href="Grijjy.Bson.TgoBsonRegularExpression.html">TgoBsonRegularExpression</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a BSON Regular Expression from the stream.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read BSON Regular Expression.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a BSON Regular Expression, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadBsonType"></a><code>function <b>ReadBsonType</b>: <a  href="Grijjy.Bson.html#TgoBsonType">TgoBsonType</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a BSON type from the stream.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read BSON type.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a BSON type, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadName"></a><code>function <b>ReadName</b>: String;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads the name of an element from the stream.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read element name.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain an element name, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SkipName"></a><code>procedure <b>SkipName</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Skips the name of an element.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain an element name, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SkipValue"></a><code>procedure <b>SkipValue</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Skips the value of an element.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain an element value, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadBoolean"></a><code>function <b>ReadBoolean</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a Boolean value from the stream.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read Boolean value.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a Boolean value, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadInt32"></a><code>function <b>ReadInt32</b>: Integer;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a 32-bit Integer value from the stream.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read Integer value.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a 32-bit Integer value, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadInt64"></a><code>function <b>ReadInt64</b>: Int64;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a 64-bit Integer value from the stream.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read Integer value.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a 64-bit Integer value, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadDouble"></a><code>function <b>ReadDouble</b>: Double;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a Double value from the stream.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read Double value.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a Double value, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadString"></a><code>function <b>ReadString</b>: String;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a String value from the stream.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read String value.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a String value, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadDateTime"></a><code>function <b>ReadDateTime</b>: Int64;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a DateTime value from the stream.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read DateTime value as the number of UTC milliseconds since the Unix epoch.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a DateTime value, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadTimestamp"></a><code>function <b>ReadTimestamp</b>: Int64;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a Timestamp value from the stream.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read Timestamp value.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a Timestamp value, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadObjectId"></a><code>function <b>ReadObjectId</b>: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads an ObjectId value from the stream.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read ObjectId value.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a ObjectId value, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadBytes"></a><code>function <b>ReadBytes</b>: TBytes;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a Binary value from the stream as a byte array.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read Binary value.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a BSON Binary, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadJavaScript"></a><code>function <b>ReadJavaScript</b>: String;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a JavaScript from the stream.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read JavaScript.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a JavaScript, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadJavaScriptWithScope"></a><code>function <b>ReadJavaScriptWithScope</b>: String;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a JavaScript with scope from the stream.
+
+<p>  <b>Note</b>: call <a class="normal" href="Grijjy.Bson.IO.IgoBsonBaseReader.html#ReadStartDocument">ReadStartDocument</a> next to read the scope.</p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read JavaScript.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a JavaScript with Scope, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadNull"></a><code>procedure <b>ReadNull</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a BSON Null value from the stream.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a Null value, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadUndefined"></a><code>procedure <b>ReadUndefined</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a BSON Undefined value from the stream.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a Undefined value, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadMaxKey"></a><code>procedure <b>ReadMaxKey</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a BSON MaxKey value from the stream.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a MaxKey value, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadMinKey"></a><code>procedure <b>ReadMinKey</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a BSON MinKey value from the stream.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a MinKey value, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadSymbol"></a><code>function <b>ReadSymbol</b>: String;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads a BSON Symbol from the stream.
+
+<p> </p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The read Symbol name.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain a Symbol, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadStartArray"></a><code>procedure <b>ReadStartArray</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads the start of a BSON Array from the stream.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain the start of a BSON Array, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadEndArray"></a><code>procedure <b>ReadEndArray</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads the end of a BSON Array from the stream.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain the end of a BSON Array, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadStartDocument"></a><code>procedure <b>ReadStartDocument</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads the start of a BSON Document from the stream.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain the start of a BSON Document, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadEndDocument"></a><code>procedure <b>ReadEndDocument</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Reads the end of a BSON Document from the stream.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>An</code></dt>
+<dd>exception if the current position in the stream does not contain the end of a BSON Document, or the stream is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="State"></a><code>property <b>State</b>: <a  href="Grijjy.Bson.IO.html#TgoBsonReaderState">TgoBsonReaderState</a> read <a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html#GetState">GetState</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+The current <code>state</code> of the reader</p>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:53</em>
+</span>
+</td></tr></table></body></html>

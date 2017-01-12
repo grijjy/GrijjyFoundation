@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Collections: Class TgoSet</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<a name="TgoSet"></a><h1 class="cio">Class TgoSet</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td>Properties</td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="Grijjy.Collections.html">Grijjy.Collections</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TgoSet&lt;T&gt; = class(<a class="normal" href="Grijjy.Collections.TgoReadOnlySet.html">TgoReadOnlySet&lt;T&gt;</a>)</code></p>
+<h2 class="description">Description</h2>
+<p>
+A generic unordered set of values. Is similar to TList&lt;T&gt; in that it <a class="normal" href="Grijjy.Collections.TgoReadOnlySet.html#Contains">contains</a> a list of items, but the items are not in any specific order. It uses a hash table to quickly lookup items in the set.
+
+<p>This class is also similar to TDictionary&lt;TKey, TValue&gt;, but with only keys and no values.
+
+<p>This class is typically used when you need to quickly find items in a collection, but don't need any specific ordering.
+
+<p>See also <a class="normal" href="Grijjy.Collections.TgoObjectSet.html">TgoObjectSet</a>&lt;T&gt; for a set that owns its items</p>
+<a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TEnumerable</li>
+<li class="ancestor"><a class="normal" href="Grijjy.Collections.TgoReadOnlySet.html">TgoReadOnlySet</a></li>
+<li class="thisitem">TgoSet</li></ul><h2 class="overview">Overview</h2>
+<a name="PasDoc-Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Collections.TgoSet.html#Add">Add</a></b>(const AItem: T);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Collections.TgoSet.html#AddOrSet">AddOrSet</a></b>(const AItem: T);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Collections.TgoSet.html#Remove">Remove</a></b>(const AItem: T);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Collections.TgoSet.html#Clear">Clear</a></b>; virtual;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Add"></a><code>procedure <b>Add</b>(const AItem: T);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Adds an item to the set, raising an exception if the set already <a class="normal" href="Grijjy.Collections.TgoReadOnlySet.html#Contains">contains</a> the item.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AItem</dt>
+<dd>the item to <code>add</code>.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="AddOrSet"></a><code>procedure <b>AddOrSet</b>(const AItem: T);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Adds an item to the set if it doesn't exist yet. If the set already <a class="normal" href="Grijjy.Collections.TgoReadOnlySet.html#Contains">contains</a> the item, then nothing happens.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AItem</dt>
+<dd>the item to <a class="normal" href="Grijjy.Collections.TgoSet.html#Add">add</a>.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Remove"></a><code>procedure <b>Remove</b>(const AItem: T);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Removes an item from the set. Does nothing if the set does not contain the item.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AItem</dt>
+<dd>the item to <code>remove</code>.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Clear"></a><code>procedure <b>Clear</b>; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Clears the set.</p>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:53</em>
+</span>
+</td></tr></table></body></html>

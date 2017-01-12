@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.DateUtils</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<h1 class="unit">Unit Grijjy.DateUtils</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Uses</td><td>Classes, Interfaces, Objects and Records</td><td><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></td><td>Types</td><td><a class="section" href="#PasDoc-Constants">Constants</a></td><td>Variables</td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="description">Description</h2>
+<p>
+System level date/time utilities</p>
+<a name="PasDoc-Uses"></a><h2 class="overview">Overview</h2>
+<a name="PasDoc-FuncsProcs"></a><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.DateUtils.html#goDateTimeToMillisecondsSinceEpoch">goDateTimeToMillisecondsSinceEpoch</a></b>(const AValue: TDateTime; const AInputIsUTC: Boolean): Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.DateUtils.html#goToDateTimeFromMillisecondsSinceEpoch">goToDateTimeFromMillisecondsSinceEpoch</a></b>(const AValue: Int64; const AReturnUTC: Boolean): TDateTime;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Constants"></a><h3 class="summary">Constants</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.DateUtils.html#MIN_MILLISECONDS_SINCE_EPOCH">MIN_MILLISECONDS_SINCE_EPOCH</a></b> = -62135596800000;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.DateUtils.html#MAX_MILLISECONDS_SINCE_EPOCH">MAX_MILLISECONDS_SINCE_EPOCH</a></b> = 253402300799999;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="goDateTimeToMillisecondsSinceEpoch"></a><code>function <b>goDateTimeToMillisecondsSinceEpoch</b>(const AValue: TDateTime; const AInputIsUTC: Boolean): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Converts a date/time value to a number of milliseconds since the Unix epoch.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the date/time value to convert.</dd>
+<dt>AInputIsUTC</dt>
+<dd>whether AValue is in UTC format.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The number of milliseconds since the Unix epoch.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="goToDateTimeFromMillisecondsSinceEpoch"></a><code>function <b>goToDateTimeFromMillisecondsSinceEpoch</b>(const AValue: Int64; const AReturnUTC: Boolean): TDateTime;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Converts a number of milliseconds since the Unix epoch to a date/time value.
+
+<p> 
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>number of milliseconds since the Unix epoch.</dd>
+<dt>AReturnUTC</dt>
+<dd>whether to return the corresponding date/time value in local time (False) or universal time (True).</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The date/time value.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentOutOfRangeException</code></dt>
+<dd>if AValue cannot be accurately converted to a date/time value</dd>
+</dl>
+</td></tr>
+</table>
+<h3 class="detail">Constants</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="MIN_MILLISECONDS_SINCE_EPOCH"></a><code><b>MIN_MILLISECONDS_SINCE_EPOCH</b> = -62135596800000;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+The minimum and maximum number of milliseconds since the Unix epoch that we can use to convert to and from a TDateTime value without loss in precision. Note that Delphi's TDateTime type can safely handle a larger range of milliseconds, but other languages may not.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="MAX_MILLISECONDS_SINCE_EPOCH"></a><code><b>MAX_MILLISECONDS_SINCE_EPOCH</b> = 253402300799999;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:53</em>
+</span>
+</td></tr></table></body></html>

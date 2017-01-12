@@ -1,0 +1,397 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Collections: Class TgoValueDictionary</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<a name="TgoValueDictionary"></a><h1 class="cio">Class TgoValueDictionary</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarchy</a></td><td><a class="section" href="#PasDoc-InternalTypes">Internal Types</a></td><td>Fields</td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="Grijjy.Collections.html">Grijjy.Collections</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TgoValueDictionary&lt;TKey;TValue:record&gt; = class(TObject)</code></p>
+<h2 class="description">Description</h2>
+<p>
+A light-weight dictionary where the <a class="normal" href="Grijjy.Collections.TgoValueDictionary.html#Values">values</a> are of value types (primitive types and records). Differs from TDictionary&lt;TKey, TValue&gt; in the following regards: </p>
+
+<ul class="compact_spacing">
+  <li><p>The <a class="normal" href="Grijjy.Collections.TgoValueDictionary.html#Values">values</a> in the dictionary cannot be reference types (objects, interfaces, strings or dynamic arrays).</p></li>
+  <li><p>It is more light-weight since it doesn't support noticications and has better optimized code.</p></li>
+  <li><p>When requesting a value (using <a class="normal" href="Grijjy.Collections.TgoValueDictionary.html#TryGetValue">TryGetValue</a> or <a class="normal" href="Grijjy.Collections.TgoValueDictionary.html#Items">Items</a>), it returns a <b>Pointer</b> to the type instead of the actual type. This can be both more efficient, and it allows you to directly modify the value in the dictionary.</p></li>
+</ul>
+
+<p> The pointer is of type <a class="normal" href="Grijjy.Collections.TgoPtr.html">TgoPtr</a>&lt;TValue&gt;.P. It may be easier to declare your own pointer type as in <code>PFoo = <a class="normal" href="Grijjy.Collections.TgoPtr.html">TgoPtr</a>&lt;TFoo&gt;.P</code>.
+
+<p>Note that you should not cache these pointers for long-term use as they become invalid when you modify the dictionary (<a class="normal" href="Grijjy.Collections.TgoValueDictionary.html#Add">add</a> or <a class="normal" href="Grijjy.Collections.TgoValueDictionary.html#Remove">remove</a> <a class="normal" href="Grijjy.Collections.TgoValueDictionary.html#Items">items</a>).</p>
+<a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TObject</li>
+<li class="thisitem">TgoValueDictionary</li></ul><h2 class="overview">Overview</h2>
+<a name="PasDoc-InternalTypes"></a><h3 class="summary">Internal Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code><b><a  href="Grijjy.Collections.TgoValueDictionary.html#PValue">PValue</a></b> = <a  href="Grijjy.Collections.TgoPtr.html">TgoPtr</a>&lt;TValue&gt;.P;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a  href="Grijjy.Collections.TgoValueDictionary.html#Create">Create</a></b>; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a  href="Grijjy.Collections.TgoValueDictionary.html#Create">Create</a></b>(const AComparer: IEqualityComparer&lt;TKey&gt;); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>destructor <b><a  href="Grijjy.Collections.TgoValueDictionary.html#Destroy">Destroy</a></b>; override;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Collections.TgoValueDictionary.html#Add">Add</a></b>(const AKey: TKey; const AValue: TValue);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Collections.TgoValueDictionary.html#AddOrSetValue">AddOrSetValue</a></b>(const AKey: TKey; const AValue: TValue);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoValueDictionary.html#Remove">Remove</a></b>(const AKey: TKey): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Collections.TgoValueDictionary.html#Clear">Clear</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoValueDictionary.html#TryGetValue">TryGetValue</a></b>(const AKey: TKey; out AValue: <a  href="Grijjy.Collections.TgoValueDictionary.html#PValue">PValue</a>): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoValueDictionary.html#ContainsKey">ContainsKey</a></b>(const AKey: TKey): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoValueDictionary.html#GetEnumerator">GetEnumerator</a></b>: TEnumerator;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Collections.TgoValueDictionary.html#ToArray">ToArray</a></b>: TArray&lt;TPair&lt;TKey, TValue&gt;&gt;;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Collections.TgoValueDictionary.html#Items">Items</a></b>[constAKey:TKey]: <a  href="Grijjy.Collections.TgoValueDictionary.html#PValue">PValue</a> read GetItem;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Collections.TgoValueDictionary.html#Keys">Keys</a></b>: TKeyCollection read GetKeys;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Collections.TgoValueDictionary.html#Values">Values</a></b>: TValueCollection read GetValues;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Collections.TgoValueDictionary.html#Count">Count</a></b>: Integer read FCount;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Internal Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="PValue"></a><code><b>PValue</b> = <a  href="Grijjy.Collections.TgoPtr.html">TgoPtr</a>&lt;TValue&gt;.P;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+The pointer type for referencing <a class="normal" href="Grijjy.Collections.TgoValueDictionary.html#Values">values</a> in this dictionary.</p>
+</td></tr>
+</table>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates a dictionary using a default comparer</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>(const AComparer: IEqualityComparer&lt;TKey&gt;); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates a dictionary using a custom comparer.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AComparer</dt>
+<dd>the comparer to use to check for item equality. Pass nil to use the default comparer.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Destroy"></a><code>destructor <b>Destroy</b>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Destructor</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Add"></a><code>procedure <b>Add</b>(const AKey: TKey; const AValue: TValue);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+<code>Add</code> a value to the dictionary for a specified key.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AKey</dt>
+<dd>the key</dd>
+<dt>AValue</dt>
+<dd>the value to <code>add</code> for the key</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EListError</code></dt>
+<dd>if the dictionary already contains the given Key. Use <a class="normal" href="Grijjy.Collections.TgoValueDictionary.html#AddOrSetValue">AddOrSetValue</a> to overwrite an existing key with a new value.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="AddOrSetValue"></a><code>procedure <b>AddOrSetValue</b>(const AKey: TKey; const AValue: TValue);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Adds or sets a value in the dictionary for a specified key.
+
+<p> 
+
+<p>If the dictionary already contains a value for the given key, then that value is replaced. Otherwise, the value is added to the dictionary.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AKey</dt>
+<dd>the key</dd>
+<dt>AValue</dt>
+<dd>the value to set or replace for the key</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Remove"></a><code>function <b>Remove</b>(const AKey: TKey): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Removes the value for a specified key from the dictionary.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AKey</dt>
+<dd>the key to <code>remove</code></dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if the key was removed, or False if the dictionary does not contain the given key.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Clear"></a><code>procedure <b>Clear</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Clears the dictionary</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="TryGetValue"></a><code>function <b>TryGetValue</b>(const AKey: TKey; out AValue: <a  href="Grijjy.Collections.TgoValueDictionary.html#PValue">PValue</a>): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Tries to get a value for the given key.
+
+<p> 
+
+<p> <b>Note</b>: You should not cache the pointer returned in AValue for long-term use as it is only valid as long as you don't modify the dictionary.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AKey</dt>
+<dd>the key to search for</dd>
+<dt>AValue</dt>
+<dd>is set to a pointer to the value associated with the given key, or nil if the dictionary does not contain the key.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if the dictionary contains the given key. In that case, AValue is set to a pointer to the value associated with the key. False if the dictionary does not contain the given key. In that case, AValue is set to nil.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ContainsKey"></a><code>function <b>ContainsKey</b>(const AKey: TKey): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Checks if the dictionary contains a given key.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AKey</dt>
+<dd>the key to check.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if the dictionary contains AKey, False if not.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetEnumerator"></a><code>function <b>GetEnumerator</b>: TEnumerator;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Allows for <code>for..in</code> enumeration of pairs in the dictionary. The value in each pair is a pointer to the actual value, so you would use the enumerator like this:
+
+<p></p>
+
+<pre class="longcode">
+      <span class="pascal_keyword">var</span>
+        Dictionary: TgrValueDictionary&lt;<span class="pascal_keyword">String</span>, TFoo&gt;;
+        Pair: TPair&lt;<span class="pascal_keyword">String</span>, TgrPtr&lt;TFoo&gt;<span class="pascal_float">.</span>P&gt;;
+      <span class="pascal_keyword">begin</span>
+        <span class="pascal_comment">// Initialize Dictionary</span>
+        <span class="pascal_keyword">for</span> Pair <span class="pascal_keyword">in</span> Dictionary <span class="pascal_keyword">do</span>.<span class="pascal_numeric"></span>..
+      <span class="pascal_keyword">end</span>;</pre>
+
+<p></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ToArray"></a><code>function <b>ToArray</b>: TArray&lt;TPair&lt;TKey, TValue&gt;&gt;;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Copies the pairs in the dictionary to a dynamic array</p>
+</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Items"></a><code>property <b>Items</b>[constAKey:TKey]: <a  href="Grijjy.Collections.TgoValueDictionary.html#PValue">PValue</a> read GetItem;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Returns the value for a given key, raising an exception if the dictionary does not contain the key.
+
+<p>
+
+<p>  <b>Note</b>: You should not cache the returned pointer for long-term use as it is only valid as long as you don't modify the dictionary.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AKey</dt>
+<dd>the key to check.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">A pointer to the value for the given key.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EListError</code></dt>
+<dd>if the dictionary doesn't contain AKey</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Keys"></a><code>property <b>Keys</b>: TKeyCollection read GetKeys;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+All <code>keys</code> in the dictionary. You can enumerate all <code>keys</code> like this:
+
+<p></p>
+
+<pre class="longcode">
+      <span class="pascal_keyword">var</span>
+        Dictionary: TgrValueDictionary&lt;<span class="pascal_keyword">String</span>, TFoo&gt;;
+        Key: <span class="pascal_keyword">String</span>;
+      <span class="pascal_keyword">begin</span>
+        <span class="pascal_comment">// Initialize Dictionary</span>
+        <span class="pascal_keyword">for</span> Key <span class="pascal_keyword">in</span> Dictionary.Keys <span class="pascal_keyword">do</span>.<span class="pascal_numeric"></span>..
+      <span class="pascal_keyword">end</span>;</pre>
+
+<p></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Values"></a><code>property <b>Values</b>: TValueCollection read GetValues;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+All <code>values</code> in the dictionary. You can enumerate <b>pointers</b> to all <code>values</code> like this:
+
+<p></p>
+
+<pre class="longcode">
+      <span class="pascal_keyword">var</span>
+        Dictionary: TgrValueDictionary&lt;<span class="pascal_keyword">String</span>, TFoo&gt;;
+        Value: TgrPtr&lt;TFoo&gt;<span class="pascal_float">.</span>P;
+      <span class="pascal_keyword">begin</span>
+        <span class="pascal_comment">// Initialize Dictionary</span>
+        <span class="pascal_keyword">for</span> Value <span class="pascal_keyword">in</span> Dictionary.Values <span class="pascal_keyword">do</span>.<span class="pascal_numeric"></span>..
+      <span class="pascal_keyword">end</span>;</pre>
+
+<p></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Count"></a><code>property <b>Count</b>: Integer read FCount;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+The number of <a class="normal" href="Grijjy.Collections.TgoValueDictionary.html#Items">items</a> in the dictionary</p>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:53</em>
+</span>
+</td></tr></table></body></html>

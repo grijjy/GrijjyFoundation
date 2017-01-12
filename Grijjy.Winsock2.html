@@ -1,0 +1,568 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Winsock2</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<h1 class="unit">Unit Grijjy.Winsock2</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Uses</td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></td><td><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></td><td><a class="section" href="#PasDoc-Types">Types</a></td><td><a class="section" href="#PasDoc-Constants">Constants</a></td><td><a class="section" href="#PasDoc-Variables">Variables</a></td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="description">Description</h2>
+&nbsp;<a name="PasDoc-Uses"></a><h2 class="overview">Overview</h2>
+<a name="PasDoc-Classes"></a><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Winsock2.ADDRINFOW.html"><code>ADDRINFOW</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">packed record&nbsp;<a class="bold" href="Grijjy.Winsock2.TMibTcpRowOwnerPid.html"><code>TMibTcpRowOwnerPid</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">packed record&nbsp;<a class="bold" href="Grijjy.Winsock2.MIB_TCPTABLE_OWNER_PID.html"><code>MIB_TCPTABLE_OWNER_PID</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<a name="PasDoc-FuncsProcs"></a><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Winsock2.html#Init_Winsock">Init_Winsock</a></b>: DWORD;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Winsock2.html#Finalize_Winsock">Finalize_Winsock</a></b>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Winsock2.html#IPV4ToString">IPV4ToString</a></b>(const AValue: Integer): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Winsock2.html#EnumerateTCPConnections">EnumerateTCPConnections</a></b>(out ATcpTable: <a  href="Grijjy.Winsock2.html#PMIB_TCPTABLE_OWNER_PID">PMIB_TCPTABLE_OWNER_PID</a>): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Winsock2.html#grNetstat">grNetstat</a></b>;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Types"></a><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#PPAddrInfoW">PPAddrInfoW</a></b> = &circ;<a  href="Grijjy.Winsock2.html#PAddrInfoW">PAddrInfoW</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#PAddrInfoW">PAddrInfoW</a></b> = &circ;<a  href="Grijjy.Winsock2.ADDRINFOW.html">ADDRINFOW</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#TAddrInfoW">TAddrInfoW</a></b> = <a  href="Grijjy.Winsock2.ADDRINFOW.html">ADDRINFOW</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#LPADDRINFOW">LPADDRINFOW</a></b> = <a  href="Grijjy.Winsock2.html#PAddrInfoW">PAddrInfoW</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#LPFN_BIND">LPFN_BIND</a></b> = function(const ASocket: TSocket; const AName: PSockAddr; const ANameLength: Integer): Integer; stdcall;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#LPFN_WSAIOCTL">LPFN_WSAIOCTL</a></b> = function(const ASocket: TSocket; dwIoControlCode: DWORD; lpvInBuffer: Pointer; cbInBuffer: DWORD; lpvOutBuffer: Pointer; cbOutBuffer: DWORD; lpcbBytesReturned: LPDWORD; AOverlapped: Pointer; lpCompletionRoutine: LPWSAOVERLAPPED_COMPLETION_ROUTINE): Integer; stdcall;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#LPFN_ACCEPTEX">LPFN_ACCEPTEX</a></b> = function(AListenSocket, AAcceptSocket: TSocket; lpOutputBuffer: Pointer; dwReceiveDataLength, dwLocalAddressLength, dwRemoteAddressLength: DWORD; var lpdwBytesReceived: DWORD; lpOverlapped: POverlapped): BOOL; stdcall;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#LPFN_GETACCEPTEXSOCKADDRS">LPFN_GETACCEPTEXSOCKADDRS</a></b> = procedure(lpOutputBuffer: Pointer; dwReceiveDataLength, dwLocalAddressLength, dwRemoteAddressLength: DWORD; var LocalSockaddr: TSockAddr; var LocalSockaddrLength: Integer; var RemoteSockaddr: TSockAddr; var RemoteSockaddrLength: Integer); stdcall;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#LPFN_CONNECTEX">LPFN_CONNECTEX</a></b> = function(const ASocket: TSocket; const AName: PSockAddr; const ANameLength: Integer; lpSendBuffer: Pointer; dwSendDataLength: DWORD; var lpdwBytesSent: DWORD; lpOverlapped: LPWSAOVERLAPPED): BOOL; stdcall;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#LPFN_DISCONNECTEX">LPFN_DISCONNECTEX</a></b> = function(const ASocket: TSocket; AOverlapped: Pointer; const dwFlags: DWORD; const dwReserved: DWORD): BOOL; stdcall;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#LPFN_GETADDRINFOW">LPFN_GETADDRINFOW</a></b> = function(NodeName: PWideChar; ServiceName: PWideChar; Hints: <a  href="Grijjy.Winsock2.html#PAddrInfoW">PaddrinfoW</a>; ppResult: <a  href="Grijjy.Winsock2.html#PPAddrInfoW">PPAddrInfoW</a>): Integer; stdcall;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#LPFN_GETNAMEINFOW">LPFN_GETNAMEINFOW</a></b> = function(sa: PSockAddr; salen: DWORD; host: PWideChar; hostlen: DWORD; serv: PWideChar; servlen: DWORD; flags: Integer): Integer; stdcall;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#LPFN_FREEADDRINFOW">LPFN_FREEADDRINFOW</a></b> = procedure(ai: <a  href="Grijjy.Winsock2.html#PAddrInfoW">PaddrinfoW</a>); stdcall;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#TCP_TABLE_CLASS">TCP_TABLE_CLASS</a></b> = Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#PMibTcpRowOwnerPid">PMibTcpRowOwnerPid</a></b> = &circ;<a  href="Grijjy.Winsock2.TMibTcpRowOwnerPid.html">TMibTcpRowOwnerPid</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#PMIB_TCPTABLE_OWNER_PID">PMIB_TCPTABLE_OWNER_PID</a></b> = &circ;<a  href="Grijjy.Winsock2.MIB_TCPTABLE_OWNER_PID.html">MIB_TCPTABLE_OWNER_PID</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#LPFN_GetExtendedTcpTable">LPFN_GetExtendedTcpTable</a></b> = function(pTcpTable: Pointer; dwSize: PDWORD; bOrder: BOOL; lAf: ULONG; TableClass: <a  href="Grijjy.Winsock2.html#TCP_TABLE_CLASS">TCP_TABLE_CLASS</a>; Reserved: ULONG): DWord; stdcall;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Constants"></a><h3 class="summary">Constants</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#WINSOCK2_DLL">WINSOCK2_DLL</a></b> = 'WS2_32.DLL';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#WSHIP6_DLL">WSHIP6_DLL</a></b> = 'WSHIP6.DLL';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#IPHLPAPI_DLL">IPHLPAPI_DLL</a></b> = 'IPHLPAPI.dll';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#TCP_STATES">TCP_STATES</a></b> = 12;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#TCP_STATE">TCP_STATE</a></b>: array[1..<a  href="Grijjy.Winsock2.html#TCP_STATES">TCP_STATES</a>] of String = (
+    'CLOSED',
+    'LISTEN',
+    'SYN-SENT',
+    'SYN-RECEIVED',
+    'ESTABLISHED',
+    'FIN-WAIT-1',
+    'FIN-WAIT-2',
+    'CLOSE-WAIT',
+    'CLOSING',
+    'LAST-ACK',
+    'TIME-WAIT',
+    'delete TCB');</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#TF_DISCONNECT">TF_DISCONNECT</a></b>         = $01;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#TF_REUSE_SOCKET">TF_REUSE_SOCKET</a></b>       = $02;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#TF_WRITE_BEHIND">TF_WRITE_BEHIND</a></b>       = $04;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#TF_USE_DEFAULT_WORKER">TF_USE_DEFAULT_WORKER</a></b> = $00;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#TF_USE_SYSTEM_THREAD">TF_USE_SYSTEM_THREAD</a></b>  = $10;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#TF_USE_KERNEL_APC">TF_USE_KERNEL_APC</a></b>     = $20;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#WSAID_ACCEPTEX">WSAID_ACCEPTEX</a></b>: TGuid = (D1:$b5367df1;D2:$cbac;D3:$11cf;D4:($95,$ca,$00,$80,$5f,$48,$a1,$92));</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#WSAID_CONNECTEX">WSAID_CONNECTEX</a></b>: TGuid = (D1:$25a207b9;D2:$ddf3;D3:$4660;D4:($8e,$e9,$76,$e5,$8c,$74,$06,$3e));</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#WSAID_DISCONNECTEX">WSAID_DISCONNECTEX</a></b>: TGuid = (D1:$7fda2e11;D2:$8630;D3:$436f;D4:($a0,$31,$f5,$36,$a6,$ee,$c1,$57));</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#WSAID_GETACCEPTEXSOCKADDRS">WSAID_GETACCEPTEXSOCKADDRS</a></b>: TGuid = (D1:$b5367df2;D2:$cbac;D3:$11cf;D4:($95,$ca,$00,$80,$5f,$48,$a1,$92));</code></td>
+</tr>
+</table>
+<a name="PasDoc-Variables"></a><h3 class="summary">Variables</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#bind">bind</a></b>: <a  href="Grijjy.Winsock2.html#LPFN_BIND">LPFN_BIND</a> = nil;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#WSAIoctl">WSAIoctl</a></b>: <a  href="Grijjy.Winsock2.html#LPFN_WSAIOCTL">LPFN_WSAIOCTL</a> = nil;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#AcceptEx">AcceptEx</a></b>: <a  href="Grijjy.Winsock2.html#LPFN_ACCEPTEX">LPFN_ACCEPTEX</a> = nil;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#GetAcceptExSockAddrs">GetAcceptExSockAddrs</a></b>: <a  href="Grijjy.Winsock2.html#LPFN_GETACCEPTEXSOCKADDRS">LPFN_GETACCEPTEXSOCKADDRS</a> = nil;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#ConnectEx">ConnectEx</a></b>: <a  href="Grijjy.Winsock2.html#LPFN_CONNECTEX">LPFN_CONNECTEX</a> = nil;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#DisconnectEx">DisconnectEx</a></b>: <a  href="Grijjy.Winsock2.html#LPFN_DISCONNECTEX">LPFN_DISCONNECTEX</a> = nil;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#GetAddrInfo">GetAddrInfo</a></b>: <a  href="Grijjy.Winsock2.html#LPFN_GETADDRINFOW">LPFN_GETADDRINFOW</a> = nil;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#GetNameInfo">GetNameInfo</a></b>: <a  href="Grijjy.Winsock2.html#LPFN_GETNAMEINFOW">LPFN_GETNAMEINFOW</a> = nil;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#FreeAddrInfo">FreeAddrInfo</a></b>: <a  href="Grijjy.Winsock2.html#LPFN_FREEADDRINFOW">LPFN_FREEADDRINFOW</a> = nil;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#HandleIPHLPAPI">HandleIPHLPAPI</a></b>: THandle = 0;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Winsock2.html#GetExtendedTcpTable">GetExtendedTcpTable</a></b>: <a  href="Grijjy.Winsock2.html#LPFN_GetExtendedTcpTable">LPFN_GetExtendedTcpTable</a> = nil;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Init_Winsock"></a><code>function <b>Init_Winsock</b>: DWORD;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Missing Winsock2</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Finalize_Winsock"></a><code>procedure <b>Finalize_Winsock</b>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IPV4ToString"></a><code>function <b>IPV4ToString</b>(const AValue: Integer): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Helpers</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EnumerateTCPConnections"></a><code>function <b>EnumerateTCPConnections</b>(out ATcpTable: <a  href="Grijjy.Winsock2.html#PMIB_TCPTABLE_OWNER_PID">PMIB_TCPTABLE_OWNER_PID</a>): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+NetStat</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="grNetstat"></a><code>procedure <b>grNetstat</b>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="PPAddrInfoW"></a><code><b>PPAddrInfoW</b> = &circ;<a  href="Grijjy.Winsock2.html#PAddrInfoW">PAddrInfoW</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="PAddrInfoW"></a><code><b>PAddrInfoW</b> = &circ;<a  href="Grijjy.Winsock2.ADDRINFOW.html">ADDRINFOW</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TAddrInfoW"></a><code><b>TAddrInfoW</b> = <a  href="Grijjy.Winsock2.ADDRINFOW.html">ADDRINFOW</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LPADDRINFOW"></a><code><b>LPADDRINFOW</b> = <a  href="Grijjy.Winsock2.html#PAddrInfoW">PAddrInfoW</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LPFN_BIND"></a><code><b>LPFN_BIND</b> = function(const ASocket: TSocket; const AName: PSockAddr; const ANameLength: Integer): Integer; stdcall;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LPFN_WSAIOCTL"></a><code><b>LPFN_WSAIOCTL</b> = function(const ASocket: TSocket; dwIoControlCode: DWORD; lpvInBuffer: Pointer; cbInBuffer: DWORD; lpvOutBuffer: Pointer; cbOutBuffer: DWORD; lpcbBytesReturned: LPDWORD; AOverlapped: Pointer; lpCompletionRoutine: LPWSAOVERLAPPED_COMPLETION_ROUTINE): Integer; stdcall;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LPFN_ACCEPTEX"></a><code><b>LPFN_ACCEPTEX</b> = function(AListenSocket, AAcceptSocket: TSocket; lpOutputBuffer: Pointer; dwReceiveDataLength, dwLocalAddressLength, dwRemoteAddressLength: DWORD; var lpdwBytesReceived: DWORD; lpOverlapped: POverlapped): BOOL; stdcall;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LPFN_GETACCEPTEXSOCKADDRS"></a><code><b>LPFN_GETACCEPTEXSOCKADDRS</b> = procedure(lpOutputBuffer: Pointer; dwReceiveDataLength, dwLocalAddressLength, dwRemoteAddressLength: DWORD; var LocalSockaddr: TSockAddr; var LocalSockaddrLength: Integer; var RemoteSockaddr: TSockAddr; var RemoteSockaddrLength: Integer); stdcall;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LPFN_CONNECTEX"></a><code><b>LPFN_CONNECTEX</b> = function(const ASocket: TSocket; const AName: PSockAddr; const ANameLength: Integer; lpSendBuffer: Pointer; dwSendDataLength: DWORD; var lpdwBytesSent: DWORD; lpOverlapped: LPWSAOVERLAPPED): BOOL; stdcall;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LPFN_DISCONNECTEX"></a><code><b>LPFN_DISCONNECTEX</b> = function(const ASocket: TSocket; AOverlapped: Pointer; const dwFlags: DWORD; const dwReserved: DWORD): BOOL; stdcall;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LPFN_GETADDRINFOW"></a><code><b>LPFN_GETADDRINFOW</b> = function(NodeName: PWideChar; ServiceName: PWideChar; Hints: <a  href="Grijjy.Winsock2.html#PAddrInfoW">PaddrinfoW</a>; ppResult: <a  href="Grijjy.Winsock2.html#PPAddrInfoW">PPAddrInfoW</a>): Integer; stdcall;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LPFN_GETNAMEINFOW"></a><code><b>LPFN_GETNAMEINFOW</b> = function(sa: PSockAddr; salen: DWORD; host: PWideChar; hostlen: DWORD; serv: PWideChar; servlen: DWORD; flags: Integer): Integer; stdcall;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LPFN_FREEADDRINFOW"></a><code><b>LPFN_FREEADDRINFOW</b> = procedure(ai: <a  href="Grijjy.Winsock2.html#PAddrInfoW">PaddrinfoW</a>); stdcall;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TCP_TABLE_CLASS"></a><code><b>TCP_TABLE_CLASS</b> = Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="PMibTcpRowOwnerPid"></a><code><b>PMibTcpRowOwnerPid</b> = &circ;<a  href="Grijjy.Winsock2.TMibTcpRowOwnerPid.html">TMibTcpRowOwnerPid</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="PMIB_TCPTABLE_OWNER_PID"></a><code><b>PMIB_TCPTABLE_OWNER_PID</b> = &circ;<a  href="Grijjy.Winsock2.MIB_TCPTABLE_OWNER_PID.html">MIB_TCPTABLE_OWNER_PID</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LPFN_GetExtendedTcpTable"></a><code><b>LPFN_GetExtendedTcpTable</b> = function(pTcpTable: Pointer; dwSize: PDWORD; bOrder: BOOL; lAf: ULONG; TableClass: <a  href="Grijjy.Winsock2.html#TCP_TABLE_CLASS">TCP_TABLE_CLASS</a>; Reserved: ULONG): DWord; stdcall;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Constants</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WINSOCK2_DLL"></a><code><b>WINSOCK2_DLL</b> = 'WS2_32.DLL';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WSHIP6_DLL"></a><code><b>WSHIP6_DLL</b> = 'WSHIP6.DLL';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IPHLPAPI_DLL"></a><code><b>IPHLPAPI_DLL</b> = 'IPHLPAPI.dll';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TCP_STATES"></a><code><b>TCP_STATES</b> = 12;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+TCP states</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TCP_STATE"></a><code><b>TCP_STATE</b>: array[1..<a  href="Grijjy.Winsock2.html#TCP_STATES">TCP_STATES</a>] of String = (
+    'CLOSED',
+    'LISTEN',
+    'SYN-SENT',
+    'SYN-RECEIVED',
+    'ESTABLISHED',
+    'FIN-WAIT-1',
+    'FIN-WAIT-2',
+    'CLOSE-WAIT',
+    'CLOSING',
+    'LAST-ACK',
+    'TIME-WAIT',
+    'delete TCB');</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TF_DISCONNECT"></a><code><b>TF_DISCONNECT</b>         = $01;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TF_REUSE_SOCKET"></a><code><b>TF_REUSE_SOCKET</b>       = $02;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TF_WRITE_BEHIND"></a><code><b>TF_WRITE_BEHIND</b>       = $04;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TF_USE_DEFAULT_WORKER"></a><code><b>TF_USE_DEFAULT_WORKER</b> = $00;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TF_USE_SYSTEM_THREAD"></a><code><b>TF_USE_SYSTEM_THREAD</b>  = $10;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TF_USE_KERNEL_APC"></a><code><b>TF_USE_KERNEL_APC</b>     = $20;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WSAID_ACCEPTEX"></a><code><b>WSAID_ACCEPTEX</b>: TGuid = (D1:$b5367df1;D2:$cbac;D3:$11cf;D4:($95,$ca,$00,$80,$5f,$48,$a1,$92));</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WSAID_CONNECTEX"></a><code><b>WSAID_CONNECTEX</b>: TGuid = (D1:$25a207b9;D2:$ddf3;D3:$4660;D4:($8e,$e9,$76,$e5,$8c,$74,$06,$3e));</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WSAID_DISCONNECTEX"></a><code><b>WSAID_DISCONNECTEX</b>: TGuid = (D1:$7fda2e11;D2:$8630;D3:$436f;D4:($a0,$31,$f5,$36,$a6,$ee,$c1,$57));</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WSAID_GETACCEPTEXSOCKADDRS"></a><code><b>WSAID_GETACCEPTEXSOCKADDRS</b>: TGuid = (D1:$b5367df2;D2:$cbac;D3:$11cf;D4:($95,$ca,$00,$80,$5f,$48,$a1,$92));</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Variables</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="bind"></a><code><b>bind</b>: <a  href="Grijjy.Winsock2.html#LPFN_BIND">LPFN_BIND</a> = nil;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WSAIoctl"></a><code><b>WSAIoctl</b>: <a  href="Grijjy.Winsock2.html#LPFN_WSAIOCTL">LPFN_WSAIOCTL</a> = nil;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="AcceptEx"></a><code><b>AcceptEx</b>: <a  href="Grijjy.Winsock2.html#LPFN_ACCEPTEX">LPFN_ACCEPTEX</a> = nil;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetAcceptExSockAddrs"></a><code><b>GetAcceptExSockAddrs</b>: <a  href="Grijjy.Winsock2.html#LPFN_GETACCEPTEXSOCKADDRS">LPFN_GETACCEPTEXSOCKADDRS</a> = nil;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ConnectEx"></a><code><b>ConnectEx</b>: <a  href="Grijjy.Winsock2.html#LPFN_CONNECTEX">LPFN_CONNECTEX</a> = nil;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="DisconnectEx"></a><code><b>DisconnectEx</b>: <a  href="Grijjy.Winsock2.html#LPFN_DISCONNECTEX">LPFN_DISCONNECTEX</a> = nil;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetAddrInfo"></a><code><b>GetAddrInfo</b>: <a  href="Grijjy.Winsock2.html#LPFN_GETADDRINFOW">LPFN_GETADDRINFOW</a> = nil;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetNameInfo"></a><code><b>GetNameInfo</b>: <a  href="Grijjy.Winsock2.html#LPFN_GETNAMEINFOW">LPFN_GETNAMEINFOW</a> = nil;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="FreeAddrInfo"></a><code><b>FreeAddrInfo</b>: <a  href="Grijjy.Winsock2.html#LPFN_FREEADDRINFOW">LPFN_FREEADDRINFOW</a> = nil;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="HandleIPHLPAPI"></a><code><b>HandleIPHLPAPI</b>: THandle = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetExtendedTcpTable"></a><code><b>GetExtendedTcpTable</b>: <a  href="Grijjy.Winsock2.html#LPFN_GetExtendedTcpTable">LPFN_GetExtendedTcpTable</a> = nil;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:53</em>
+</span>
+</td></tr></table></body></html>

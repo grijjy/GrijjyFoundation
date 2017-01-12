@@ -1,0 +1,1460 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Bson: record TgoBsonValue</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<a name="TgoBsonValue"></a><h1 class="cio">record TgoBsonValue</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Hierarchy</td><td>Fields</td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="Grijjy.Bson.html">Grijjy.Bson</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TgoBsonValue = record</code></p>
+<h2 class="description">Description</h2>
+<p>
+The base &quot;class&quot; for all BSON values. It is implemented as a record type which can hold any type of BSON value.</p>
+<h2 class="overview">Overview</h2>
+<a name="PasDoc-Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonValue.html#Parse">Parse</a></b>(const AJson: String): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonValue.html#TryParse">TryParse</a></b>(const AJson: String; out AValue: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonValue.html#Load">Load</a></b>(const ABson: TBytes): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonValue.html#TryLoad">TryLoad</a></b>(const ABson: TBytes; out AValue: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonValue.html#LoadFromJsonFile">LoadFromJsonFile</a></b>(const AFilename: String): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonValue.html#LoadFromJsonStream">LoadFromJsonStream</a></b>(const AStream: TStream): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonValue.html#LoadFromBsonFile">LoadFromBsonFile</a></b>(const AFilename: String): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoBsonValue.html#LoadFromBsonStream">LoadFromBsonStream</a></b>(const AStream: TStream): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonValue.html#SaveToJsonFile">SaveToJsonFile</a></b>(const AFilename: String); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonValue.html#SaveToJsonFile">SaveToJsonFile</a></b>(const AFilename: String; const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonValue.html#SaveToJsonStream">SaveToJsonStream</a></b>(const AStream: TStream); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonValue.html#SaveToJsonStream">SaveToJsonStream</a></b>(const AStream: TStream; const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonValue.html#SaveToBsonFile">SaveToBsonFile</a></b>(const AFilename: String);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonValue.html#SaveToBsonStream">SaveToBsonStream</a></b>(const AStream: TStream);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: Boolean): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: Integer): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: Int64): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: Double): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: Extended): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: TDateTime): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: String): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: TBytes): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: TGUID): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Integer; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Int64; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): UInt64; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Double; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Extended; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): TDateTime; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): String; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): TBytes; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): TGUID; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Implicit">Implicit</a></b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#ToLocalTime">ToLocalTime</a></b>: TDateTime; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#ToUniversalTime">ToUniversalTime</a></b>: TDateTime; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#Equal">Equal</a></b>(const A, B: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoBsonValue.html#NotEqual">NotEqual</a></b>(const A, B: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsNil">IsNil</a></b>: Boolean; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoBsonValue.html#SetNil">SetNil</a></b>; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#ToBoolean">ToBoolean</a></b>(const ADefault: Boolean = False): Boolean; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#ToInteger">ToInteger</a></b>(const ADefault: Integer = 0): Integer; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#ToInt64">ToInt64</a></b>(const ADefault: Int64 = 0): Int64; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#ToDouble">ToDouble</a></b>(const ADefault: Double = 0): Double; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#ToString">ToString</a></b>(const ADefault: String = ''): String; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#ToGuid">ToGuid</a></b>: TGUID; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#ToObjectId">ToObjectId</a></b>: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#AsBoolean">AsBoolean</a></b>: Boolean; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#AsInteger">AsInteger</a></b>: Integer; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#AsInt64">AsInt64</a></b>: Int64; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#AsDouble">AsDouble</a></b>: Double; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#AsString">AsString</a></b>: String; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#AsArray">AsArray</a></b>: TArray&lt;<a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>&gt;; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#AsByteArray">AsByteArray</a></b>: TBytes; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#AsGuid">AsGuid</a></b>: TGUID; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#AsObjectId">AsObjectId</a></b>: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#Clone">Clone</a></b>: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#DeepClone">DeepClone</a></b>: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#ToBson">ToBson</a></b>: TBytes; inline;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#ToJson">ToJson</a></b>: String; overload; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoBsonValue.html#ToJson">ToJson</a></b>(const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>): String; overload; inline;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#BsonType">BsonType</a></b>: <a  href="Grijjy.Bson.html#TgoBsonType">TgoBsonType</a> read GetBsonType;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsBoolean">IsBoolean</a></b>: Boolean read GetIsBoolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsBsonArray">IsBsonArray</a></b>: Boolean read GetIsBsonArray;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsBsonBinaryData">IsBsonBinaryData</a></b>: Boolean read GetIsBsonBinaryData;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsBsonDateTime">IsBsonDateTime</a></b>: Boolean read GetIsBsonDateTime;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsBsonDocument">IsBsonDocument</a></b>: Boolean read GetIsBsonDocument;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsBsonJavaScript">IsBsonJavaScript</a></b>: Boolean read GetIsBsonJavaScript;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsBsonJavaScriptWithScope">IsBsonJavaScriptWithScope</a></b>: Boolean read GetIsBsonJavaScriptWithScope;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsBsonMaxKey">IsBsonMaxKey</a></b>: Boolean read GetIsBsonMaxKey;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsBsonMinKey">IsBsonMinKey</a></b>: Boolean read GetIsBsonMinKey;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsBsonNull">IsBsonNull</a></b>: Boolean read GetIsBsonNull;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsBsonRegularExpression">IsBsonRegularExpression</a></b>: Boolean read GetIsBsonRegularExpression;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsBsonSymbol">IsBsonSymbol</a></b>: Boolean read GetIsBsonSymbol;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsBsonTimestamp">IsBsonTimestamp</a></b>: Boolean read GetIsBsonTimestamp;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsBsonUndefined">IsBsonUndefined</a></b>: Boolean read GetIsBsonUndefined;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsDateTime">IsDateTime</a></b>: Boolean read GetIsDateTime;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsDouble">IsDouble</a></b>: Boolean read GetIsDouble;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsGuid">IsGuid</a></b>: Boolean read GetIsGuid;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsInt32">IsInt32</a></b>: Boolean read GetIsInt32;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsInt64">IsInt64</a></b>: Boolean read GetIsInt64;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsNumeric">IsNumeric</a></b>: Boolean read GetIsNumeric;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsObjectId">IsObjectId</a></b>: Boolean read GetIsObjectId;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonValue.html#IsString">IsString</a></b>: Boolean read GetIsString;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Parse"></a><code>class function <b>Parse</b>(const AJson: String): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates a BSON value by paring a JSON string.
+
+<p>
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AJson</dt>
+<dd>the JSON string to <code>parse</code>.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The BSON value</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><a class="normal" href="Grijjy.Bson.IO.EgoJsonParserError.html">EgoJsonParserError</a></dt>
+<dd>or EInvalidOperation on <code>parse</code> errors</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TryParse"></a><code>class function <b>TryParse</b>(const AJson: String; out AValue: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#Parse">parse</a> a JSON string to a BSON value.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AJson</dt>
+<dd>the JSON string to <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#Parse">parse</a>.</dd>
+<dt>AArray</dt>
+<dd>is set to the parsed JSON on success.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if the JSON string could be successfully parsed.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Load"></a><code>class function <b>Load</b>(const ABson: TBytes): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates a BSON value from a BSON byte array.
+
+<p>
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ABson</dt>
+<dd>the BSON byte array to <code>load</code>.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The BSON value</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EInvalidOperation</code></dt>
+<dd>if BSON data is invalid</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TryLoad"></a><code>class function <b>TryLoad</b>(const ABson: TBytes; out AValue: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#Load">load</a> a BSON value from a BSON byte array.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ABson</dt>
+<dd>the BSON byte array to <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#Load">load</a>.</dd>
+<dt>AValue</dt>
+<dd>is set to the loaded BSON on success.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if the BSON value could be successfully loaded.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LoadFromJsonFile"></a><code>class function <b>LoadFromJsonFile</b>(const AFilename: String): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Loads a BSON value from a JSON file.
+
+<p>
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AFilename</dt>
+<dd>the name of the JSON file</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The BSON value</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><a class="normal" href="Grijjy.Bson.IO.EgoJsonParserError.html">EgoJsonParserError</a></dt>
+<dd>or EInvalidOperation on <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#Parse">parse</a> errors</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LoadFromJsonStream"></a><code>class function <b>LoadFromJsonStream</b>(const AStream: TStream): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Loads a BSON value from a JSON stream.
+
+<p>
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AStream</dt>
+<dd>the JSON stream</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The BSON value</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><a class="normal" href="Grijjy.Bson.IO.EgoJsonParserError.html">EgoJsonParserError</a></dt>
+<dd>or EInvalidOperation on <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#Parse">parse</a> errors</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LoadFromBsonFile"></a><code>class function <b>LoadFromBsonFile</b>(const AFilename: String): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Loads a BSON value from a BSON file.
+
+<p>
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AFilename</dt>
+<dd>the name of the BSON file</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The BSON value</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EInvalidOperation</code></dt>
+<dd>when the BSON file is invalid</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LoadFromBsonStream"></a><code>class function <b>LoadFromBsonStream</b>(const AStream: TStream): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Loads a BSON value from a BSON stream.
+
+<p>
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AStream</dt>
+<dd>the BSON stream</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The BSON value</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EInvalidOperation</code></dt>
+<dd>when the BSON file is invalid</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SaveToJsonFile"></a><code>procedure <b>SaveToJsonFile</b>(const AFilename: String); overload;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Saves the BSON value to a JSON file.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AFilename</dt>
+<dd>the name of the JSON file.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SaveToJsonFile"></a><code>procedure <b>SaveToJsonFile</b>(const AFilename: String; const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>); overload;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Saves the BSON value to a JSON file, using specified settings.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AFilename</dt>
+<dd>the name of the JSON file.</dd>
+<dt>ASettings</dt>
+<dd>the output settings to use, such as pretty-printing and Strict vs Shell mode.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SaveToJsonStream"></a><code>procedure <b>SaveToJsonStream</b>(const AStream: TStream); overload;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Saves the BSON value to a JSON stream.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AStream</dt>
+<dd>the JSON stream</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SaveToJsonStream"></a><code>procedure <b>SaveToJsonStream</b>(const AStream: TStream; const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>); overload;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Saves the BSON value to a JSON stream.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AStream</dt>
+<dd>the JSON stream</dd>
+<dt>ASettings</dt>
+<dd>the output settings to use, such as pretty-printing and Strict vs Shell mode.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SaveToBsonFile"></a><code>procedure <b>SaveToBsonFile</b>(const AFilename: String);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Saves the BSON value to a BSON file.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AFilename</dt>
+<dd>the name of the BSON file.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SaveToBsonStream"></a><code>procedure <b>SaveToBsonStream</b>(const AStream: TStream);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Saves the BSON value to a BSON stream.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AStream</dt>
+<dd>the BSON stream</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: Boolean): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Implicitly converts a Boolean to a BSON value</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: Integer): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Implicitly converts an Integer to a BSON value</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: Int64): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Implicitly converts an Int64 to a BSON value</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: Double): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Implicitly converts a Double to a BSON value</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: Extended): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Implicitly converts an Extended to a BSON value</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: TDateTime): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Implicitly converts a TDateTime a BSON value of type <a class="normal" href="Grijjy.Bson.TgoBsonDateTime.html">TgoBsonDateTime</a>. The TDateTime value <b>must</b> be UTC format.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: String): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Implicitly converts a String to a BSON value</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: TBytes): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Implicitly converts an array of bytes to a BSON value of type <a class="normal" href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a> with sub type Binary.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: TGUID): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Implicitly converts a GUID to a BSON value of type <a class="normal" href="Grijjy.Bson.TgoBsonBinaryData.html">TgoBsonBinaryData</a> with sub type UuidStandard.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Implicitly converts an ObjectId to a BSON value</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to implicitly convert a BSON value to a Boolean. Depending on the <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#BsonType">BsonType</a>, one of the following will be returned: </p>
+
+<ul class="compact_spacing">
+  <li><p>Boolean: the value</p></li>
+  <li><p>Double: True if the value isn't 0 or NaN</p></li>
+  <li><p>Integer: True if the value isn't 0</p></li>
+  <li><p>Null: False</p></li>
+  <li><p>String: True if the value isn't an empty string</p></li>
+  <li><p>Otherwise: True</p></li>
+</ul>
+
+<p></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Integer; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to implicitly convert a BSON value to an Integer. Depending on the <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#BsonType">BsonType</a>, one of the following will be returned: </p>
+
+<ul class="compact_spacing">
+  <li><p>Boolean: 0 if False, 1 if True</p></li>
+  <li><p>Double: truncated value</p></li>
+  <li><p>Integer: the value</p></li>
+  <li><p>String: String converted to Integer, if possible</p></li>
+  <li><p>Otherwise: 0</p></li>
+</ul>
+
+<p></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Int64; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to implicitly convert a BSON value to an Int64. Depending on the <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#BsonType">BsonType</a>, one of the following will be returned: </p>
+
+<ul class="compact_spacing">
+  <li><p>Boolean: 0 if False, 1 if True</p></li>
+  <li><p>Double: truncated value</p></li>
+  <li><p>Integer: the value</p></li>
+  <li><p>String: String converted to Int64, if possible</p></li>
+  <li><p>Otherwise: 0</p></li>
+</ul>
+
+<p></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): UInt64; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to implicitly convert a BSON value to an UInt64. Depending on the <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#BsonType">BsonType</a>, one of the following will be returned: </p>
+
+<ul class="compact_spacing">
+  <li><p>Boolean: 0 if False, 1 if True</p></li>
+  <li><p>Double: truncated value</p></li>
+  <li><p>Integer: the value</p></li>
+  <li><p>String: String converted to UInt64, if possible</p></li>
+  <li><p>Otherwise: 0</p></li>
+</ul>
+
+<p></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Double; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to implicitly convert a BSON value to an Double. Depending on the <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#BsonType">BsonType</a>, one of the following will be returned: </p>
+
+<ul class="compact_spacing">
+  <li><p>Boolean: 0 if False, 1 if True</p></li>
+  <li><p>Double: the value</p></li>
+  <li><p>Integer: the value</p></li>
+  <li><p>String: String (in US format) converted to Double, if possible</p></li>
+  <li><p>Otherwise: 0</p></li>
+</ul>
+
+<p></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Extended; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to implicitly convert a BSON value to an Extended. Depending on the <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#BsonType">BsonType</a>, one of the following will be returned: </p>
+
+<ul class="compact_spacing">
+  <li><p>Boolean: 0 if False, 1 if True</p></li>
+  <li><p>Double: the value</p></li>
+  <li><p>Integer: the value</p></li>
+  <li><p>String: String (in US format) converted to Double, if possible</p></li>
+  <li><p>Otherwise: 0</p></li>
+</ul>
+
+<p></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): TDateTime; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to implicitly convert a BSON value to a TDateTime in UTC format. Depending on the <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#BsonType">BsonType</a>, one of the following will be returned: </p>
+
+<ul class="compact_spacing">
+  <li><p>DateTime: the value in UTC format</p></li>
+  <li><p>Otherwise: 0</p></li>
+</ul>
+
+<p> <b>Note</b>: see <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#ToLocalTime">ToLocalTime</a> and <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#ToUniversalTime">ToUniversalTime</a> for more control over the output.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): String; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to implicitly convert a BSON value to a String. Depending on the <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#BsonType">BsonType</a>, one of the following will be returned: </p>
+
+<ul class="compact_spacing">
+  <li><p>Boolean: 'false' or 'true'</p></li>
+  <li><p>Double: the value converted to a String (in US format)</p></li>
+  <li><p>Integer: the value converted to an Integer</p></li>
+  <li><p>String: the value</p></li>
+  <li><p>DateTime: UTC value in ISO8601 format</p></li>
+  <li><p>ObjectId: string representation of the ObjectId</p></li>
+  <li><p>Null: 'null'</p></li>
+  <li><p>Undefined: 'undefined'</p></li>
+  <li><p>MinKey: 'MinKey'</p></li>
+  <li><p>MaxKey: 'MaxKey'</p></li>
+  <li><p>Symbol: name of the symbol</p></li>
+  <li><p>Otherwise: '' (empty string)</p></li>
+</ul>
+
+<p></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): TBytes; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to implicitly convert a BSON value to a byte array. Depending on the <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#BsonType">BsonType</a>, one of the following will be returned: </p>
+
+<ul class="compact_spacing">
+  <li><p>Binary: the value</p></li>
+  <li><p>Otherwise: nil (empty array)</p></li>
+</ul>
+
+<p></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): TGUID; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to implicitly convert a BSON value to a GUID. Depending on the <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#BsonType">BsonType</a>, one of the following will be returned: </p>
+
+<ul class="compact_spacing">
+  <li><p>Binary of sub type UuidLegacy or UuidStandard: the value</p></li>
+  <li><p>Otherwise: TGUID.Empty</p></li>
+</ul>
+
+<p></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to implicitly convert a BSON value to an ObjectId. Depending on the <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#BsonType">BsonType</a>, one of the following will be returned: </p>
+
+<ul class="compact_spacing">
+  <li><p>ObjectId: the value</p></li>
+  <li><p>Otherwise: <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Empty">TgoObjectId.Empty</a></p></li>
+</ul>
+
+<p></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToLocalTime"></a><code>function <b>ToLocalTime</b>: TDateTime; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to implicitly convert a BSON value to a TDateTime in local time. Depending on the <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#BsonType">BsonType</a>, one of the following will be returned: </p>
+
+<ul class="compact_spacing">
+  <li><p>DateTime: the value in local time</p></li>
+  <li><p>Otherwise: 0</p></li>
+</ul>
+
+<p></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToUniversalTime"></a><code>function <b>ToUniversalTime</b>: TDateTime; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to implicitly convert a BSON value to a TDateTime in universal time. Depending on the <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#BsonType">BsonType</a>, one of the following will be returned: </p>
+
+<ul class="compact_spacing">
+  <li><p>DateTime: the value in universal time (UTC)</p></li>
+  <li><p>Otherwise: 0</p></li>
+</ul>
+
+<p></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Equal"></a><code>class operator <b>Equal</b>(const A, B: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tests 2 BSON values for equality. BSON values are <code>equal</code> if their types and contents match exactly.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="NotEqual"></a><code>class operator <b>NotEqual</b>(const A, B: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tests 2 BSON values for inequality</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsNil"></a><code>function <b>IsNil</b>: Boolean; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Checks if the BSON value has been assigned.
+
+<p> <b>Note</b>: does <b>not</b> return True if the value is a NULL value (see <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#IsBsonNull">IsBsonNull</a>/AsBsonNull)</p>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if value hasn't been assigned yet.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SetNil"></a><code>procedure <b>SetNil</b>; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Unassigns the BSON value (like setting an object to nil). <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#IsNil">IsNil</a> will return True afterwards.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToBoolean"></a><code>function <b>ToBoolean</b>(const ADefault: Boolean = False): Boolean; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to convert the value to a Boolean.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ADefault</dt>
+<dd>(optional) value to return if value cannot be converted. Defaults to False.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToInteger"></a><code>function <b>ToInteger</b>(const ADefault: Integer = 0): Integer; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to convert the value to a 32-bit integer.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ADefault</dt>
+<dd>(optional) value to return if value cannot be converted. Defaults to 0.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToInt64"></a><code>function <b>ToInt64</b>(const ADefault: Int64 = 0): Int64; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to convert the value to a 64-bit integer.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ADefault</dt>
+<dd>(optional) value to return if value cannot be converted. Defaults to 0.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToDouble"></a><code>function <b>ToDouble</b>(const ADefault: Double = 0): Double; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to convert the value to a floating-point number.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ADefault</dt>
+<dd>(optional) value to return if value cannot be converted. Defaults to 0.0.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToString"></a><code>function <b>ToString</b>(const ADefault: String = ''): String; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to convert the value to a string.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ADefault</dt>
+<dd>(optional) value to return if value cannot be converted. Defaults to ''.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToGuid"></a><code>function <b>ToGuid</b>: TGUID; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to convert the value to a GUID. Returns an empty GUID if the value cannot be converted.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToObjectId"></a><code>function <b>ToObjectId</b>: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to convert the value to an ObjectId. Returns an empty ObjectId if the value cannot be converted.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="AsBoolean"></a><code>function <b>AsBoolean</b>: Boolean; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the value as a Boolean.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EIntfCastError</code></dt>
+<dd>if this value isn't a Boolean</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="AsInteger"></a><code>function <b>AsInteger</b>: Integer; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the value as a 32-bit integer.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EIntfCastError</code></dt>
+<dd>if this value isn't a 32-bit integer</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="AsInt64"></a><code>function <b>AsInt64</b>: Int64; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the value as a 64-bit integer.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EIntfCastError</code></dt>
+<dd>if this value isn't a 64-bit integer</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="AsDouble"></a><code>function <b>AsDouble</b>: Double; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the value as a Double.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EIntfCastError</code></dt>
+<dd>if this value isn't a Double</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="AsString"></a><code>function <b>AsString</b>: String; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the value as a String.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EIntfCastError</code></dt>
+<dd>if this value isn't a String</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="AsArray"></a><code>function <b>AsArray</b>: TArray&lt;<a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>&gt;; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the value as a Delphi array of BSON values.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EIntfCastError</code></dt>
+<dd>if this value isn't a BSON array</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="AsByteArray"></a><code>function <b>AsByteArray</b>: TBytes; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the value as an array of bytes.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EIntfCastError</code></dt>
+<dd>if this value isn't a Binary value</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="AsGuid"></a><code>function <b>AsGuid</b>: TGUID; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the value as a GUID.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EIntfCastError</code></dt>
+<dd>if this value isn't a Binary value of sub type UuidLegacy or UuidStandard.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="AsObjectId"></a><code>function <b>AsObjectId</b>: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the value as an ObjectId.
+
+<p></p>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EIntfCastError</code></dt>
+<dd>if this value isn't an ObjectId</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Clone"></a><code>function <b>Clone</b>: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates shallow <code>clone</code> of the value.
+
+<p> <b>Note</b>: a shallow <code>clone</code> copies the value, but not any sub-values. For example, if the value is an array, then the array reference is copied, but not the individual elements.</p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The shallow <code>clone</code></p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="DeepClone"></a><code>function <b>DeepClone</b>: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a>; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates deep <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#Clone">clone</a> of the value.
+
+<p> <b>Note</b>: a deep <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#Clone">clone</a> copies the value and any sub-values it may hold. For example, if the value is an array, then the array reference is copied, and its individual elements are copied as well. Any sub-values of those elements are also copied, etc...</p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The deep <a class="normal" href="Grijjy.Bson.TgoBsonValue.html#Clone">clone</a></p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToBson"></a><code>function <b>ToBson</b>: TBytes; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Saves the value to a BSON-compliant byte stream.
+
+<p></p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The BSON byte stream.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToJson"></a><code>function <b>ToJson</b>: String; overload; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Saves the value to a string in JSON format.
+
+<p> <b>Note</b>: the value is saved using the default writer settings. That is, without any pretty printing, and in Strict mode. Use the other overload of this function to specify output settings.</p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The value in JSON format.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToJson"></a><code>function <b>ToJson</b>(const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>): String; overload; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Saves the value to a string in JSON format, using specified settings.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ASettings</dt>
+<dd>the output settings to use, such as pretty-printing and Strict vs Shell mode.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The value in JSON format.</p></td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BsonType"></a><code>property <b>BsonType</b>: <a  href="Grijjy.Bson.html#TgoBsonType">TgoBsonType</a> read GetBsonType;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+The type of this value.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsBoolean"></a><code>property <b>IsBoolean</b>: Boolean read GetIsBoolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a Boolean.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsBsonArray"></a><code>property <b>IsBsonArray</b>: Boolean read GetIsBsonArray;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a BSON array.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsBsonBinaryData"></a><code>property <b>IsBsonBinaryData</b>: Boolean read GetIsBsonBinaryData;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a BSON binary value.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsBsonDateTime"></a><code>property <b>IsBsonDateTime</b>: Boolean read GetIsBsonDateTime;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a BSON DateTime.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsBsonDocument"></a><code>property <b>IsBsonDocument</b>: Boolean read GetIsBsonDocument;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a BSON Document (aka Dictionary or Object).</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsBsonJavaScript"></a><code>property <b>IsBsonJavaScript</b>: Boolean read GetIsBsonJavaScript;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a JavaScript script.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsBsonJavaScriptWithScope"></a><code>property <b>IsBsonJavaScriptWithScope</b>: Boolean read GetIsBsonJavaScriptWithScope;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a JavaScript script with scope.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsBsonMaxKey"></a><code>property <b>IsBsonMaxKey</b>: Boolean read GetIsBsonMaxKey;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a BSON MaxKey value.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsBsonMinKey"></a><code>property <b>IsBsonMinKey</b>: Boolean read GetIsBsonMinKey;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a BSON MinKey value.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsBsonNull"></a><code>property <b>IsBsonNull</b>: Boolean read GetIsBsonNull;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a BSON Null value.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsBsonRegularExpression"></a><code>property <b>IsBsonRegularExpression</b>: Boolean read GetIsBsonRegularExpression;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a regular expression.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsBsonSymbol"></a><code>property <b>IsBsonSymbol</b>: Boolean read GetIsBsonSymbol;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a (deprectated) BSON symbol.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsBsonTimestamp"></a><code>property <b>IsBsonTimestamp</b>: Boolean read GetIsBsonTimestamp;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a BSON timestamp.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsBsonUndefined"></a><code>property <b>IsBsonUndefined</b>: Boolean read GetIsBsonUndefined;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a BSON Undefined value.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsDateTime"></a><code>property <b>IsDateTime</b>: Boolean read GetIsDateTime;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a DateTime value.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsDouble"></a><code>property <b>IsDouble</b>: Boolean read GetIsDouble;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a Double.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsGuid"></a><code>property <b>IsGuid</b>: Boolean read GetIsGuid;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a GUID.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsInt32"></a><code>property <b>IsInt32</b>: Boolean read GetIsInt32;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a 32-bit integer.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsInt64"></a><code>property <b>IsInt64</b>: Boolean read GetIsInt64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a 64-bit integer.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsNumeric"></a><code>property <b>IsNumeric</b>: Boolean read GetIsNumeric;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a numeric value (Integer or Double).</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsObjectId"></a><code>property <b>IsObjectId</b>: Boolean read GetIsObjectId;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents an ObjectId.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsString"></a><code>property <b>IsString</b>: Boolean read GetIsString;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Whether this value represents a String.</p>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:52</em>
+</span>
+</td></tr></table></body></html>

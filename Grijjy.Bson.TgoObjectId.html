@@ -1,0 +1,613 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Bson: record TgoObjectId</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<a name="TgoObjectId"></a><h1 class="cio">record TgoObjectId</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Hierarchy</td><td><a class="section" href="#PasDoc-Fields">Fields</a></td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="Grijjy.Bson.html">Grijjy.Bson</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TgoObjectId = record</code></p>
+<h2 class="description">Description</h2>
+<p>
+Represents an ObjectId. This is a 12-byte (96-bit) value that is regularly used for (unique) primary keys in MongoDB databases.
+
+<p>Internally, an ObjectId is composed of: </p>
+
+<ul class="compact_spacing">
+  <li><p>A 4-byte value containing the number of seconds since the Unix epoch.</p></li>
+  <li><p>A 3-byte <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Machine">machine</a> identifier</p></li>
+  <li><p>A 2-byte process identifier</p></li>
+  <li><p>A 3-byte counter, starting from a random value</p></li>
+</ul>
+
+<p> This makes ObjectId's fairly unique (but not as unique as GUID's though)</p>
+<h2 class="overview">Overview</h2>
+<a name="PasDoc-Fields"></a><h3 class="summary">Fields</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.TgoObjectId.html#FData">FData</a></b>: array [0..2] of UInt32</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.TgoObjectId.html#FBytes">FBytes</a></b>: array [0..11] of Byte</code></td>
+</tr>
+</table>
+<a name="PasDoc-Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>class constructor <b><a  href="Grijjy.Bson.TgoObjectId.html#Create">Create</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoObjectId.html#Create">Create</a></b>(const ABytes: TBytes): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoObjectId.html#Create">Create</a></b>(const ABytes: array of Byte): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoObjectId.html#Create">Create</a></b>(const ATimestamp, AMachine: Integer; const APid: UInt16; const AIncrement: Integer): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoObjectId.html#Create">Create</a></b>(const ATimestamp: TDateTime; const ATimestampIsUTC: Boolean; const AMachine: Integer; const APid: UInt16; const AIncrement: Integer): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoObjectId.html#Create">Create</a></b>(const AString: String): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoObjectId.html#GenerateNewId">GenerateNewId</a></b>: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoObjectId.html#GenerateNewId">GenerateNewId</a></b>(const ATimestamp: TDateTime; const ATimestampIsUTC: Boolean): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoObjectId.html#GenerateNewId">GenerateNewId</a></b>(const ATimestamp: Integer): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoObjectId.html#Parse">Parse</a></b>(const AString: String): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoObjectId.html#TryParse">TryParse</a></b>(const AString: String; out AObjectId: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): Boolean; overload; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.TgoObjectId.html#Empty">Empty</a></b>: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoObjectId.html#Implicit">Implicit</a></b>(const A: String): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoObjectId.html#Implicit">Implicit</a></b>(const A: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoObjectId.html#Equal">Equal</a></b>(const A, B: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoObjectId.html#NotEqual">NotEqual</a></b>(const A, B: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoObjectId.html#GreaterThan">GreaterThan</a></b>(const A, B: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoObjectId.html#GreaterThanOrEqual">GreaterThanOrEqual</a></b>(const A, B: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoObjectId.html#LessThan">LessThan</a></b>(const A, B: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class operator <b><a  href="Grijjy.Bson.TgoObjectId.html#LessThanOrEqual">LessThanOrEqual</a></b>(const A, B: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): Boolean; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoObjectId.html#ToByteArray">ToByteArray</a></b>: TBytes; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Bson.TgoObjectId.html#ToByteArray">ToByteArray</a></b>(const ADestination: TBytes; const AOffset: Integer); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoObjectId.html#ToString">ToString</a></b>: String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.Bson.TgoObjectId.html#CompareTo">CompareTo</a></b>(const AOther: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): Integer;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoObjectId.html#IsEmpty">IsEmpty</a></b>: Boolean read GetIsEmpty;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoObjectId.html#Timestamp">Timestamp</a></b>: Integer read GetTimestamp;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoObjectId.html#Machine">Machine</a></b>: Integer read GetMachine;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoObjectId.html#Pid">Pid</a></b>: UInt16 read GetPid;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoObjectId.html#Increment">Increment</a></b>: Integer read GetIncrement;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoObjectId.html#CreationTime">CreationTime</a></b>: TDateTime read GetCreationTime;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Fields</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="FData"></a><code><b>FData</b>: array [0..2] of UInt32</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="FBytes"></a><code><b>FBytes</b>: array [0..11] of Byte</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Create"></a><code>class constructor <b>Create</b>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Create"></a><code>class function <b>Create</b>(const ABytes: TBytes): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates an ObjectId from a byte array.
+
+<p>
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ABytes</dt>
+<dd>the array of bytes to use for the ObjectId. Must be 12 bytes long.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The ObjectId.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentException</code></dt>
+<dd>if ABytes is not 12 bytes long</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Create"></a><code>class function <b>Create</b>(const ABytes: array of Byte): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates an ObjectId from a byte array.
+
+<p>
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ABytes</dt>
+<dd>the array of bytes to use for the ObjectId. Must be 12 bytes long.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The ObjectId.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentException</code></dt>
+<dd>if ABytes is not 12 bytes long</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Create"></a><code>class function <b>Create</b>(const ATimestamp, AMachine: Integer; const APid: UInt16; const AIncrement: Integer): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates an ObjectId from its components.
+
+<p>   
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ATimestamp</dt>
+<dd>32-bit number of seconds since Unix epoch.</dd>
+<dt>AMachine</dt>
+<dd>24-bit <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Machine">machine</a> identifier. Must be &gt;= 0 and &lt; $01000000.</dd>
+<dt>APid</dt>
+<dd>16-bit process identifier.</dd>
+<dt>AIncrement</dt>
+<dd>24-bit counter. Must be &gt;= 0 and &lt; $01000000.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The ObjectId.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentOutOfRangeException</code></dt>
+<dd>if AMachine or AIncrement are out of range.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Create"></a><code>class function <b>Create</b>(const ATimestamp: TDateTime; const ATimestampIsUTC: Boolean; const AMachine: Integer; const APid: UInt16; const AIncrement: Integer): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates an ObjectId from its components.
+
+<p>    
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ATimestamp</dt>
+<dd>the date/time to use as a <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Timestamp">timestamp</a>.</dd>
+<dt>ATimestampIsUTC</dt>
+<dd>whether ATimestamp is in universal time.</dd>
+<dt>AMachine</dt>
+<dd>24-bit <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Machine">machine</a> identifier. Must be &gt;= 0 and &lt; $01000000.</dd>
+<dt>APid</dt>
+<dd>16-bit process identifier.</dd>
+<dt>AIncrement</dt>
+<dd>24-bit counter. Must be &gt;= 0 and &lt; $01000000.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The ObjectId.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentOutOfRangeException</code></dt>
+<dd>if AMachine or AIncrement are out of range.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Create"></a><code>class function <b>Create</b>(const AString: String): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates an ObjectId from its string representation (see <a class="normal" href="Grijjy.Bson.TgoObjectId.html#ToString">ToString</a>).
+
+<p>
+
+<p>  <b>Note</b>: this constructor is <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Equal">equal</a> to the <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Parse">Parse</a> method.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AString</dt>
+<dd>the string representation of the ObjectId. Must contain 24 hex digits.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The ObjectId.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentException</code></dt>
+<dd>if AString does not contain 24 hex digits.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GenerateNewId"></a><code>class function <b>GenerateNewId</b>: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Generates a new ObjectId using the current <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Timestamp">timestamp</a>, <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Machine">machine</a>, process and counter settings.
+
+<p> <b>Note</b>: the returned ObjectId is guaranteed to be unique on the current system, even if this function is called at the same time from the same or other processes on the <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Machine">machine</a>. However, the ObjectId is not neccesarily globally unique since another <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Machine">machine</a> with the same hostname or computer name can theoretically generate the same Id.</p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The newly generated ObjectId.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GenerateNewId"></a><code>class function <b>GenerateNewId</b>(const ATimestamp: TDateTime; const ATimestampIsUTC: Boolean): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Generates a new ObjectId using a given <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Timestamp">timestamp</a> and the current <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Machine">machine</a>, process and counter settings.
+
+<p> 
+
+<p> <b>Note</b>: the returned ObjectId is guaranteed to be unique on the current system, even if this function is called at the same time from the same or other processes on the <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Machine">machine</a>. However, the ObjectId is not neccesarily globally unique since another <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Machine">machine</a> with the same hostname or computer name can theoretically generate the same Id.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ATimestamp</dt>
+<dd>the date/time to use as a <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Timestamp">timestamp</a>.</dd>
+<dt>ATimestampIsUTC</dt>
+<dd>whether ATimestamp is in universal time.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The newly generated ObjectId.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GenerateNewId"></a><code>class function <b>GenerateNewId</b>(const ATimestamp: Integer): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Generates a new ObjectId using a given <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Timestamp">timestamp</a> and the current <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Machine">machine</a>, process and counter settings.
+
+<p>
+
+<p> <b>Note</b>: the returned ObjectId is guaranteed to be unique on the current system, even if this function is called at the same time from the same or other processes on the <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Machine">machine</a>. However, the ObjectId is not neccesarily globally unique since another <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Machine">machine</a> with the same hostname or computer name can theoretically generate the same Id.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ATimestamp</dt>
+<dd>32-bit number of seconds since Unix epoch.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The newly generated ObjectId.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Parse"></a><code>class function <b>Parse</b>(const AString: String): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Parses an ObjectId from its string representation (see <a class="normal" href="Grijjy.Bson.TgoObjectId.html#ToString">ToString</a>).
+
+<p>
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AString</dt>
+<dd>the string representation of the ObjectId. Must contain 24 hex digits.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The ObjectId.</p><h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentException</code></dt>
+<dd>if AString does not contain 24 hex digits</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TryParse"></a><code>class function <b>TryParse</b>(const AString: String; out AObjectId: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): Boolean; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Parse">parse</a> an ObjectId from its string representation (see <a class="normal" href="Grijjy.Bson.TgoObjectId.html#ToString">ToString</a>).
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AString</dt>
+<dd>the string representation of the ObjectId. Must contain 24 hex digits.</dd>
+<dt>AObjectId</dt>
+<dd>is set to the parsed ObjectId, or all zeros if AString could not be parsed.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if AString could be successfully parsed.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Empty"></a><code>class function <b>Empty</b>: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns an <code>empty</code> ObjectId (with all zeros)
+
+<p></p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The <code>empty</code> ObjectId.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: String): <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Implicitly converts a string to an ObjectId. The string <b>must</b> contain 24 hex digits. An EArgumentException will be raised if this is not the case</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Implicit"></a><code>class operator <b>Implicit</b>(const A: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Implicitly convers an ObjectId to a string</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Equal"></a><code>class operator <b>Equal</b>(const A, B: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tests 2 ObjectId's for equality</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="NotEqual"></a><code>class operator <b>NotEqual</b>(const A, B: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tests 2 ObjectId's for inequality</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GreaterThan"></a><code>class operator <b>GreaterThan</b>(const A, B: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Compares 2 ObjectId's using the &quot;&gt;&quot; operator</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GreaterThanOrEqual"></a><code>class operator <b>GreaterThanOrEqual</b>(const A, B: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Compares 2 ObjectId's using the &quot;&gt;=&quot; operator</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LessThan"></a><code>class operator <b>LessThan</b>(const A, B: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Compares 2 ObjectId's using the &quot;&lt;&quot; operator</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="LessThanOrEqual"></a><code>class operator <b>LessThanOrEqual</b>(const A, B: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): Boolean; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Compares 2 ObjectId's using the &quot;&lt;=&quot; operator</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToByteArray"></a><code>function <b>ToByteArray</b>: TBytes; overload;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Converts the ObjectId to an array of 12 bytes.
+
+<p></p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The ObjectId as 12 bytes.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToByteArray"></a><code>procedure <b>ToByteArray</b>(const ADestination: TBytes; const AOffset: Integer); overload;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Converts the ObjectId to an array of bytes.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ADestination</dt>
+<dd>byte array to store the ObjectId into.</dd>
+<dt>AOffset</dt>
+<dd>starting offset in ADestination to use.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>EArgumentException</code></dt>
+<dd>if ADestination does not have room enough to store (AOffset+12) bytes.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ToString"></a><code>function <b>ToString</b>: String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Converts the ObjectId to its string representation. This is a string containing 24 hex digits.
+
+<p></p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The string representation of the ObjectId.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="CompareTo"></a><code>function <b>CompareTo</b>(const AOther: <a  href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Compare this ObjectId to another one.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AOther</dt>
+<dd>the other ObjectId.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">* -1 if Self &lt; AOther </p>
+
+<ul class="compact_spacing">
+  <li><p>0 if Self = AOther</p></li>
+  <li><p>1 if Self &gt; AOther</p></li>
+</ul>
+
+<p> </p></td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IsEmpty"></a><code>property <b>IsEmpty</b>: Boolean read GetIsEmpty;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns True if this ObjectId is <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Empty">empty</a> (all zeros)</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Timestamp"></a><code>property <b>Timestamp</b>: Integer read GetTimestamp;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+<code>Timestamp</code> component of the ObjectId. If the 32-bit number of seconds since Unix epoch.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Machine"></a><code>property <b>Machine</b>: Integer read GetMachine;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+<code>Machine</code> component of the ObjectId. Is a 24-bit <code>machine</code> identifier.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Pid"></a><code>property <b>Pid</b>: UInt16 read GetPid;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Process component of the ObjectId. Is a 16-bit process identifier.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Increment"></a><code>property <b>Increment</b>: Integer read GetIncrement;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Counter component of the ObjectId. Is a 32-bit <code>increment</code>.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="CreationTime"></a><code>property <b>CreationTime</b>: TDateTime read GetCreationTime;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+The creation time of the ObjectId, as stored inside its <a class="normal" href="Grijjy.Bson.TgoObjectId.html#Timestamp">Timestamp</a> component. The time is in UTC.</p>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:52</em>
+</span>
+</td></tr></table></body></html>
