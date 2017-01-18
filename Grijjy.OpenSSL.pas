@@ -303,7 +303,7 @@ end;
 
 function TgoOpenSSL.ALPN: Boolean;
 var
-  ALPN: PAnsiChar;
+  ALPN: MarshaledAString;
   ALPNLen: Integer;
 begin
   SSL_get0_alpn_selected(FSSL, ALPN, ALPNLen);

@@ -8,11 +8,11 @@ interface
 
 uses
   System.Classes,
-  {$IFDEF MSWINDOWS}
+  {$IF Defined(MSWINDOWS)}
   Windows,
-  {$ENDIF}
-  {$IFDEF FPC}
-  dynlibs,
+  {$ELSEIF Defined(LINUX)}
+  {$ELSE}
+    {$MESSAGE Error 'Unsupported Platform'}
   {$ENDIF}
   System.SyncObjs,
   System.SysUtils;
@@ -112,7 +112,7 @@ type
   TASN1_STRING = record
     length: Integer;
     type_: Integer;
-    data: PAnsiChar;
+    data: MarshaledAString;
     flags: Longword;
   end;
   PASN1_STRING = ^TASN1_STRING;
@@ -149,13 +149,13 @@ type
   end;
   PASN1_OBJECT = ^TASN1_OBJECT;
 
-  TStatLockLockCallback = procedure(Mode: Integer; N: Integer; const _File: PAnsiChar; Line: Integer); cdecl;
+  TStatLockLockCallback = procedure(Mode: Integer; N: Integer; const _File: MarshaledAString; Line: Integer); cdecl;
   TStatLockIDCallback = function: Longword; cdecl;
   TCryptoThreadIDCallback = procedure(ID: PCRYPTO_THREADID) cdecl;
 
-  TDynLockCreateCallback = function(const _file: PAnsiChar; Line: Integer): PCRYPTO_dynlock_value; cdecl;
-  TDynLockLockCallback = procedure(Mode: Integer; L: PCRYPTO_dynlock_value; _File: PAnsiChar; Line: Integer); cdecl;
-  TDynLockDestroyCallback = procedure(L: PCRYPTO_dynlock_value; _File: PAnsiChar; Line: Integer); cdecl;
+  TDynLockCreateCallback = function(const _file: MarshaledAString; Line: Integer): PCRYPTO_dynlock_value; cdecl;
+  TDynLockLockCallback = procedure(Mode: Integer; L: PCRYPTO_dynlock_value; _File: MarshaledAString; Line: Integer); cdecl;
+  TDynLockDestroyCallback = procedure(L: PCRYPTO_dynlock_value; _File: MarshaledAString; Line: Integer); cdecl;
   pem_password_cb = function(buf: Pointer; size: Integer; rwflag: Integer; userdata: Pointer): Integer; cdecl;
 
   TgoSSLHelper = class
@@ -187,13 +187,13 @@ var
   SSL_CTX_use_RSAPrivateKey: function(ctx: PSSL_CTX; pkey: PEVP_PKEY): Integer; cdecl = nil;
   SSL_CTX_use_certificate: function(ctx: PSSL_CTX; x: PX509): Integer; cdecl = nil;
   SSL_CTX_check_private_key: function(ctx: PSSL_CTX): Integer; cdecl = nil;
-  SSL_CTX_use_certificate_file: function(ctx: PSSL_CTX; f: PAnsiChar; t: Integer): Integer; cdecl = nil;
-  SSL_CTX_use_RSAPrivateKey_file: function(ctx: PSSL_CTX; f: PAnsiChar; t: Integer): Integer; cdecl = nil;
+  SSL_CTX_use_certificate_file: function(ctx: PSSL_CTX; f: MarshaledAString; t: Integer): Integer; cdecl = nil;
+  SSL_CTX_use_RSAPrivateKey_file: function(ctx: PSSL_CTX; f: MarshaledAString; t: Integer): Integer; cdecl = nil;
   SSL_CTX_get_cert_store: function(ctx: PSSL_CTX): PX509_STORE; cdecl = nil;
   SSL_CTX_ctrl: function(ctx: PSSL_CTX; cmd, i: integer; p: pointer): Integer; cdecl = nil;
-  SSL_CTX_load_verify_locations: function(ctx: PSSL_CTX; CAFile: PAnsiChar; CAPath: PAnsiChar): Integer; cdecl = nil;
-  SSL_CTX_use_certificate_chain_file: function(ctx: PSSL_CTX; CAFile: PAnsiChar): Integer; cdecl = nil;
-  SSL_CTX_set_alpn_protos: function(ctx: PSSL_CTX; protos: PAnsiChar; protos_len: Integer): Integer; cdecl = nil;
+  SSL_CTX_load_verify_locations: function(ctx: PSSL_CTX; CAFile: MarshaledAString; CAPath: MarshaledAString): Integer; cdecl = nil;
+  SSL_CTX_use_certificate_chain_file: function(ctx: PSSL_CTX; CAFile: MarshaledAString): Integer; cdecl = nil;
+  SSL_CTX_set_alpn_protos: function(ctx: PSSL_CTX; protos: MarshaledAString; protos_len: Integer): Integer; cdecl = nil;
   SSL_new: function(ctx: PSSL_CTX): PSSL; cdecl = nil;
   SSL_set_bio: procedure(s: PSSL; rbio, wbio: PBIO); cdecl = nil;
   SSL_get_peer_certificate: function(s: PSSL): PX509; cdecl = nil;
@@ -207,8 +207,8 @@ var
   SSL_write: function(s: PSSL; const buf: Pointer; num: Integer): Integer; cdecl = nil;
   SSL_state: function(s: PSSL): Integer; cdecl = nil;
   SSL_pending: function(s: PSSL): Integer; cdecl = nil;
-  SSL_set_cipher_list: function(s: PSSL; ciphers: PAnsiChar): Integer; cdecl = nil;
-  SSL_get0_alpn_selected: procedure (s: PSSL; out data: PAnsiChar; out len: Integer); cdecl = nil;
+  SSL_set_cipher_list: function(s: PSSL; ciphers: MarshaledAString): Integer; cdecl = nil;
+  SSL_get0_alpn_selected: procedure (s: PSSL; out data: MarshaledAString; out len: Integer); cdecl = nil;
   SSL_clear: function(s: PSSL): Integer; cdecl = nil;
   CRYPTO_num_locks: function: Integer; cdecl = nil;
   CRYPTO_set_locking_callback: procedure(callback: TStatLockLockCallback); cdecl = nil;
@@ -218,7 +218,7 @@ var
   CRYPTO_cleanup_all_ex_data: procedure; cdecl = nil;
   ERR_remove_state: procedure(tid: Cardinal); cdecl = nil;
   ERR_free_strings: procedure; cdecl = nil; // thread-unsafe, Application-global cleanup functions
-  ERR_error_string_n: procedure(err: Cardinal; buf: PAnsiChar; len: size_t); cdecl = nil;
+  ERR_error_string_n: procedure(err: Cardinal; buf: MarshaledAString; len: size_t); cdecl = nil;
   ERR_get_error: function: Cardinal; cdecl = nil;
   ERR_remove_thread_state: procedure(pid: Cardinal); cdecl = nil;
   ERR_load_BIO_strings: function: Cardinal; cdecl = nil;
@@ -240,7 +240,7 @@ var
   sk_pop: function(stack: PSTACK): Pointer; cdecl = nil;
   ASN1_BIT_STRING_get_bit: function(a: PASN1_BIT_STRING; n: Integer): Integer; cdecl = nil;
   OBJ_obj2nid: function(o: PASN1_OBJECT): Integer; cdecl = nil;
-  OBJ_nid2sn: function(n: Integer): PAnsiChar; cdecl = nil;
+  OBJ_nid2sn: function(n: Integer): MarshaledAString; cdecl = nil;
   ASN1_STRING_data: function(x: PASN1_STRING): Pointer; cdecl = nil;
   PEM_read_bio_X509: function(bp: PBIO; x: PX509; cb: pem_password_cb; u: Pointer): PX509; cdecl = nil;
   PEM_read_bio_PrivateKey: function(bp: PBIO; x: PPEVP_PKEY; cb: pem_password_cb; u: Pointer): PEVP_PKEY; cdecl = nil;
@@ -254,7 +254,7 @@ var
   EVP_DigestSignFinal: function(ctx : PEVP_MD_CTX; const d: PByte; var cnt: Cardinal): Integer; cdecl = nil;
   EVP_DigestVerifyInit: function(aCtx: PEVP_MD_CTX; aPCtx: PEVP_PKEY_CTX; aType: PEVP_MD; aEngine: ENGINE; aKey: pEVP_PKEY): Integer; cdecl = nil;
   EVP_DigestVerifyFinal: function(ctx : pEVP_MD_CTX; const d: PByte; cnt: Cardinal) : Integer; cdecl = nil;
-  CRYPTO_malloc: function(aLength : LongInt; const f : PAnsiChar; aLine : Integer): Pointer; cdecl= nil;
+  CRYPTO_malloc: function(aLength : LongInt; const f : MarshaledAString; aLine : Integer): Pointer; cdecl= nil;
   CRYPTO_free: procedure(str: Pointer); cdecl= nil;
 
 function BIO_pending(bp: PBIO): Integer; inline;
@@ -309,7 +309,7 @@ end;
 
 function BIO_get_flags(b: PBIO): Integer;
 begin
-  Result := PInteger(PAnsiChar(b) + 3 * SizeOf(Pointer) + 2 * SizeOf(Integer))^;
+  Result := PInteger(MarshaledAString(b) + 3 * SizeOf(Pointer) + 2 * SizeOf(Integer))^;
 end;
 
 function BIO_should_retry(b: PBIO): Boolean;
@@ -502,7 +502,7 @@ begin
   _LIBEAYHandle := 0;
 end;
 
-procedure ssl_lock_callback(Mode, N: Integer; const _File: PAnsiChar; Line: Integer); cdecl;
+procedure ssl_lock_callback(Mode, N: Integer; const _File: MarshaledAString; Line: Integer); cdecl;
 begin
 	if(mode and CRYPTO_LOCK <> 0) then
     _FSSLLocks[N].Enter
@@ -510,7 +510,7 @@ begin
     _FSSLLocks[N].Leave;
 end;
 
-procedure ssl_lock_dyn_callback(Mode: Integer; L: PCRYPTO_dynlock_value; _File: PAnsiChar; Line: Integer); cdecl;
+procedure ssl_lock_dyn_callback(Mode: Integer; L: PCRYPTO_dynlock_value; _File: MarshaledAString; Line: Integer); cdecl;
 begin
   if (Mode and CRYPTO_LOCK <> 0) then
     L.Mutex.Enter
@@ -518,13 +518,13 @@ begin
     L.Mutex.Leave;
 end;
 
-function ssl_lock_dyn_create_callback(const _file: PAnsiChar; Line: Integer): PCRYPTO_dynlock_value; cdecl;
+function ssl_lock_dyn_create_callback(const _file: MarshaledAString; Line: Integer): PCRYPTO_dynlock_value; cdecl;
 begin
   New(Result);
   Result.Mutex := TCriticalSection.Create;
 end;
 
-procedure ssl_lock_dyn_destroy_callback(L: PCRYPTO_dynlock_value; _File: PAnsiChar; Line: Integer); cdecl;
+procedure ssl_lock_dyn_destroy_callback(L: PCRYPTO_dynlock_value; _File: MarshaledAString; Line: Integer); cdecl;
 begin
   L.Mutex.Free;
   Dispose(L);
@@ -578,11 +578,7 @@ end;
 
 class procedure TgoSSLHelper.LoadSSL;
 begin
-  {$IFDEF FPC}
-  if (InterlockedIncrement(FTarget) = 1) then
-  {$ELSE}
   if (TInterlocked.Increment(FTarget) = 1) then
-  {$ENDIF}
   begin
     LoadLIBEAY;
     LoadSSLEAY;
@@ -610,15 +606,15 @@ var
   BIOCert, BIOPrivateKey: PBIO;
   Certificate: PX509;
   PrivateKey: PEVP_PKEY;
-  Password: AnsiString;
+  Password: RawByteString;
 begin
 	BIOCert := BIO_new_mem_buf(@ACertificate[0], Length(ACertificate));
 	BIOPrivateKey := BIO_new_mem_buf(@APrivateKey[0], Length(APrivateKey));
 	Certificate := PEM_read_bio_X509(BIOCert, nil, nil, nil);
   if APassword <> '' then
   begin
-    Password := MarshaledAString({$IFNDEF FPC}TMarshal.AsAnsi{$ELSE}AnsiString{$ENDIF}(APassword));
-	  PrivateKey := PEM_read_bio_PrivateKey(BIOPrivateKey, nil, nil, @Password[1]);
+    Password := RawByteString(APassword);
+	  PrivateKey := PEM_read_bio_PrivateKey(BIOPrivateKey, nil, nil, MarshaledAString(Password));
   end
   else
 	  PrivateKey := PEM_read_bio_PrivateKey(BIOPrivateKey, nil, nil, nil);

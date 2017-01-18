@@ -13,7 +13,13 @@ uses
   System.SyncObjs,
   System.DateUtils,
   Grijjy.Uri,
+  {$IF Defined(MSWINDOWS)}
   Grijjy.SocketPool.Win,
+  {$ELSEIF Defined(LINUX)}
+  Grijjy.SocketPool.Linux,
+  {$ELSE}
+    {$MESSAGE Error 'Unsupported Platform'}
+  {$ENDIF}
   Grijjy.BinaryCoding;
 
 const
