@@ -1223,6 +1223,7 @@ end;
 
 constructor TgoRingBuffer<T>.Create(const ACapacity: Integer);
 begin
+  Assert(not IsManagedType(T));
   inherited Create;
   FCapacity := ACapacity;
   SetLength(FBuffer, ACapacity);
