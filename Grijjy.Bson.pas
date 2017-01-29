@@ -379,7 +379,7 @@ unit Grijjy.Bson;
   creating BSON payloads, without the overhead of creating a document object
   model in memory.
 
-  For information, see the unit Grijjy.Bson.IO
+  For information, see the unit Grijjy.Data.Bson.IO
 
   @bold(Serialization)
 
@@ -387,7 +387,7 @@ unit Grijjy.Bson;
   store a Delphi record or object in JSON or BSON format (or convert it to a
   TgoBsonDocument).
 
-  For information, see the unit Grijjy.Bson.Serialization *)
+  For information, see the unit Grijjy.Data.Bson.Serialization *)
 
 {$INCLUDE 'Grijjy.inc'}
 
@@ -512,6 +512,7 @@ type
     FLineBreak: String;
     FOutputMode: TgoJsonOutputMode;
   public
+    { @exclude }
     class constructor Create;
   {$ENDREGION 'Internal Declarations'}
   public
@@ -636,6 +637,7 @@ type
   private
     procedure FromByteArray(const ABytes: TBytes);
   public
+    { @exclude }
     class constructor Create;
   {$ENDREGION 'Internal Declarations'}
   public
@@ -890,8 +892,9 @@ type
     which can hold any type of BSON value. }
   TgoBsonValue = record
   {$REGION 'Internal Declarations'}
-  private type
-    IValue = interface
+  public type
+    { @exclude }
+    _IValue = interface
     ['{290B24D7-1D64-4F76-93C8-1B9D92658018}']
       function GetBsonType: TgoBsonType;
       function AsBoolean: Boolean;
@@ -915,15 +918,15 @@ type
       function ToGuid: TGUID;
       function ToObjectId: TgoObjectId;
 
-      function Equals(const AOther: IValue): Boolean;
+      function Equals(const AOther: _IValue): Boolean;
 
-      function Clone: IValue;
-      function DeepClone: IValue;
+      function Clone: _IValue;
+      function DeepClone: _IValue;
 
       property BsonType: TgoBsonType read GetBsonType;
     end;
   private
-    FImpl: IValue;
+    FImpl: _IValue;
     function GetBsonType: TgoBsonType; inline;
     function GetIsBoolean: Boolean; inline;
     function GetIsBsonArray: Boolean; inline;
@@ -967,6 +970,9 @@ type
     class operator Implicit(const A: UInt64): TgoBsonValue; static;
     { @exclude }
     class operator Implicit(const A: Single): TgoBsonValue; static;
+
+    { @exclude }
+    property _Impl: _IValue read FImpl write FImpl;
   {$ENDREGION 'Internal Declarations'}
   public
     { Creates a BSON value by paring a JSON string.
@@ -1485,14 +1491,15 @@ type
   { An array of other BSON values }
   TgoBsonArray = record
   {$REGION 'Internal Declarations'}
-  private type
-    IArray = interface(TgoBsonValue.IValue)
+  public type
+    { @exclude }
+    _IArray = interface(TgoBsonValue._IValue)
     ['{968AA4B3-4569-4676-B85D-0DF953DC6D26}']
       function GetCount: Integer;
-      function GetItem(const AIndex: Integer): TgoBsonValue;
-      procedure SetItem(const AIndex: Integer; const AValue: TgoBsonValue);
+      procedure GetItem(const AIndex: Integer; out AValue: TgoBsonValue._IValue);
+      procedure SetItem(const AIndex: Integer; const AValue: TgoBsonValue._IValue);
 
-      procedure Add(const AValue: TgoBsonValue);
+      procedure Add(const AValue: TgoBsonValue._IValue);
       procedure AddRange(const AValues: array of TgoBsonValue); overload;
       procedure AddRange(const AValues: TArray<TgoBsonValue>); overload;
       procedure AddRange(const AValues: TgoBsonArray); overload;
@@ -1503,26 +1510,28 @@ type
       function IndexOf(const AValue: TgoBsonValue): Integer;
 
       property Count: Integer read GetCount;
-      property Items[const AIndex: Integer]: TgoBsonValue read GetItem write SetItem; default;
     end;
   private type
     TEnumerator = record
     private
-      FImpl: IArray;
+      FImpl: _IArray;
       FIndex: Integer;
       FHigh: Integer;
       function GetCurrent: TgoBsonValue;
     public
-      constructor Create(const AImpl: IArray);
+      constructor Create(const AImpl: _IArray);
       function MoveNext: Boolean;
 
       property Current: TgoBsonValue read GetCurrent;
     end;
   private
-    FImpl: IArray;
+    FImpl: _IArray;
     function GetCount: Integer; inline;
     function GetItem(const AIndex: Integer): TgoBsonValue; inline;
     procedure SetItem(const AIndex: Integer; const AValue: TgoBsonValue); inline;
+  public
+    { @exclude }
+    property _Impl: _IArray read FImpl;
   {$ENDREGION 'Internal Declarations'}
   public
     { Creates an empty BSON array.
@@ -1779,7 +1788,11 @@ type
   {$REGION 'Internal Declarations'}
   private
     FName: String;
-    FImpl: TgoBsonValue;
+    FImpl: TgoBsonValue._IValue;
+    function GetValue: TgoBsonValue; inline;
+  public
+    { @exclude }
+    property _Impl: TgoBsonValue._IValue read FImpl;
   {$ENDREGION 'Internal Declarations'}
   public
     { Creates a document element.
@@ -1798,7 +1811,7 @@ type
     class operator Equal(const A, B: TgoBsonElement): Boolean; static;
 
     { Tests 2 document elements for inequality. }
-    class operator NotEqual(const A, B: TgoBsonElement): Boolean; static;
+    class operator NotEqual(const A, B: TgoBsonElement): Boolean; inline; static;
 
     { Creates a shallow clone of the element. The returned element will contain
       a reference to the existing value.
@@ -1818,7 +1831,7 @@ type
     property Name: String read FName;
 
     { Value of the element }
-    property Value: TgoBsonValue read FImpl;
+    property Value: TgoBsonValue read GetValue;
   end;
 
 type
@@ -1829,25 +1842,27 @@ type
     and by index. }
   TgoBsonDocument = record
   {$REGION 'Internal Declarations'}
-  private type
-    IDocument = interface(TgoBsonValue.IValue)
+  public type
+    { @exclude }
+    _IDocument = interface(TgoBsonValue._IValue)
     ['{9E13B024-904D-44F6-BE16-33D81A0F057F}']
       function GetCount: Integer;
       function GetAllowDuplicateNames: Boolean;
       procedure SetAllowDuplicateNames(const Value: Boolean);
       function GetElement(const AIndex: Integer): TgoBsonElement;
-      function GetValue(const AIndex: Integer): TgoBsonValue;
-      procedure SetValue(const AIndex: Integer; const AValue: TgoBsonValue);
-      function GetValueByName(const AName: String): TgoBsonValue;
-      procedure SetValueByName(const AName: String; const AValue: TgoBsonValue);
+      procedure GetValue(const AIndex: Integer; out AValue: TgoBsonValue._IValue);
+      procedure SetValue(const AIndex: Integer; const AValue: TgoBsonValue._IValue);
+      procedure GetValueByName(const AName: String; out AValue: TgoBsonValue._IValue);
+      procedure SetValueByName(const AName: String; const AValue: TgoBsonValue._IValue);
 
-      procedure Add(const AElement: TgoBsonElement);
-      function Get(const AName: String; const ADefault: TgoBsonValue): TgoBsonValue;
+      procedure Add(const AName: String; const AValue: TgoBsonValue._IValue);
+      procedure Get(const AName: String; const ADefault: TgoBsonValue._IValue;
+        out AValue: TgoBsonValue._IValue);
       function IndexOfName(const AName: String): Integer;
       function Contains(const AName: String): Boolean;
       function ContainsValue(const AValue: TgoBsonValue): Boolean;
       function TryGetElement(const AName: String; out AElement: TgoBsonElement): Boolean;
-      function TryGetValue(const AName: String; out AValue: TgoBsonValue): Boolean;
+      function TryGetValue(const AName: String; out AValue: TgoBsonValue._IValue): Boolean;
       procedure Remove(const AName: String);
       procedure Delete(const AIndex: Integer);
       procedure Clear;
@@ -1858,24 +1873,22 @@ type
       property AllowDuplicateNames: Boolean read GetAllowDuplicateNames write SetAllowDuplicateNames;
       property Count: Integer read GetCount;
       property Elements[const AIndex: Integer]: TgoBsonElement read GetElement;
-      property Values[const AIndex: Integer]: TgoBsonValue read GetValue write SetValue;
-      property ValuesByName[const AName: String]: TgoBsonValue read GetValueByName write SetValueByName; default;
     end;
   private type
     TEnumerator = record
     private
-      FImpl: IDocument;
+      FImpl: _IDocument;
       FIndex: Integer;
       FHigh: Integer;
       function GetCurrent: TgoBsonElement;
     public
-      constructor Create(const AImpl: IDocument);
+      constructor Create(const AImpl: _IDocument);
       function MoveNext: Boolean;
 
       property Current: TgoBsonElement read GetCurrent;
     end;
   private
-    FImpl: IDocument;
+    FImpl: _IDocument;
     function GetCount: Integer; inline;
     function GetElement(const AIndex: Integer): TgoBsonElement; inline;
     function GetValue(const AIndex: Integer): TgoBsonValue; inline;
@@ -1884,6 +1897,9 @@ type
     procedure SetValueByName(const AName: String; const AValue: TgoBsonValue); inline;
     function GetAllowDuplicateNames: Boolean; inline;
     procedure SetAllowDuplicateNames(const AValue: Boolean); inline;
+  public
+    { @exclude }
+    property _Impl: _IDocument read FImpl;
   {$ENDREGION 'Internal Declarations'}
   public
     { Creates an empty BSON document.
@@ -2204,7 +2220,8 @@ type
   TgoBsonBinaryData = record
   {$REGION 'Internal Declarations'}
   private type
-    IBinaryData = interface(TgoBsonValue.IValue)
+    { @exclude }
+    _IBinaryData = interface(TgoBsonValue._IValue)
     ['{8C7D00D2-6C0F-444F-A4A8-79F366BBA9A1}']
       function GetSubType: TgoBsonBinarySubType;
       function GetCount: Integer;
@@ -2218,12 +2235,15 @@ type
       property AsBytes: TBytes read GetAsBytes;
     end;
   private
-    FImpl: IBinaryData;
+    FImpl: _IBinaryData;
     function GetSubType: TgoBsonBinarySubType; inline;
     function GetCount: Integer; inline;
     function GetByte(const AIndex: Integer): Byte; inline;
     procedure SetByte(const AIndex: Integer; const AValue: Byte); inline;
     function GetAsBytes: TBytes; inline;
+  public
+    { @exclude }
+    property _Impl: _IBinaryData read FImpl;
   {$ENDREGION 'Internal Declarations'}
   public
     { Creates an empty BSON binary.
@@ -2306,15 +2326,19 @@ type
   TgoBsonNull = record
   {$REGION 'Internal Declarations'}
   private type
-    INull = interface(TgoBsonValue.IValue)
+    _INull = interface(TgoBsonValue._IValue)
     ['{112081EC-BB01-4974-948C-59CE64077420}']
     end;
   private class var
     FImpl: TgoBsonNull;
   private
-    FValue: INull;
+    FValue: _INull;
   public
+    { @exclude }
     class constructor Create;
+
+    { @exclude }
+    property _Value: _INull read FValue;
   {$ENDREGION 'Internal Declarations'}
   public
     { Implicitly casts a BSON Null to a BSON value. }
@@ -2353,15 +2377,20 @@ type
   TgoBsonUndefined = record
   {$REGION 'Internal Declarations'}
   private type
-    IUndefined = interface(TgoBsonValue.IValue)
+    { @exclude }
+    _IUndefined = interface(TgoBsonValue._IValue)
     ['{7410572B-2559-4036-B79A-A6237C0B2679}']
     end;
   private class var
     FImpl: TgoBsonUndefined;
   private
-    FValue: IUndefined;
+    FValue: _IUndefined;
   public
+    { @exclude }
     class constructor Create;
+
+    { @exclude }
+    property _Value: _IUndefined read FValue;
   {$ENDREGION 'Internal Declarations'}
   public
     { Implicitly casts a BSON Undefined to a BSON value. }
@@ -2400,14 +2429,14 @@ type
   TgoBsonDateTime = record
   {$REGION 'Internal Declarations'}
   private type
-    IDateTime = interface(TgoBsonValue.IValue)
-    ['{87332312-C7B7-4E45-B778-569166ACA2D2}']
+    _IDateTime = interface(TgoBsonValue._IValue)
+      ['{87332312-C7B7-4E45-B778-569166ACA2D2}']
       function GetMillisecondsSinceEpoch: Int64;
 
       property MillisecondsSinceEpoch: Int64 read GetMillisecondsSinceEpoch;
     end;
   private
-    FImpl: IDateTime;
+    FImpl: _IDateTime;
     function GetMillisecondsSinceEpoch: Int64; inline;
   {$ENDREGION 'Internal Declarations'}
   public
@@ -2476,7 +2505,8 @@ type
   TgoBsonTimestamp = record
   {$REGION 'Internal Declarations'}
   private type
-    ITimestamp = interface(TgoBsonValue.IValue)
+    { @exclude }
+    _ITimestamp = interface(TgoBsonValue._IValue)
     ['{212644B0-BF5F-4F16-AF96-50437C404DCA}']
       function GetIncrement: Integer;
       function GetTimestamp: Integer;
@@ -2487,10 +2517,13 @@ type
       property Increment: Integer read GetIncrement;
     end;
   private
-    FImpl: ITimestamp;
+    FImpl: _ITimestamp;
     function GetIncrement: Integer; inline;
     function GetTimestamp: Integer; inline;
     function GetValue: Int64; inline;
+  public
+    { @exclude }
+    property _Impl: _ITimestamp read FImpl;
   {$ENDREGION 'Internal Declarations'}
   public
     { Creates a BSON Timestamp.
@@ -2557,7 +2590,8 @@ type
   TgoBsonRegularExpression = record
   {$REGION 'Internal Declarations'}
   private type
-    IRegularExpression = interface(TgoBsonValue.IValue)
+    { @exclude }
+    _IRegularExpression = interface(TgoBsonValue._IValue)
     ['{C1283C00-6071-4DB7-82CD-5A53A00A7399}']
       function GetOptions: String;
       function GetPattern: String;
@@ -2566,9 +2600,12 @@ type
       property Options: String read GetOptions;
     end;
   private
-    FImpl: IRegularExpression;
+    FImpl: _IRegularExpression;
     function GetOptions: String; inline;
     function GetPattern: String; inline;
+  public
+    { @exclude }
+    property _Impl: _IRegularExpression read FImpl;
   {$ENDREGION 'Internal Declarations'}
   public
     { Creates a BSON Regular Expression.
@@ -2635,15 +2672,19 @@ type
   TgoBsonJavaScript = record
   {$REGION 'Internal Declarations'}
   private type
-    IJavaScript = interface(TgoBsonValue.IValue)
+    { @exclude }
+    _IJavaScript = interface(TgoBsonValue._IValue)
     ['{8659A4B1-171B-4C44-BBFC-109E14DE27FC}']
       function GetCode: String;
 
       property Code: String read GetCode;
     end;
   private
-    FImpl: IJavaScript;
+    FImpl: _IJavaScript;
     function GetCode: String; inline;
+  public
+    { @exclude }
+    property _Impl: _IJavaScript read FImpl;
   {$ENDREGION 'Internal Declarations'}
   public
     { Creates a BSON JavaScript.
@@ -2695,14 +2736,15 @@ type
   TgoBsonJavaScriptWithScope = record
   {$REGION 'Internal Declarations'}
   private type
-    IJavaScriptWithScope = interface(TgoBsonJavaScript.IJavaScript)
+    { @exclude }
+    _IJavaScriptWithScope = interface(TgoBsonJavaScript._IJavaScript)
     ['{17B4EFE0-6FEE-4972-A2E5-1CAC276649D4}']
       function GetScope: TgoBsonDocument;
 
       property Scope: TgoBsonDocument read GetScope;
     end;
   private
-    FImpl: IJavaScriptWithScope;
+    FImpl: _IJavaScriptWithScope;
     function GetCode: String; inline;
     function GetScope: TgoBsonDocument; inline;
   {$ENDREGION 'Internal Declarations'}
@@ -2764,15 +2806,19 @@ type
   TgoBsonSymbol = record
   {$REGION 'Internal Declarations'}
   private type
-    ISymbol = interface(TgoBsonValue.IValue)
+    { @exclude }
+    _ISymbol = interface(TgoBsonValue._IValue)
     ['{B63F0297-6A95-4A74-98DF-6E355E8E83B4}']
       function GetName: String;
 
       property Name: String read GetName;
     end;
   private
-    FImpl: ISymbol;
+    FImpl: _ISymbol;
     function GetName: String; inline;
+  public
+    { @exclude }
+    property _Impl: _ISymbol read FImpl;
   {$ENDREGION 'Internal Declarations'}
   public
     { Implicitly casts a BSON Symbol to a BSON value. }
@@ -2817,7 +2863,10 @@ type
     FTable: TDictionary<String, TgoBsonSymbol>;
     FLock: TCriticalSection;
   public
+    { @exclude }
     class constructor Create;
+
+    { @exclude }
     class destructor Destroy;
   {$ENDREGION 'Internal Declarations'}
   public
@@ -2839,15 +2888,20 @@ type
   TgoBsonMaxKey = record
   {$REGION 'Internal Declarations'}
   private type
-    IMaxKey = interface(TgoBsonValue.IValue)
+    { @exclude }
+    _IMaxKey = interface(TgoBsonValue._IValue)
     ['{A6013802-3E77-4A53-B167-9EC4F0EDE896}']
     end;
   private class var
     FImpl: TgoBsonMaxKey;
   private
-    FValue: IMaxKey;
+    FValue: _IMaxKey;
   public
+    { @exclude }
     class constructor Create;
+
+    { @exclude }
+    property _Value: _IMaxKey read FValue;
   {$ENDREGION 'Internal Declarations'}
   public
     { Implicitly casts a BSON MaxKey to a BSON value. }
@@ -2886,15 +2940,20 @@ type
   TgoBsonMinKey = record
   {$REGION 'Internal Declarations'}
   private type
-    IMinKey = interface(TgoBsonValue.IValue)
+    { @exclude }
+    _IMinKey = interface(TgoBsonValue._IValue)
     ['{539D88D8-5E9F-4FA0-8304-A81FA89D8934}']
     end;
   private class var
     FImpl: TgoBsonMinKey;
   private
-    FValue: IMinKey;
+    FValue: _IMinKey;
   public
+    { @exclude }
     class constructor Create;
+
+    { @exclude }
+    property _Value: _IMinKey read FValue;
   {$ENDREGION 'Internal Declarations'}
   public
     { Implicitly casts a BSON MinKey to a BSON value. }
@@ -3019,14 +3078,68 @@ type
     function AsBsonTimestamp: TgoBsonTimestamp; inline;
   end;
 
-resourcestring
-  RS_BSON_NIL_EXPECTED = 'Only nil pointers can be converted to BSON values';
+{$REGION 'Internal Declarations'}
+{ @exclude }
+function _goBsonValueFromDouble(const AValue: Double): TgoBsonValue._IValue;
+
+{ @exclude }
+function _goBsonValueFromString(const AValue: String): TgoBsonValue._IValue;
+
+{ @exclude }
+function _goBsonValueFromObjectId(const AValue: TgoObjectId): TgoBsonValue._IValue;
+
+{ @exclude }
+function _goBsonValueFromBoolean(const AValue: Boolean): TgoBsonValue._IValue;
+
+{ @exclude }
+function _goBsonValueFromDateTime(const AValue: Int64): TgoBsonValue._IValue;
+
+{ @exclude }
+function _goBsonValueFromInt32(const AValue: Int32): TgoBsonValue._IValue;
+
+{ @exclude }
+function _goBsonValueFromInt64(const AValue: Int64): TgoBsonValue._IValue;
+
+{ @exclude }
+function _goCreateArray: TgoBsonArray._IArray;
+
+{ @exclude }
+function _goCreateDocument: TgoBsonDocument._IDocument;
+
+{ @exclude }
+procedure _goGetBinaryData(const ASrc: TgoBsonValue._IValue;
+  out ADst: TgoBsonBinaryData);
+
+{ @exclude }
+procedure _goGetDateTime(const ASrc: TgoBsonValue._IValue;
+  out ADst: TgoBsonDateTime);
+
+{ @exclude }
+procedure _goGetRegularExpression(const ASrc: TgoBsonValue._IValue;
+  out ADst: TgoBsonRegularExpression);
+
+{ @exclude }
+procedure _goGetJavaScript(const ASrc: TgoBsonValue._IValue;
+  out ADst: TgoBsonJavaScript);
+
+{ @exclude }
+procedure _goGetJavaScriptWithScope(const ASrc: TgoBsonValue._IValue;
+  out ADst: TgoBsonJavaScriptWithScope);
+
+{ @exclude }
+procedure _goGetSymbol(const ASrc: TgoBsonValue._IValue;
+  out ADst: TgoBsonSymbol);
+
+{ @exclude }
+procedure _goGetTimestamp(const ASrc: TgoBsonValue._IValue;
+  out ADst: TgoBsonTimestamp);
+{$ENDREGION 'Internal Declarations'}
 
 implementation
 
 uses
   System.Types,
-  System.Hash,
+  System.SysConst,
   System.RTLConsts,
   System.DateUtils,
   Grijjy.SysUtils,
@@ -3034,264 +3147,958 @@ uses
   Grijjy.Bson.IO;
 
 type
-  TValue = class abstract(TInterfacedObject, TgoBsonValue.IValue)
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; virtual; abstract;
-    function AsBoolean: Boolean; virtual;
-    function AsInteger: Integer; virtual;
-    function AsInt64: Int64; virtual;
-    function AsDouble: Double; virtual;
-    function AsString: String; virtual;
-    function AsArray: TArray<TgoBsonValue>; virtual;
-    function AsByteArray: TBytes; virtual;
-    function AsGuid: TGUID; virtual;
-    function AsObjectId: TgoObjectId; virtual;
-
-    function ToBoolean(const ADefault: Boolean): Boolean; virtual;
-    function ToDouble(const ADefault: Double): Double; virtual;
-    function ToInteger(const ADefault: Integer): Integer; virtual;
-    function ToInt64(const ADefault: Int64): Int64; virtual;
-    function ToString(const ADefault: String): String; reintroduce; virtual;
-    function ToLocalTime: TDateTime; virtual;
-    function ToUniversalTime: TDateTime; virtual;
-    function ToByteArray: TBytes; virtual;
-    function ToGuid: TGUID; virtual;
-    function ToObjectId: TgoObjectId; virtual;
-
-    function Equals(const AOther: TgoBsonValue.IValue): Boolean; reintroduce; virtual;
-
-    function Clone: TgoBsonValue.IValue; virtual;
-    function DeepClone: TgoBsonValue.IValue; virtual;
+  TNonRefCountedInterface = record {IInterface}
+  private
+    FVTable: Pointer;
+  public
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+    function Addref: Integer; stdcall;
+    function Release: Integer; stdcall;
   end;
 
 type
-  TValueBoolean = class(TValue)
-  {$REGION 'Internal Declarations'}
-  private class var
-    FTrue: TgoBsonValue;
-    FFalse: TgoBsonValue;
+  TRefCountedInterface = record {IInterface}
   private
-    FValue: Boolean;
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function AsBoolean: Boolean; override;
-    function ToBoolean(const ADefault: Boolean): Boolean; override;
-    function ToDouble(const ADefault: Double): Double; override;
-    function ToInteger(const ADefault: Integer): Integer; override;
-    function ToInt64(const ADefault: Int64): Int64; override;
-    function ToString(const ADefault: String): String; override;
-    function Equals(const AOther: TgoBsonValue.IValue): Boolean; override;
+    FVTable: Pointer;
+    FRefCount: Integer;
+  public
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+    function Addref: Integer; stdcall;
+    function Release: Integer; stdcall;
+  end;
+
+type
+  TValue = record {TInterfacedRecord, TgoBsonValue._IValue}
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function AsBoolean: Boolean;
+    function AsInteger: Integer;
+    function AsInt64: Int64;
+    function AsDouble: Double;
+    function AsString: String;
+    function AsArray: TArray<TgoBsonValue>;
+    function AsByteArray: TBytes;
+    function AsGuid: TGUID;
+    function AsObjectId: TgoObjectId;
+
+    function ToBoolean(const ADefault: Boolean): Boolean;
+    function ToDouble(const ADefault: Double): Double;
+    function ToInteger(const ADefault: Integer): Integer;
+    function ToInt64(const ADefault: Int64): Int64;
+    function ToString(const ADefault: String): String;
+    function ToLocalTime: TDateTime;
+    function ToUniversalTime: TDateTime;
+    function ToByteArray: TBytes;
+    function ToGuid: TGUID;
+    function ToObjectId: TgoObjectId;
+
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+
+    function Clone: TgoBsonValue._IValue;
+    function DeepClone: TgoBsonValue._IValue;
+  end;
+  PValue = ^TValue;
+
+type
+  TInterfaceVTable = record
+    QueryInterface: Pointer;
+    Addref: Pointer;
+    Release: Pointer;
+  end;
+
+type
+  TVTableValue = record
+    Intf: TInterfaceVTable;
+    GetBsonType: Pointer;
+    AsBoolean: Pointer;
+    AsInteger: Pointer;
+    AsInt64: Pointer;
+    AsDouble: Pointer;
+    AsString: Pointer;
+    AsArray: Pointer;
+    AsByteArray: Pointer;
+    AsGuid: Pointer;
+    AsObjectId: Pointer;
+
+    ToBoolean: Pointer;
+    ToDouble: Pointer;
+    ToInteger: Pointer;
+    ToInt64: Pointer;
+    ToString: Pointer;
+    ToLocalTime: Pointer;
+    ToUniversalTime: Pointer;
+    ToByteArray: Pointer;
+    ToGuid: Pointer;
+    ToObjectId: Pointer;
+
+    Equals: Pointer;
+
+    Clone: Pointer;
+    DeepClone: Pointer;
+  end;
+
+type
+  TValueFalse = record {TValue}
+  private class var
+    FValue: TgoBsonValue._IValue;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function AsBoolean: Boolean;
+    function ToBoolean(const ADefault: Boolean): Boolean;
+    function ToDouble(const ADefault: Double): Double;
+    function ToInteger(const ADefault: Integer): Integer;
+    function ToInt64(const ADefault: Int64): Int64;
+    function ToString(const ADefault: String): String;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
   public
     class constructor Create;
-  {$REGION 'Internal Declarations'}
-  public
-    constructor Create(const AValue: Boolean);
   end;
 
+const
+  VTABLE_FALSE: TVTableValue = (
+    Intf:
+      (QueryInterface: @TNonRefCountedInterface.QueryInterface;
+       AddRef: @TNonRefCountedInterface.AddRef;
+       Release: @TNonRefCountedInterface.Release);
+    GetBsonType: @TValueFalse.GetBsonType;
+    AsBoolean: @TValueFalse.AsBoolean;
+    AsInteger: @TValue.AsInteger;
+    AsInt64: @TValue.AsInt64;
+    AsDouble: @TValue.AsDouble;
+    AsString: @TValue.AsString;
+    AsArray: @TValue.AsArray;
+    AsByteArray: @TValue.AsByteArray;
+    AsGuid: @TValue.AsGuid;
+    AsObjectId: @TValue.AsObjectId;
+
+    ToBoolean: @TValueFalse.ToBoolean;
+    ToDouble: @TValueFalse.ToDouble;
+    ToInteger: @TValueFalse.ToInteger;
+    ToInt64: @TValueFalse.ToInt64;
+    ToString: @TValueFalse.ToString;
+    ToLocalTime: @TValue.ToLocalTime;
+    ToUniversalTime: @TValue.ToUniversalTime;
+    ToByteArray: @TValue.ToByteArray;
+    ToGuid: @TValue.ToGuid;
+    ToObjectId: @TValue.ToObjectId;
+
+    Equals: @TValueFalse.Equals;
+
+    Clone: @TValue.Clone;
+    DeepClone: @TValue.DeepClone);
+
+const
+  VALUE_BOOLEAN_FALSE: Pointer = @VTABLE_FALSE;
+
 type
-  TValueInteger = class(TValue)
-  {$REGION 'Internal Declarations'}
-  private const
-    MIN_PRECREATED_VALUE = -100;
-    MAX_PRECREATED_VALUE = 100;
+  TValueTrue = record {TValue}
   private class var
-    FPrecreatedValues: array [MIN_PRECREATED_VALUE..MAX_PRECREATED_VALUE] of TgoBsonValue;
+    FValue: TgoBsonValue._IValue;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function AsBoolean: Boolean;
+    function ToBoolean(const ADefault: Boolean): Boolean;
+    function ToDouble(const ADefault: Double): Double;
+    function ToInteger(const ADefault: Integer): Integer;
+    function ToInt64(const ADefault: Int64): Int64;
+    function ToString(const ADefault: String): String;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+  public
+    class constructor Create;
+  end;
+
+const
+  VTABLE_TRUE: TVTableValue = (
+    Intf:
+      (QueryInterface: @TNonRefCountedInterface.QueryInterface;
+       AddRef: @TNonRefCountedInterface.AddRef;
+       Release: @TNonRefCountedInterface.Release);
+    GetBsonType: @TValueTrue.GetBsonType;
+    AsBoolean: @TValueTrue.AsBoolean;
+    AsInteger: @TValue.AsInteger;
+    AsInt64: @TValue.AsInt64;
+    AsDouble: @TValue.AsDouble;
+    AsString: @TValue.AsString;
+    AsArray: @TValue.AsArray;
+    AsByteArray: @TValue.AsByteArray;
+    AsGuid: @TValue.AsGuid;
+    AsObjectId: @TValue.AsObjectId;
+
+    ToBoolean: @TValueTrue.ToBoolean;
+    ToDouble: @TValueTrue.ToDouble;
+    ToInteger: @TValueTrue.ToInteger;
+    ToInt64: @TValueTrue.ToInt64;
+    ToString: @TValueTrue.ToString;
+    ToLocalTime: @TValue.ToLocalTime;
+    ToUniversalTime: @TValue.ToUniversalTime;
+    ToByteArray: @TValue.ToByteArray;
+    ToGuid: @TValue.ToGuid;
+    ToObjectId: @TValue.ToObjectId;
+
+    Equals: @TValueTrue.Equals;
+
+    Clone: @TValue.Clone;
+    DeepClone: @TValue.DeepClone);
+
+const
+  VALUE_BOOLEAN_TRUE: Pointer = @VTABLE_TRUE;
+
+type
+  TValueInteger = record {TValue}
   private
+    FBase: TRefCountedInterface;
     FValue: Integer;
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function AsInteger: Integer; override;
-    function ToBoolean(const ADefault: Boolean): Boolean; override;
-    function ToDouble(const ADefault: Double): Double; override;
-    function ToInteger(const ADefault: Integer): Integer; override;
-    function ToInt64(const ADefault: Int64): Int64; override;
-    function ToString(const ADefault: String): String; override;
-    function Equals(const AOther: TgoBsonValue.IValue): Boolean; override;
   public
-    class constructor Create;
-  {$REGION 'Internal Declarations'}
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function AsInteger: Integer;
+    function ToBoolean(const ADefault: Boolean): Boolean;
+    function ToDouble(const ADefault: Double): Double;
+    function ToInteger(const ADefault: Integer): Integer;
+    function ToInt64(const ADefault: Int64): Int64;
+    function ToString(const ADefault: String): String;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
   public
-    constructor Create(const AValue: Integer);
+    class function Create(const AValue: Integer): TgoBsonValue._IValue; inline; static;
   end;
+  PValueInteger = ^TValueInteger;
+
+const
+  VTABLE_INTEGER: TVTableValue = (
+    Intf:
+      (QueryInterface: @TRefCountedInterface.QueryInterface;
+       AddRef: @TRefCountedInterface.AddRef;
+       Release: @TRefCountedInterface.Release);
+    GetBsonType: @TValueInteger.GetBsonType;
+    AsBoolean: @TValue.AsBoolean;
+    AsInteger: @TValueInteger.AsInteger;
+    AsInt64: @TValue.AsInt64;
+    AsDouble: @TValue.AsDouble;
+    AsString: @TValue.AsString;
+    AsArray: @TValue.AsArray;
+    AsByteArray: @TValue.AsByteArray;
+    AsGuid: @TValue.AsGuid;
+    AsObjectId: @TValue.AsObjectId;
+
+    ToBoolean: @TValueInteger.ToBoolean;
+    ToDouble: @TValueInteger.ToDouble;
+    ToInteger: @TValueInteger.ToInteger;
+    ToInt64: @TValueInteger.ToInt64;
+    ToString: @TValueInteger.ToString;
+    ToLocalTime: @TValue.ToLocalTime;
+    ToUniversalTime: @TValue.ToUniversalTime;
+    ToByteArray: @TValue.ToByteArray;
+    ToGuid: @TValue.ToGuid;
+    ToObjectId: @TValue.ToObjectId;
+
+    Equals: @TValueInteger.Equals;
+
+    Clone: @TValue.Clone;
+    DeepClone: @TValue.DeepClone);
 
 type
-  TValueInt64 = class(TValue)
-  {$REGION 'Internal Declarations'}
+  TValueIntegerConst = record {TValue}
   private const
     MIN_PRECREATED_VALUE = -100;
     MAX_PRECREATED_VALUE = 100;
   private class var
-    FPrecreatedValues: array [MIN_PRECREATED_VALUE..MAX_PRECREATED_VALUE] of TgoBsonValue;
+    FPrecreatedValues: array [MIN_PRECREATED_VALUE..MAX_PRECREATED_VALUE] of TgoBsonValue._IValue;
+    FPrecreatedData: Pointer;
   private
+    FBase: TNonRefCountedInterface;
+    FValue: Integer;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function AsInteger: Integer;
+    function ToBoolean(const ADefault: Boolean): Boolean;
+    function ToDouble(const ADefault: Double): Double;
+    function ToInteger(const ADefault: Integer): Integer;
+    function ToInt64(const ADefault: Int64): Int64;
+    function ToString(const ADefault: String): String;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+  public
+    class constructor Create;
+    class destructor Destroy;
+  end;
+  PValueIntegerConst = ^TValueIntegerConst;
+
+const
+  VTABLE_INTEGER_CONST: TVTableValue = (
+    Intf:
+      (QueryInterface: @TNonRefCountedInterface.QueryInterface;
+       AddRef: @TNonRefCountedInterface.AddRef;
+       Release: @TNonRefCountedInterface.Release);
+    GetBsonType: @TValueIntegerConst.GetBsonType;
+    AsBoolean: @TValue.AsBoolean;
+    AsInteger: @TValueIntegerConst.AsInteger;
+    AsInt64: @TValue.AsInt64;
+    AsDouble: @TValue.AsDouble;
+    AsString: @TValue.AsString;
+    AsArray: @TValue.AsArray;
+    AsByteArray: @TValue.AsByteArray;
+    AsGuid: @TValue.AsGuid;
+    AsObjectId: @TValue.AsObjectId;
+
+    ToBoolean: @TValueIntegerConst.ToBoolean;
+    ToDouble: @TValueIntegerConst.ToDouble;
+    ToInteger: @TValueIntegerConst.ToInteger;
+    ToInt64: @TValueIntegerConst.ToInt64;
+    ToString: @TValueIntegerConst.ToString;
+    ToLocalTime: @TValue.ToLocalTime;
+    ToUniversalTime: @TValue.ToUniversalTime;
+    ToByteArray: @TValue.ToByteArray;
+    ToGuid: @TValue.ToGuid;
+    ToObjectId: @TValue.ToObjectId;
+
+    Equals: @TValueIntegerConst.Equals;
+
+    Clone: @TValue.Clone;
+    DeepClone: @TValue.DeepClone);
+
+type
+  TValueInt64 = record {TValue}
+  private
+    FBase: TRefCountedInterface;
     FValue: Int64;
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function AsInt64: Int64; override;
-    function ToBoolean(const ADefault: Boolean): Boolean; override;
-    function ToDouble(const ADefault: Double): Double; override;
-    function ToInteger(const ADefault: Integer): Integer; override;
-    function ToInt64(const ADefault: Int64): Int64; override;
-    function ToString(const ADefault: String): String; override;
-    function Equals(const AOther: TgoBsonValue.IValue): Boolean; override;
   public
-    class constructor Create;
-  {$REGION 'Internal Declarations'}
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function AsInt64: Int64;
+    function ToBoolean(const ADefault: Boolean): Boolean;
+    function ToDouble(const ADefault: Double): Double;
+    function ToInteger(const ADefault: Integer): Integer;
+    function ToInt64(const ADefault: Int64): Int64;
+    function ToString(const ADefault: String): String;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
   public
-    constructor Create(const AValue: Int64);
+    class function Create(const AValue: Int64): TgoBsonValue._IValue; inline; static;
   end;
+  PValueInt64 = ^TValueInt64;
+
+const
+  VTABLE_INT64: TVTableValue = (
+    Intf:
+      (QueryInterface: @TRefCountedInterface.QueryInterface;
+       AddRef: @TRefCountedInterface.AddRef;
+       Release: @TRefCountedInterface.Release);
+    GetBsonType: @TValueInt64.GetBsonType;
+    AsBoolean: @TValue.AsBoolean;
+    AsInteger: @TValue.AsInteger;
+    AsInt64: @TValueInt64.AsInt64;
+    AsDouble: @TValue.AsDouble;
+    AsString: @TValue.AsString;
+    AsArray: @TValue.AsArray;
+    AsByteArray: @TValue.AsByteArray;
+    AsGuid: @TValue.AsGuid;
+    AsObjectId: @TValue.AsObjectId;
+
+    ToBoolean: @TValueInt64.ToBoolean;
+    ToDouble: @TValueInt64.ToDouble;
+    ToInteger: @TValueInt64.ToInteger;
+    ToInt64: @TValueInt64.ToInt64;
+    ToString: @TValueInt64.ToString;
+    ToLocalTime: @TValue.ToLocalTime;
+    ToUniversalTime: @TValue.ToUniversalTime;
+    ToByteArray: @TValue.ToByteArray;
+    ToGuid: @TValue.ToGuid;
+    ToObjectId: @TValue.ToObjectId;
+
+    Equals: @TValueInt64.Equals;
+
+    Clone: @TValue.Clone;
+    DeepClone: @TValue.DeepClone);
 
 type
-  TValueDouble = class(TValue)
-  {$REGION 'Internal Declarations'}
+  TValueInt64Const = record {TValue}
   private const
     MIN_PRECREATED_VALUE = -100;
     MAX_PRECREATED_VALUE = 100;
   private class var
-    FPrecreatedValues: array [MIN_PRECREATED_VALUE..MAX_PRECREATED_VALUE] of TgoBsonValue;
+    FPrecreatedValues: array [MIN_PRECREATED_VALUE..MAX_PRECREATED_VALUE] of TgoBsonValue._IValue;
+    FPrecreatedData: Pointer;
   private
+    FBase: TNonRefCountedInterface;
+    FValue: Int64;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function AsInt64: Int64;
+    function ToBoolean(const ADefault: Boolean): Boolean;
+    function ToDouble(const ADefault: Double): Double;
+    function ToInteger(const ADefault: Integer): Integer;
+    function ToInt64(const ADefault: Int64): Int64;
+    function ToString(const ADefault: String): String;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+  public
+    class constructor Create;
+    class destructor Destroy;
+  end;
+  PValueInt64Const = ^TValueInt64Const;
+
+const
+  VTABLE_INT64_CONST: TVTableValue = (
+    Intf:
+      (QueryInterface: @TNonRefCountedInterface.QueryInterface;
+       AddRef: @TNonRefCountedInterface.AddRef;
+       Release: @TNonRefCountedInterface.Release);
+    GetBsonType: @TValueInt64Const.GetBsonType;
+    AsBoolean: @TValue.AsBoolean;
+    AsInteger: @TValue.AsInteger;
+    AsInt64: @TValueInt64Const.AsInt64;
+    AsDouble: @TValue.AsDouble;
+    AsString: @TValue.AsString;
+    AsArray: @TValue.AsArray;
+    AsByteArray: @TValue.AsByteArray;
+    AsGuid: @TValue.AsGuid;
+    AsObjectId: @TValue.AsObjectId;
+
+    ToBoolean: @TValueInt64Const.ToBoolean;
+    ToDouble: @TValueInt64Const.ToDouble;
+    ToInteger: @TValueInt64Const.ToInteger;
+    ToInt64: @TValueInt64Const.ToInt64;
+    ToString: @TValueInt64Const.ToString;
+    ToLocalTime: @TValue.ToLocalTime;
+    ToUniversalTime: @TValue.ToUniversalTime;
+    ToByteArray: @TValue.ToByteArray;
+    ToGuid: @TValue.ToGuid;
+    ToObjectId: @TValue.ToObjectId;
+
+    Equals: @TValueInt64Const.Equals;
+
+    Clone: @TValue.Clone;
+    DeepClone: @TValue.DeepClone);
+
+type
+  TValueDouble = record {TValue}
+  private
+    FBase: TRefCountedInterface;
     FValue: Double;
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function AsDouble: Double; override;
-    function ToDouble(const ADefault: Double): Double; override;
-    function ToBoolean(const ADefault: Boolean): Boolean; override;
-    function ToInteger(const ADefault: Integer): Integer; override;
-    function ToInt64(const ADefault: Int64): Int64; override;
-    function ToString(const ADefault: String): String; override;
-    function Equals(const AOther: TgoBsonValue.IValue): Boolean; override;
   public
-    class constructor Create;
-  {$REGION 'Internal Declarations'}
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function AsDouble: Double;
+    function ToBoolean(const ADefault: Boolean): Boolean;
+    function ToDouble(const ADefault: Double): Double;
+    function ToInteger(const ADefault: Integer): Integer;
+    function ToInt64(const ADefault: Int64): Int64;
+    function ToString(const ADefault: String): String;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
   public
-    constructor Create(const AValue: Double);
+    class function Create(const AValue: Double): TgoBsonValue._IValue; inline; static;
   end;
+  PValueDouble = ^TValueDouble;
+
+const
+  VTABLE_DOUBLE: TVTableValue = (
+    Intf:
+      (QueryInterface: @TRefCountedInterface.QueryInterface;
+       AddRef: @TRefCountedInterface.AddRef;
+       Release: @TRefCountedInterface.Release);
+    GetBsonType: @TValueDouble.GetBsonType;
+    AsBoolean: @TValue.AsBoolean;
+    AsInteger: @TValue.AsInteger;
+    AsInt64: @TValue.AsInt64;
+    AsDouble: @TValueDouble.AsDouble;
+    AsString: @TValue.AsString;
+    AsArray: @TValue.AsArray;
+    AsByteArray: @TValue.AsByteArray;
+    AsGuid: @TValue.AsGuid;
+    AsObjectId: @TValue.AsObjectId;
+
+    ToBoolean: @TValueDouble.ToBoolean;
+    ToDouble: @TValueDouble.ToDouble;
+    ToInteger: @TValueDouble.ToInteger;
+    ToInt64: @TValueDouble.ToInt64;
+    ToString: @TValueDouble.ToString;
+    ToLocalTime: @TValue.ToLocalTime;
+    ToUniversalTime: @TValue.ToUniversalTime;
+    ToByteArray: @TValue.ToByteArray;
+    ToGuid: @TValue.ToGuid;
+    ToObjectId: @TValue.ToObjectId;
+
+    Equals: @TValueDouble.Equals;
+
+    Clone: @TValue.Clone;
+    DeepClone: @TValue.DeepClone);
 
 type
-  TValueDateTime = class(TValue, TgoBsonDateTime.IDateTime)
-  {$REGION 'Internal Declarations'}
-  private
-    FMillisecondsSinceEpoch: Int64;
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function ToLocalTime: TDateTime; override;
-    function ToUniversalTime: TDateTime; override;
-    function ToString(const ADefault: String): String; override;
-    function Equals(const AOther: TgoBsonValue.IValue): Boolean; override;
-  protected
-    { TgoBsonDateTime.IDateTime }
-    function GetMillisecondsSinceEpoch: Int64;
-  {$REGION 'Internal Declarations'}
-  public
-    constructor Create(const ADateTime: TDateTime; const ADateTimeIsUTC: Boolean); overload;
-    constructor Create(const AMillisecondsSinceEpoch: Int64); overload;
-  end;
-
-type
-  TValueString = class(TValue)
-  {$REGION 'Internal Declarations'}
+  TValueDoubleZero = record {TValue}
   private class var
-    FEmpty: TgoBsonValue;
-  private
-    FValue: String;
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function AsString: String; override;
-    function ToBoolean(const ADefault: Boolean): Boolean; override;
-    function ToDouble(const ADefault: Double): Double; override;
-    function ToInteger(const ADefault: Integer): Integer; override;
-    function ToInt64(const ADefault: Int64): Int64; override;
-    function ToString(const ADefault: String): String; override;
-    function Equals(const AOther: TgoBsonValue.IValue): Boolean; override;
+    FValue: TgoBsonValue._IValue;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function AsDouble: Double;
+    function ToBoolean(const ADefault: Boolean): Boolean;
+    function ToDouble(const ADefault: Double): Double;
+    function ToInteger(const ADefault: Integer): Integer;
+    function ToInt64(const ADefault: Int64): Int64;
+    function ToString(const ADefault: String): String;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
   public
     class constructor Create;
-  {$REGION 'Internal Declarations'}
-  public
-    constructor Create(const AValue: String);
   end;
 
+const
+  VTABLE_DOUBLE_ZERO: TVTableValue = (
+    Intf:
+      (QueryInterface: @TNonRefCountedInterface.QueryInterface;
+       AddRef: @TNonRefCountedInterface.AddRef;
+       Release: @TNonRefCountedInterface.Release);
+    GetBsonType: @TValueDoubleZero.GetBsonType;
+    AsBoolean: @TValue.AsBoolean;
+    AsInteger: @TValue.AsInteger;
+    AsInt64: @TValue.AsInt64;
+    AsDouble: @TValueDoubleZero.AsDouble;
+    AsString: @TValue.AsString;
+    AsArray: @TValue.AsArray;
+    AsByteArray: @TValue.AsByteArray;
+    AsGuid: @TValue.AsGuid;
+    AsObjectId: @TValue.AsObjectId;
+
+    ToBoolean: @TValueDoubleZero.ToBoolean;
+    ToDouble: @TValueDoubleZero.ToDouble;
+    ToInteger: @TValueDoubleZero.ToInteger;
+    ToInt64: @TValueDoubleZero.ToInt64;
+    ToString: @TValueDoubleZero.ToString;
+    ToLocalTime: @TValue.ToLocalTime;
+    ToUniversalTime: @TValue.ToUniversalTime;
+    ToByteArray: @TValue.ToByteArray;
+    ToGuid: @TValue.ToGuid;
+    ToObjectId: @TValue.ToObjectId;
+
+    Equals: @TValueDoubleZero.Equals;
+
+    Clone: @TValue.Clone;
+    DeepClone: @TValue.DeepClone);
+
+const
+  VALUE_DOUBLE_ZERO: Pointer = @VTABLE_DOUBLE_ZERO;
+
 type
-  TValueArray = class(TValue, TgoBsonArray.IArray)
-  {$REGION 'Internal Declarations'}
+  TValueDateTime = record {TValue, TgoBsonDateTime._IDateTime}
   private
-    FItems: TArray<TgoBsonValue>;
+    FBase: TRefCountedInterface;
+    FMillisecondsSinceEpoch: Int64;
+  public
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function ToLocalTime: TDateTime;
+    function ToUniversalTime: TDateTime;
+    function ToString(const ADefault: String): String;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+  public
+    { TgoBsonDateTime._IDateTime }
+    function GetMillisecondsSinceEpoch: Int64;
+  public
+    class function Create(const ADateTime: TDateTime; const ADateTimeIsUTC: Boolean): TgoBsonDateTime._IDateTime; overload; inline; static;
+    class function Create(const AMillisecondsSinceEpoch: Int64): TgoBsonDateTime._IDateTime; overload; inline; static;
+  end;
+  PValueDateTime = ^TValueDateTime;
+
+type
+  TVTableValueDateTime = record
+    Base: TVTableValue;
+    GetMillisecondsSinceEpoch: Pointer;
+  end;
+
+const
+  VTABLE_DATE_TIME: TVTableValueDateTime = (
+    Base:
+     (Intf:
+       (QueryInterface: @TValueDateTime.QueryInterface;
+        AddRef: @TRefCountedInterface.AddRef;
+        Release: @TRefCountedInterface.Release);
+      GetBsonType: @TValueDateTime.GetBsonType;
+      AsBoolean: @TValue.AsBoolean;
+      AsInteger: @TValue.AsInteger;
+      AsInt64: @TValue.AsInt64;
+      AsDouble: @TValue.AsDouble;
+      AsString: @TValue.AsString;
+      AsArray: @TValue.AsArray;
+      AsByteArray: @TValue.AsByteArray;
+      AsGuid: @TValue.AsGuid;
+      AsObjectId: @TValue.AsObjectId;
+
+      ToBoolean: @TValue.ToBoolean;
+      ToDouble: @TValue.ToDouble;
+      ToInteger: @TValue.ToInteger;
+      ToInt64: @TValue.ToInt64;
+      ToString: @TValueDateTime.ToString;
+      ToLocalTime: @TValueDateTime.ToLocalTime;
+      ToUniversalTime: @TValueDateTime.ToUniversalTime;
+      ToByteArray: @TValue.ToByteArray;
+      ToGuid: @TValue.ToGuid;
+      ToObjectId: @TValue.ToObjectId;
+
+      Equals: @TValueDateTime.Equals;
+
+      Clone: @TValue.Clone;
+      DeepClone: @TValue.DeepClone);
+    GetMillisecondsSinceEpoch: @TValueDateTime.GetMillisecondsSinceEpoch);
+
+type
+  TValueString = record {TValue}
+  private
+    FBase: TRefCountedInterface;
+    FLength: Integer;
+    { Data: array of Char }
+  private
+    function Value: String; inline;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function AsString: String;
+    function ToBoolean(const ADefault: Boolean): Boolean;
+    function ToDouble(const ADefault: Double): Double;
+    function ToInteger(const ADefault: Integer): Integer;
+    function ToInt64(const ADefault: Int64): Int64;
+    function ToString(const ADefault: String): String;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+  public
+    class function Create(const AValue: String): TgoBsonValue._IValue; inline; static;
+  end;
+  PValueString = ^TValueString;
+
+const
+  VTABLE_STRING: TVTableValue = (
+    Intf:
+      (QueryInterface: @TRefCountedInterface.QueryInterface;
+       AddRef: @TRefCountedInterface.AddRef;
+       Release: @TRefCountedInterface.Release);
+    GetBsonType: @TValueString.GetBsonType;
+    AsBoolean: @TValue.AsBoolean;
+    AsInteger: @TValue.AsInteger;
+    AsInt64: @TValue.AsInt64;
+    AsDouble: @TValue.AsDouble;
+    AsString: @TValueString.AsString;
+    AsArray: @TValue.AsArray;
+    AsByteArray: @TValue.AsByteArray;
+    AsGuid: @TValue.AsGuid;
+    AsObjectId: @TValue.AsObjectId;
+
+    ToBoolean: @TValueString.ToBoolean;
+    ToDouble: @TValueString.ToDouble;
+    ToInteger: @TValueString.ToInteger;
+    ToInt64: @TValueString.ToInt64;
+    ToString: @TValueString.ToString;
+    ToLocalTime: @TValue.ToLocalTime;
+    ToUniversalTime: @TValue.ToUniversalTime;
+    ToByteArray: @TValue.ToByteArray;
+    ToGuid: @TValue.ToGuid;
+    ToObjectId: @TValue.ToObjectId;
+
+    Equals: @TValueString.Equals;
+
+    Clone: @TValue.Clone;
+    DeepClone: @TValue.DeepClone);
+
+type
+  TValueStringEmpty = packed record {TValue}
+  private class var
+    FValue: TgoBsonValue._IValue;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function AsString: String;
+    function ToBoolean(const ADefault: Boolean): Boolean;
+    function ToDouble(const ADefault: Double): Double;
+    function ToInteger(const ADefault: Integer): Integer;
+    function ToInt64(const ADefault: Int64): Int64;
+    function ToString(const ADefault: String): String;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+  public
+    class constructor Create;
+  end;
+
+const
+  VTABLE_STRING_EMPTY: TVTableValue = (
+    Intf:
+      (QueryInterface: @TNonRefCountedInterface.QueryInterface;
+       AddRef: @TNonRefCountedInterface.AddRef;
+       Release: @TNonRefCountedInterface.Release);
+    GetBsonType: @TValueStringEmpty.GetBsonType;
+    AsBoolean: @TValue.AsBoolean;
+    AsInteger: @TValue.AsInteger;
+    AsInt64: @TValue.AsInt64;
+    AsDouble: @TValue.AsDouble;
+    AsString: @TValueStringEmpty.AsString;
+    AsArray: @TValue.AsArray;
+    AsByteArray: @TValue.AsByteArray;
+    AsGuid: @TValue.AsGuid;
+    AsObjectId: @TValue.AsObjectId;
+
+    ToBoolean: @TValueStringEmpty.ToBoolean;
+    ToDouble: @TValueStringEmpty.ToDouble;
+    ToInteger: @TValueStringEmpty.ToInteger;
+    ToInt64: @TValueStringEmpty.ToInt64;
+    ToString: @TValueStringEmpty.ToString;
+    ToLocalTime: @TValue.ToLocalTime;
+    ToUniversalTime: @TValue.ToUniversalTime;
+    ToByteArray: @TValue.ToByteArray;
+    ToGuid: @TValue.ToGuid;
+    ToObjectId: @TValue.ToObjectId;
+
+    Equals: @TValueStringEmpty.Equals;
+
+    Clone: @TValue.Clone;
+    DeepClone: @TValue.DeepClone);
+
+const
+  VALUE_STRING_EMPTY: Pointer = @VTABLE_STRING_EMPTY;
+
+type
+  TValueStringConstant = record {TValue}
+  private
+    FBase: TRefCountedInterface;
+    FValue: Pointer;
+  private
+    function Value: String; inline;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function AsString: String;
+    function ToBoolean(const ADefault: Boolean): Boolean;
+    function ToDouble(const ADefault: Double): Double;
+    function ToInteger(const ADefault: Integer): Integer;
+    function ToInt64(const ADefault: Int64): Int64;
+    function ToString(const ADefault: String): String;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+  public
+    class function Create(const AValue: String): TgoBsonValue._IValue; inline; static;
+  end;
+  PValueStringConstant = ^TValueStringConstant;
+
+const
+  VTABLE_STRING_CONSTANT: TVTableValue = (
+    Intf:
+      (QueryInterface: @TRefCountedInterface.QueryInterface;
+       AddRef: @TRefCountedInterface.AddRef;
+       Release: @TRefCountedInterface.Release);
+    GetBsonType: @TValueStringConstant.GetBsonType;
+    AsBoolean: @TValue.AsBoolean;
+    AsInteger: @TValue.AsInteger;
+    AsInt64: @TValue.AsInt64;
+    AsDouble: @TValue.AsDouble;
+    AsString: @TValueStringConstant.AsString;
+    AsArray: @TValue.AsArray;
+    AsByteArray: @TValue.AsByteArray;
+    AsGuid: @TValue.AsGuid;
+    AsObjectId: @TValue.AsObjectId;
+
+    ToBoolean: @TValueStringConstant.ToBoolean;
+    ToDouble: @TValueStringConstant.ToDouble;
+    ToInteger: @TValueStringConstant.ToInteger;
+    ToInt64: @TValueStringConstant.ToInt64;
+    ToString: @TValueStringConstant.ToString;
+    ToLocalTime: @TValue.ToLocalTime;
+    ToUniversalTime: @TValue.ToUniversalTime;
+    ToByteArray: @TValue.ToByteArray;
+    ToGuid: @TValue.ToGuid;
+    ToObjectId: @TValue.ToObjectId;
+
+    Equals: @TValueStringConstant.Equals;
+
+    Clone: @TValue.Clone;
+    DeepClone: @TValue.DeepClone);
+
+type
+  TValueArray = record {TValue, TgoBsonArray._IArray}
+  private
+    FBase: TRefCountedInterface;
+    FItems: TArray<TgoBsonValue._IValue>;
     FCount: Integer;
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function AsArray: TArray<TgoBsonValue>; override;
-    function Equals(const AOther: TgoBsonValue.IValue): Boolean; override;
-    function Clone: TgoBsonValue.IValue; override;
-    function DeepClone: TgoBsonValue.IValue; override;
-  protected
-    { TgoBsonArray.IArray }
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function AsArray: TArray<TgoBsonValue>;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+    function Clone: TgoBsonValue._IValue;
+    function DeepClone: TgoBsonValue._IValue;
+  public
+    { TgoBsonArray._IArray }
     function GetCount: Integer;
-    function GetItem(const AIndex: Integer): TgoBsonValue;
-    procedure SetItem(const AIndex: Integer; const AValue: TgoBsonValue);
-    procedure Add(const AValue: TgoBsonValue);
-    procedure AddRange(const AValues: array of TgoBsonValue); overload;
-    procedure AddRange(const AValues: TArray<TgoBsonValue>); overload;
-    procedure AddRange(const AValues: TgoBsonArray); overload;
+    procedure GetItem(const AIndex: Integer; out AValue: TgoBsonValue._IValue);
+    procedure SetItem(const AIndex: Integer; const AValue: TgoBsonValue._IValue);
+    procedure Add(const AValue: TgoBsonValue._IValue); overload;
+    procedure AddRangeOpenArray(const AValues: array of TgoBsonValue); overload;
+    procedure AddRangeGenArray(const AValues: TArray<TgoBsonValue>); overload;
+    procedure AddRangeBsonArray(const AValues: TgoBsonArray); overload;
     procedure Delete(const AIndex: Integer);
     function Remove(const AValue: TgoBsonValue): Boolean;
     procedure Clear;
     function Contains(const AValue: TgoBsonValue): Boolean;
     function IndexOf(const AValue: TgoBsonValue): Integer;
-  {$REGION 'Internal Declarations'}
   public
-    constructor Create(const ACapacity: Integer = 0); overload;
-    constructor Create(const AValues: array of TgoBsonValue); overload;
-    constructor Create(const AValues: TArray<TgoBsonValue>); overload;
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+    function Release: Integer; stdcall;
+  public
+    class function Create(const ACapacity: Integer = 0): TgoBsonArray._IArray; overload; inline; static;
+    class function Create(const AValues: array of TgoBsonValue): TgoBsonArray._IArray; overload; static;
+    class function Create(const AValues: TArray<TgoBsonValue>): TgoBsonArray._IArray; overload; inline; static;
   end;
+  PValueArray = ^TValueArray;
 
 type
-  TValueBinaryData = class(TValue, TgoBsonBinaryData.IBinaryData)
-  {$REGION 'Internal Declarations'}
-  private class var
-    FEmpty: TgoBsonValue;
+  TVTableValueArray = record
+    Base: TVTableValue;
+    GetCount: Pointer;
+    GetItem: Pointer;
+    SetItem: Pointer;
+    Add: Pointer;
+    AddRangeOpenArray: Pointer;
+    AddRangeGenArray: Pointer;
+    AddRangeBsonArray: Pointer;
+    Delete: Pointer;
+    Remove: Pointer;
+    Clear: Pointer;
+    Contains: Pointer;
+    IndexOf: Pointer;
+  end;
+
+const
+  VTABLE_ARRAY: TVTableValueArray = (
+    Base:
+     (Intf:
+       (QueryInterface: @TValueArray.QueryInterface;
+        AddRef: @TRefCountedInterface.AddRef;
+        Release: @TValueArray.Release);
+      GetBsonType: @TValueArray.GetBsonType;
+      AsBoolean: @TValue.AsBoolean;
+      AsInteger: @TValue.AsInteger;
+      AsInt64: @TValue.AsInt64;
+      AsDouble: @TValue.AsDouble;
+      AsString: @TValue.AsString;
+      AsArray: @TValueArray.AsArray;
+      AsByteArray: @TValue.AsByteArray;
+      AsGuid: @TValue.AsGuid;
+      AsObjectId: @TValue.AsObjectId;
+
+      ToBoolean: @TValue.ToBoolean;
+      ToDouble: @TValue.ToDouble;
+      ToInteger: @TValue.ToInteger;
+      ToInt64: @TValue.ToInt64;
+      ToString: @TValue.ToString;
+      ToLocalTime: @TValue.ToLocalTime;
+      ToUniversalTime: @TValue.ToUniversalTime;
+      ToByteArray: @TValue.ToByteArray;
+      ToGuid: @TValue.ToGuid;
+      ToObjectId: @TValue.ToObjectId;
+
+      Equals: @TValueArray.Equals;
+
+      Clone: @TValueArray.Clone;
+      DeepClone: @TValueArray.DeepClone);
+    GetCount: @TValueArray.GetCount;
+    GetItem: @TValueArray.GetItem;
+    SetItem: @TValueArray.SetItem;
+    Add: @TValueArray.Add;
+    AddRangeOpenArray: @TValueArray.AddRangeOpenArray;
+    AddRangeGenArray: @TValueArray.AddRangeGenArray;
+    AddRangeBsonArray: @TValueArray.AddRangeBsonArray;
+    Delete: @TValueArray.Delete;
+    Remove: @TValueArray.Remove;
+    Clear: @TValueArray.Clear;
+    Contains: @TValueArray.Contains;
+    IndexOf: @TValueArray.IndexOf);
+
+type
+  TValueBinaryData = record {TValue, TgoBsonBinaryData._IBinaryData}
   private
+    FBase: TRefCountedInterface;
     FValue: TBytes;
     FSubType: TgoBsonBinarySubType;
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function AsByteArray: TBytes; override;
-    function AsGuid: TGUID; override;
-    function ToGuid: TGUID; override;
-    function ToByteArray: TBytes; override;
-    function Equals(const AOther: TgoBsonValue.IValue): Boolean; override;
-  protected
-    { TgoBsonBinaryData.IBinaryData }
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function AsByteArray: TBytes;
+    function AsGuid: TGUID;
+    function ToGuid: TGUID;
+    function ToByteArray: TBytes;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+  public
+    { TgoBsonBinaryData._IBinaryData }
     function GetSubType: TgoBsonBinarySubType;
     function GetCount: Integer;
     function GetByte(const AIndex: Integer): Byte;
     procedure SetByte(const AIndex: Integer; const AValue: Byte);
     function GetAsBytes: TBytes;
   public
-    class constructor Create;
-  {$REGION 'Internal Declarations'}
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+    function Release: Integer; stdcall;
   public
-    constructor Create; overload;
-    constructor Create(const AValue: TBytes;
-      const ASubType: TgoBsonBinarySubType = TgoBsonBinarySubType.Binary); overload;
-    constructor Create(const AValue: TGUID); overload;
+    class function Create: TgoBsonBinaryData._IBinaryData; overload; inline; static;
+    class function Create(const AValue: TBytes;
+      const ASubType: TgoBsonBinarySubType = TgoBsonBinarySubType.Binary): TgoBsonBinaryData._IBinaryData; overload; inline; static;
+    class function Create(const AValue: TGUID): TgoBsonBinaryData._IBinaryData; overload; inline; static;
   end;
+  PValueBinaryData = ^TValueBinaryData;
 
 type
-  TValueDocument = class(TValue, TgoBsonDocument.IDocument)
-  {$REGION 'Internal Declarations'}
+  TVTableValueBinaryData = record
+    Base: TVTableValue;
+    GetSubType: Pointer;
+    GetCount: Pointer;
+    GetByte: Pointer;
+    SetByte: Pointer;
+    GetAsBytes: Pointer;
+  end;
+
+const
+  VTABLE_BINARY_DATA: TVTableValueBinaryData = (
+    Base:
+     (Intf:
+       (QueryInterface: @TValueBinaryData.QueryInterface;
+        AddRef: @TRefCountedInterface.AddRef;
+        Release: @TValueBinaryData.Release);
+      GetBsonType: @TValueBinaryData.GetBsonType;
+      AsBoolean: @TValue.AsBoolean;
+      AsInteger: @TValue.AsInteger;
+      AsInt64: @TValue.AsInt64;
+      AsDouble: @TValue.AsDouble;
+      AsString: @TValue.AsString;
+      AsArray: @TValue.AsArray;
+      AsByteArray: @TValueBinaryData.AsByteArray;
+      AsGuid: @TValueBinaryData.AsGuid;
+      AsObjectId: @TValue.AsObjectId;
+
+      ToBoolean: @TValue.ToBoolean;
+      ToDouble: @TValue.ToDouble;
+      ToInteger: @TValue.ToInteger;
+      ToInt64: @TValue.ToInt64;
+      ToString: @TValue.ToString;
+      ToLocalTime: @TValue.ToLocalTime;
+      ToUniversalTime: @TValue.ToUniversalTime;
+      ToByteArray: @TValueBinaryData.ToByteArray;
+      ToGuid: @TValueBinaryData.ToGuid;
+      ToObjectId: @TValue.ToObjectId;
+
+      Equals: @TValueBinaryData.Equals);
+    GetSubType: @TValueBinaryData.GetSubType;
+    GetCount: @TValueBinaryData.GetCount;
+    GetByte: @TValueBinaryData.GetByte;
+    SetByte: @TValueBinaryData.SetByte;
+    GetAsBytes: @TValueBinaryData.GetAsBytes);
+
+type
+  TValueDocument = record {TValue, TgoBsonDocument._IDocument}
   private const
     { We use an FIndices dictionary to map names to indices.
       However, for small dictionaries it is faster and more memory efficient
       to just perform a linear search.
       So we only use the dictionary if the number of items reaches this value. }
-    INDICES_COUNT_THRESHOLD = 8;
+    INDICES_COUNT_THRESHOLD = 12;
   private type
     TMapEntry = record
       HashCode: Integer;
@@ -3299,204 +4106,834 @@ type
       Index: Integer;
     end;
     TMapEntries = TArray<TMapEntry>;
+  private type
+    TIndexMap = record
+    private const
+      EMPTY_HASH = -1;
+    private
+      FEntries: TMapEntries;
+      FCount: Integer;
+      FGrowThreshold: Integer;
+    private
+      procedure Resize(ANewSize: Integer);
+    public
+      procedure Release; inline;
+      procedure Clear;
+      procedure Add(const AName: String; const AIndex: Integer);
+      function Get(const AName: String): Integer;
+    end;
+    PIndexMap = ^TIndexMap;
   private
+    FBase: TRefCountedInterface;
     FAllowDuplicateNames: Boolean;
     FElements: TArray<TgoBsonElement>;
-    FIndices: TDictionary<String, Integer>;
+    FIndices: PIndexMap;
     FCount: Integer;
   private
     procedure RebuildIndices;
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function Equals(const AOther: TgoBsonValue.IValue): Boolean; override;
-    function Clone: TgoBsonValue.IValue; override;
-    function DeepClone: TgoBsonValue.IValue; override;
-  protected
-    { TgoBsonDocument.IDocument }
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+    function Clone: TgoBsonValue._IValue;
+    function DeepClone: TgoBsonValue._IValue;
+  public
+    { TgoBsonDocument._IDocument }
     function GetCount: Integer;
     function GetAllowDuplicateNames: Boolean;
     procedure SetAllowDuplicateNames(const AValue: Boolean);
     function GetElement(const AIndex: Integer): TgoBsonElement;
-    function GetValue(const AIndex: Integer): TgoBsonValue;
-    procedure SetValue(const AIndex: Integer; const AValue: TgoBsonValue);
-    function GetValueByName(const AName: String): TgoBsonValue;
-    procedure SetValueByName(const AName: String; const AValue: TgoBsonValue);
-    procedure Add(const AElement: TgoBsonElement);
-    function Get(const AName: String; const ADefault: TgoBsonValue): TgoBsonValue;
+    procedure GetValue(const AIndex: Integer; out AValue: TgoBsonValue._IValue);
+    procedure SetValue(const AIndex: Integer; const AValue: TgoBsonValue._IValue);
+    procedure GetValueByName(const AName: String; out AValue: TgoBsonValue._IValue);
+    procedure SetValueByName(const AName: String; const AValue: TgoBsonValue._IValue);
+    procedure Add(const AName: String; const AValue: TgoBsonValue._IValue);
+    procedure Get(const AName: String; const ADefault: TgoBsonValue._IValue;
+      out AValue: TgoBsonValue._IValue);
     function IndexOfName(const AName: String): Integer;
     function Contains(const AName: String): Boolean;
     function ContainsValue(const AValue: TgoBsonValue): Boolean;
     function TryGetElement(const AName: String; out AElement: TgoBsonElement): Boolean;
-    function TryGetValue(const AName: String; out AValue: TgoBsonValue): Boolean;
+    function TryGetValue(const AName: String; out AValue: TgoBsonValue._IValue): Boolean;
     procedure Remove(const AName: String);
     procedure Delete(const AIndex: Integer);
     procedure Clear;
     procedure Merge(const AOtherDocument: TgoBsonDocument;
       const AOverwriteExistingElements: Boolean);
     function ToArray: TArray<TgoBsonElement>;
-  {$REGION 'Internal Declarations'}
   public
-    constructor Create; overload;
-    constructor Create(const AAllowDuplicateNames: Boolean); overload;
-    constructor Create(const AElement: TgoBsonElement); overload;
-    constructor Create(const AName: String; const AValue: TgoBsonValue); overload;
-    destructor Destroy; override;
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+    function Release: Integer; stdcall;
+  public
+    class function Create(const AAllowDuplicateNames: Boolean = False): TgoBsonDocument._IDocument; overload; inline; static;
+    class function Create(const AElement: TgoBsonElement): TgoBsonDocument._IDocument; overload; inline; static;
+    class function Create(const AName: String; const AValue: TgoBsonValue): TgoBsonDocument._IDocument; overload; inline; static;
   end;
+  PValueDocument = ^TValueDocument;
 
 type
-  TValueNull = class(TValue, TgoBsonNull.INull)
-  {$REGION 'Internal Declarations'}
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function ToBoolean(const ADefault: Boolean): Boolean; override;
-    function ToString(const ADefault: String): String; override;
-    function Equals(const AOther: TgoBsonValue.IValue): Boolean; override;
-  {$REGION 'Internal Declarations'}
+  TVTableValueDocument = record
+    Base: TVTableValue;
+
+    GetCount: Pointer;
+    GetAllowDuplicateNames: Pointer;
+    SetAllowDuplicateNames: Pointer;
+    GetElement: Pointer;
+    GetValue: Pointer;
+    SetValue: Pointer;
+    GetValueByName: Pointer;
+    SetValueByName: Pointer;
+
+    Add: Pointer;
+    Get: Pointer;
+    IndexOfName: Pointer;
+    Contains: Pointer;
+    ContainsValue: Pointer;
+    TryGetElement: Pointer;
+    TryGetValue: Pointer;
+    Remove: Pointer;
+    Delete: Pointer;
+    Clear: Pointer;
+    Merge: Pointer;
+    ToArray: Pointer;
   end;
 
-type
-  TValueUndefined = class(TValue, TgoBsonUndefined.IUndefined)
-  {$REGION 'Internal Declarations'}
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function ToBoolean(const ADefault: Boolean): Boolean; override;
-    function ToString(const ADefault: String): String; override;
-    function Equals(const AOther: TgoBsonValue.IValue): Boolean; override;
-  {$REGION 'Internal Declarations'}
-  end;
+const
+  VTABLE_DOCUMENT: TVTableValueDocument = (
+    Base:
+     (Intf:
+       (QueryInterface: @TValueDocument.QueryInterface;
+        AddRef: @TRefCountedInterface.AddRef;
+        Release: @TValueDocument.Release);
+      GetBsonType: @TValueDocument.GetBsonType;
+      AsBoolean: @TValue.AsBoolean;
+      AsInteger: @TValue.AsInteger;
+      AsInt64: @TValue.AsInt64;
+      AsDouble: @TValue.AsDouble;
+      AsString: @TValue.AsString;
+      AsArray: @TValue.AsArray;
+      AsByteArray: @TValue.AsByteArray;
+      AsGuid: @TValue.AsGuid;
+      AsObjectId: @TValue.AsObjectId;
+
+      ToBoolean: @TValue.ToBoolean;
+      ToDouble: @TValue.ToDouble;
+      ToInteger: @TValue.ToInteger;
+      ToInt64: @TValue.ToInt64;
+      ToString: @TValue.ToString;
+      ToLocalTime: @TValue.ToLocalTime;
+      ToUniversalTime: @TValue.ToUniversalTime;
+      ToByteArray: @TValue.ToByteArray;
+      ToGuid: @TValue.ToGuid;
+      ToObjectId: @TValue.ToObjectId;
+
+      Equals: @TValueDocument.Equals;
+
+      Clone: @TValueDocument.Clone;
+      DeepClone: @TValueDocument.DeepClone);
+
+    GetCount: @TValueDocument.GetCount;
+    GetAllowDuplicateNames: @TValueDocument.GetAllowDuplicateNames;
+    SetAllowDuplicateNames: @TValueDocument.SetAllowDuplicateNames;
+    GetElement: @TValueDocument.GetElement;
+    GetValue: @TValueDocument.GetValue;
+    SetValue: @TValueDocument.SetValue;
+    GetValueByName: @TValueDocument.GetValueByName;
+    SetValueByName: @TValueDocument.SetValueByName;
+
+    Add: @TValueDocument.Add;
+    Get: @TValueDocument.Get;
+    IndexOfName: @TValueDocument.IndexOfName;
+    Contains: @TValueDocument.Contains;
+    ContainsValue: @TValueDocument.ContainsValue;
+    TryGetElement: @TValueDocument.TryGetElement;
+    TryGetValue: @TValueDocument.TryGetValue;
+    Remove: @TValueDocument.Remove;
+    Delete: @TValueDocument.Delete;
+    Clear: @TValueDocument.Clear;
+    Merge: @TValueDocument.Merge;
+    ToArray: @TValueDocument.ToArray);
 
 type
-  TValueObjectId = class(TValue)
-  {$REGION 'Internal Declarations'}
+  TValueNull = record {TValue, TgoBsonNull._INull}
+  public
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function ToBoolean(const ADefault: Boolean): Boolean;
+    function ToString(const ADefault: String): String;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+  end;
+
+const
+  VTABLE_NULL: TVTableValue = (
+    Intf:
+      (QueryInterface: @TValueNull.QueryInterface;
+       AddRef: @TNonRefCountedInterface.AddRef;
+       Release: @TNonRefCountedInterface.Release);
+    GetBsonType: @TValueNull.GetBsonType;
+    AsBoolean: @TValue.AsBoolean;
+    AsInteger: @TValue.AsInteger;
+    AsInt64: @TValue.AsInt64;
+    AsDouble: @TValue.AsDouble;
+    AsString: @TValue.AsString;
+    AsArray: @TValue.AsArray;
+    AsByteArray: @TValue.AsByteArray;
+    AsGuid: @TValue.AsGuid;
+    AsObjectId: @TValue.AsObjectId;
+
+    ToBoolean: @TValueNull.ToBoolean;
+    ToDouble: @TValue.ToDouble;
+    ToInteger: @TValue.ToInteger;
+    ToInt64: @TValue.ToInt64;
+    ToString: @TValueNull.ToString;
+    ToLocalTime: @TValue.ToLocalTime;
+    ToUniversalTime: @TValue.ToUniversalTime;
+    ToByteArray: @TValue.ToByteArray;
+    ToGuid: @TValue.ToGuid;
+    ToObjectId: @TValue.ToObjectId;
+
+    Equals: @TValueNull.Equals;
+
+    Clone: @TValue.Clone;
+    DeepClone: @TValue.Clone);
+
+const
+  VALUE_NULL: Pointer = @VTABLE_NULL;
+
+type
+  TValueUndefined = record {TValue, TgoBsonUndefined._IUndefined}
+  public
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function ToBoolean(const ADefault: Boolean): Boolean;
+    function ToString(const ADefault: String): String;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+  end;
+
+const
+  VTABLE_UNDEFINED: TVTableValue = (
+    Intf:
+      (QueryInterface: @TValueUndefined.QueryInterface;
+       AddRef: @TNonRefCountedInterface.AddRef;
+       Release: @TNonRefCountedInterface.Release);
+    GetBsonType: @TValueUndefined.GetBsonType;
+    AsBoolean: @TValue.AsBoolean;
+    AsInteger: @TValue.AsInteger;
+    AsInt64: @TValue.AsInt64;
+    AsDouble: @TValue.AsDouble;
+    AsString: @TValue.AsString;
+    AsArray: @TValue.AsArray;
+    AsByteArray: @TValue.AsByteArray;
+    AsGuid: @TValue.AsGuid;
+    AsObjectId: @TValue.AsObjectId;
+
+    ToBoolean: @TValueUndefined.ToBoolean;
+    ToDouble: @TValue.ToDouble;
+    ToInteger: @TValue.ToInteger;
+    ToInt64: @TValue.ToInt64;
+    ToString: @TValueUndefined.ToString;
+    ToLocalTime: @TValue.ToLocalTime;
+    ToUniversalTime: @TValue.ToUniversalTime;
+    ToByteArray: @TValue.ToByteArray;
+    ToGuid: @TValue.ToGuid;
+    ToObjectId: @TValue.ToObjectId;
+
+    Equals: @TValueUndefined.Equals;
+
+    Clone: @TValue.Clone;
+    DeepClone: @TValue.Clone);
+
+const
+  VALUE_UNDEFINED: Pointer = @VTABLE_UNDEFINED;
+
+type
+  TValueObjectId = record {TValue}
   private
+    FBase: TRefCountedInterface;
     FValue: TgoObjectId;
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function AsObjectId: TgoObjectId; override;
-    function ToObjectId: TgoObjectId; override;
-    function ToString(const ADefault: String): String; override;
-    function Equals(const AOther: TgoBsonValue.IValue): Boolean; override;
-  {$REGION 'Internal Declarations'}
   public
-    constructor Create(const AValue: TgoObjectId);
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function AsObjectId: TgoObjectId;
+    function ToObjectId: TgoObjectId;
+    function ToString(const ADefault: String): String;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+  public
+    class function Create(const AValue: TgoObjectId): TgoBsonValue._IValue; inline; static;
   end;
+  PValueObjectId = ^TValueObjectId;
+
+const
+  VTABLE_OBJECT_ID: TVTableValue = (
+    Intf:
+      (QueryInterface: @TRefCountedInterface.QueryInterface;
+       AddRef: @TRefCountedInterface.AddRef;
+       Release: @TRefCountedInterface.Release);
+    GetBsonType: @TValueObjectId.GetBsonType;
+    AsBoolean: @TValue.AsBoolean;
+    AsInteger: @TValue.AsInteger;
+    AsInt64: @TValue.AsInt64;
+    AsDouble: @TValue.AsDouble;
+    AsString: @TValue.AsString;
+    AsArray: @TValue.AsArray;
+    AsByteArray: @TValue.AsByteArray;
+    AsGuid: @TValue.AsGuid;
+    AsObjectId: @TValueObjectId.AsObjectId;
+
+    ToBoolean: @TValue.ToBoolean;
+    ToDouble: @TValue.ToDouble;
+    ToInteger: @TValue.ToInteger;
+    ToInt64: @TValue.ToInt64;
+    ToString: @TValueObjectId.ToString;
+    ToLocalTime: @TValue.ToLocalTime;
+    ToUniversalTime: @TValue.ToUniversalTime;
+    ToByteArray: @TValue.ToByteArray;
+    ToGuid: @TValue.ToGuid;
+    ToObjectId: @TValueObjectId.ToObjectId;
+
+    Equals: @TValueObjectId.Equals;
+
+    Clone: @TValue.Clone;
+    DeepClone: @TValue.DeepClone);
 
 type
-  TValueRegularExpression = class(TValue, TgoBsonRegularExpression.IRegularExpression)
-  {$REGION 'Internal Declarations'}
+  TValueRegularExpression = record {TValue, TgoBsonRegularExpression._IRegularExpression}
   private
+    FBase: TRefCountedInterface;
     FPattern: String;
     FOptions: String;
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function Equals(const AOther: TgoBsonValue.IValue): Boolean; override;
-  protected
-    { TgoBsonRegularExpression.IRegularExpression }
+  public
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+    function Release: Integer; stdcall;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+  public
+    { TgoBsonRegularExpression._IRegularExpression }
     function GetOptions: String;
     function GetPattern: String;
-  {$REGION 'Internal Declarations'}
   public
-    constructor Create(const APattern: String); overload;
-    constructor Create(const APattern, AOptions: String); overload;
+    class function Create(const APattern: String): TgoBsonRegularExpression._IRegularExpression; overload; inline; static;
+    class function Create(const APattern, AOptions: String): TgoBsonRegularExpression._IRegularExpression; overload; inline; static;
   end;
+  PValueRegularExpression = ^TValueRegularExpression;
 
 type
-  TValueJavaScript = class(TValue, TgoBsonJavaScript.IJavaScript)
-  {$REGION 'Internal Declarations'}
+  TVTableValueRegularExpression = record
+    Base: TVTableValue;
+    GetOptions: Pointer;
+    GetPattern: Pointer;
+  end;
+
+const
+  VTABLE_REGULAR_EXPRESSION: TVTableValueRegularExpression = (
+    Base:
+     (Intf:
+       (QueryInterface: @TValueRegularExpression.QueryInterface;
+        AddRef: @TRefCountedInterface.AddRef;
+        Release: @TValueRegularExpression.Release);
+      GetBsonType: @TValueRegularExpression.GetBsonType;
+      AsBoolean: @TValue.AsBoolean;
+      AsInteger: @TValue.AsInteger;
+      AsInt64: @TValue.AsInt64;
+      AsDouble: @TValue.AsDouble;
+      AsString: @TValue.AsString;
+      AsArray: @TValue.AsArray;
+      AsByteArray: @TValue.AsByteArray;
+      AsGuid: @TValue.AsGuid;
+      AsObjectId: @TValue.AsObjectId;
+
+      ToBoolean: @TValue.ToBoolean;
+      ToDouble: @TValue.ToDouble;
+      ToInteger: @TValue.ToInteger;
+      ToInt64: @TValue.ToInt64;
+      ToString: @TValue.ToString;
+      ToLocalTime: @TValue.ToLocalTime;
+      ToUniversalTime: @TValue.ToUniversalTime;
+      ToByteArray: @TValue.ToByteArray;
+      ToGuid: @TValue.ToGuid;
+      ToObjectId: @TValue.ToObjectId;
+
+      Equals: @TValueRegularExpression.Equals;
+
+      Clone: @TValue.Clone;
+      DeepClone: @TValue.DeepClone);
+
+    GetOptions: @TValueRegularExpression.GetOptions;
+    GetPattern: @TValueRegularExpression.GetPattern);
+
+type
+  TValueJavaScript = record {TValue, TgoBsonJavaScript._IJavaScript}
   private
+    FBase: TRefCountedInterface;
     FCode: String;
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function Equals(const AOther: TgoBsonValue.IValue): Boolean; override;
-  protected
-    { TgoBsonJavaScript.IJavaScript }
+  public
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+    function Release: Integer; stdcall;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+  public
+    { TgoBsonJavaScript._IJavaScript }
     function GetCode: String;
-  {$REGION 'Internal Declarations'}
   public
-    constructor Create(const ACode: String);
+    class function Create(const ACode: String): TgoBsonJavaScript._IJavaScript; inline; static;
   end;
+  PValueJavaScript = ^TValueJavaScript;
 
 type
-  TValueJavaScriptWithScope = class(TValueJavaScript, TgoBsonJavaScriptWithScope.IJavaScriptWithScope)
-  {$REGION 'Internal Declarations'}
+  TVTableValueJavaScript = record
+    Base: TVTableValue;
+    GetCode: Pointer;
+  end;
+
+const
+  VTABLE_JAVA_SCRIPT: TVTableValueJavaScript = (
+    Base:
+     (Intf:
+       (QueryInterface: @TValueJavaScript.QueryInterface;
+        AddRef: @TRefCountedInterface.AddRef;
+        Release: @TValueJavaScript.Release);
+      GetBsonType: @TValueJavaScript.GetBsonType;
+      AsBoolean: @TValue.AsBoolean;
+      AsInteger: @TValue.AsInteger;
+      AsInt64: @TValue.AsInt64;
+      AsDouble: @TValue.AsDouble;
+      AsString: @TValue.AsString;
+      AsArray: @TValue.AsArray;
+      AsByteArray: @TValue.AsByteArray;
+      AsGuid: @TValue.AsGuid;
+      AsObjectId: @TValue.AsObjectId;
+
+      ToBoolean: @TValue.ToBoolean;
+      ToDouble: @TValue.ToDouble;
+      ToInteger: @TValue.ToInteger;
+      ToInt64: @TValue.ToInt64;
+      ToString: @TValue.ToString;
+      ToLocalTime: @TValue.ToLocalTime;
+      ToUniversalTime: @TValue.ToUniversalTime;
+      ToByteArray: @TValue.ToByteArray;
+      ToGuid: @TValue.ToGuid;
+      ToObjectId: @TValue.ToObjectId;
+
+      Equals: @TValueJavaScript.Equals;
+
+      Clone: @TValue.Clone;
+      DeepClone: @TValue.DeepClone);
+
+    GetCode: @TValueJavaScript.GetCode);
+
+type
+  TValueJavaScriptWithScope = record {TValueJavaScript, TgoBsonJavaScriptWithScope._IJavaScriptWithScope}
   private
+    FBase: TValueJavaScript;
     FScope: TgoBsonDocument;
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function Equals(const AOther: TgoBsonValue.IValue): Boolean; override;
-    function Clone: TgoBsonValue.IValue; override;
-    function DeepClone: TgoBsonValue.IValue; override;
-  protected
-    { TgoBsonJavaScriptWithScope.IJavaScriptWithScope }
+  public
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+    function Release: Integer; stdcall;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+    function Clone: TgoBsonValue._IValue;
+    function DeepClone: TgoBsonValue._IValue;
+  public
+    { TgoBsonJavaScriptWithScope._IJavaScriptWithScope }
     function GetScope: TgoBsonDocument;
-  {$REGION 'Internal Declarations'}
   public
-    constructor Create(const ACode: String; const AScope: TgoBsonDocument);
+    class function Create(const ACode: String; const AScope: TgoBsonDocument): TgoBsonJavaScriptWithScope._IJavaScriptWithScope; inline; static;
   end;
+  PValueJavaScriptWithScope = ^TValueJavaScriptWithScope;
 
 type
-  TValueSymbol = class(TValue, TgoBsonSymbol.ISymbol)
-  {$REGION 'Internal Declarations'}
+  TVTableValueJavaScriptWithScope = record
+    Base: TVTableValueJavaScript;
+    GetScope: Pointer;
+  end;
+
+const
+  VTABLE_JAVA_SCRIPT_WITH_SCOPE: TVTableValueJavaScriptWithScope = (
+    Base:
+     (Base:
+       (Intf:
+         (QueryInterface: @TValueJavaScriptWithScope.QueryInterface;
+          AddRef: @TRefCountedInterface.AddRef;
+          Release: @TValueJavaScriptWithScope.Release);
+        GetBsonType: @TValueJavaScriptWithScope.GetBsonType;
+        AsBoolean: @TValue.AsBoolean;
+        AsInteger: @TValue.AsInteger;
+        AsInt64: @TValue.AsInt64;
+        AsDouble: @TValue.AsDouble;
+        AsString: @TValue.AsString;
+        AsArray: @TValue.AsArray;
+        AsByteArray: @TValue.AsByteArray;
+        AsGuid: @TValue.AsGuid;
+        AsObjectId: @TValue.AsObjectId;
+
+        ToBoolean: @TValue.ToBoolean;
+        ToDouble: @TValue.ToDouble;
+        ToInteger: @TValue.ToInteger;
+        ToInt64: @TValue.ToInt64;
+        ToString: @TValue.ToString;
+        ToLocalTime: @TValue.ToLocalTime;
+        ToUniversalTime: @TValue.ToUniversalTime;
+        ToByteArray: @TValue.ToByteArray;
+        ToGuid: @TValue.ToGuid;
+        ToObjectId: @TValue.ToObjectId;
+
+        Equals: @TValueJavaScriptWithScope.Equals;
+
+        Clone: @TValueJavaScriptWithScope.Clone;
+        DeepClone: @TValueJavaScriptWithScope.DeepClone);
+
+      GetCode: @TValueJavaScript.GetCode);
+
+    GetScope: @TValueJavaScriptWithScope.GetScope);
+
+type
+  TValueSymbol = record {TValue, TgoBsonSymbol._ISymbol}
   private
+    FBase: TRefCountedInterface;
     FName: String;
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function ToString(const ADefault: String): String; override;
-  protected
-    { TgoBsonSymbol.ISymbol }
-    function GetName: String;
-  {$REGION 'Internal Declarations'}
   public
-    constructor Create(const AName: String);
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+    function Release: Integer; stdcall;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+    function ToString(const ADefault: String): String;
+  public
+    { TgoBsonSymbol._ISymbol }
+    function GetName: String;
+  public
+    class function Create(const AName: String): TgoBsonSymbol._ISymbol; inline; static;
   end;
+  PValueSymbol = ^TValueSymbol;
 
 type
-  TValueTimestamp = class(TValue, TgoBsonTimestamp.ITimestamp)
-  {$REGION 'Internal Declarations'}
+  TVTableValueSymbol = record
+    Base: TVTableValue;
+    GetName: Pointer;
+  end;
+
+const
+  VTABLE_SYMBOL: TVTableValueSymbol = (
+    Base:
+     (Intf:
+       (QueryInterface: @TValueSymbol.QueryInterface;
+        AddRef: @TRefCountedInterface.AddRef;
+        Release: @TValueSymbol.Release);
+      GetBsonType: @TValueSymbol.GetBsonType;
+      AsBoolean: @TValue.AsBoolean;
+      AsInteger: @TValue.AsInteger;
+      AsInt64: @TValue.AsInt64;
+      AsDouble: @TValue.AsDouble;
+      AsString: @TValue.AsString;
+      AsArray: @TValue.AsArray;
+      AsByteArray: @TValue.AsByteArray;
+      AsGuid: @TValue.AsGuid;
+      AsObjectId: @TValue.AsObjectId;
+
+      ToBoolean: @TValue.ToBoolean;
+      ToDouble: @TValue.ToDouble;
+      ToInteger: @TValue.ToInteger;
+      ToInt64: @TValue.ToInt64;
+      ToString: @TValueSymbol.ToString;
+      ToLocalTime: @TValue.ToLocalTime;
+      ToUniversalTime: @TValue.ToUniversalTime;
+      ToByteArray: @TValue.ToByteArray;
+      ToGuid: @TValue.ToGuid;
+      ToObjectId: @TValue.ToObjectId;
+
+      Equals: @TValueSymbol.Equals;
+
+      Clone: @TValue.Clone;
+      DeepClone: @TValue.DeepClone);
+
+    GetName: @TValueSymbol.GetName);
+
+type
+  TValueTimestamp = record {TValue, TgoBsonTimestamp._ITimestamp}
   private
+    FBase: TRefCountedInterface;
     FValue: Int64;
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function Equals(const AOther: TgoBsonValue.IValue): Boolean; override;
-  protected
-    { TgoBsonTimestamp.ITimestamp }
+  public
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+  public
+    { TgoBsonTimestamp._ITimestamp }
     function GetIncrement: Integer;
     function GetTimestamp: Integer;
     function GetValue: Int64;
-  {$REGION 'Internal Declarations'}
   public
-    constructor Create(const AValue: Int64); overload;
-    constructor Create(const ATimestamp, AIncrement: Integer); overload;
+    class function Create(const AValue: Int64): TgoBsonTimestamp._ITimestamp; overload; inline; static;
+    class function Create(const ATimestamp, AIncrement: Integer): TgoBsonTimestamp._ITimestamp; overload; inline; static;
   end;
+  PValueTimestamp = ^TValueTimestamp;
 
 type
-  TValueMaxKey = class(TValue, TgoBsonMaxKey.IMaxKey)
-  {$REGION 'Internal Declarations'}
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function ToString(const ADefault: String): String; override;
-  {$REGION 'Internal Declarations'}
+  TVTableValueTimestamp = record
+    Base: TVTableValue;
+    GetIncrement: Pointer;
+    GetTimestamp: Pointer;
+    GetValue: Pointer;
   end;
 
+const
+  VTABLE_TIMESTAMP: TVTableValueTimestamp = (
+    Base:
+     (Intf:
+       (QueryInterface: @TValueTimestamp.QueryInterface;
+        AddRef: @TRefCountedInterface.AddRef;
+        Release: @TRefCountedInterface.Release);
+      GetBsonType: @TValueTimestamp.GetBsonType;
+      AsBoolean: @TValue.AsBoolean;
+      AsInteger: @TValue.AsInteger;
+      AsInt64: @TValue.AsInt64;
+      AsDouble: @TValue.AsDouble;
+      AsString: @TValue.AsString;
+      AsArray: @TValue.AsArray;
+      AsByteArray: @TValue.AsByteArray;
+      AsGuid: @TValue.AsGuid;
+      AsObjectId: @TValue.AsObjectId;
+
+      ToBoolean: @TValue.ToBoolean;
+      ToDouble: @TValue.ToDouble;
+      ToInteger: @TValue.ToInteger;
+      ToInt64: @TValue.ToInt64;
+      ToString: @TValue.ToString;
+      ToLocalTime: @TValue.ToLocalTime;
+      ToUniversalTime: @TValue.ToUniversalTime;
+      ToByteArray: @TValue.ToByteArray;
+      ToGuid: @TValue.ToGuid;
+      ToObjectId: @TValue.ToObjectId;
+
+      Equals: @TValueTimestamp.Equals;
+
+      Clone: @TValue.Clone;
+      DeepClone: @TValue.DeepClone);
+
+    GetIncrement: @TValueTimestamp.GetIncrement;
+    GetTimestamp: @TValueTimestamp.GetTimestamp;
+    GetValue: @TValueTimestamp.GetValue);
+
 type
-  TValueMinKey = class(TValue, TgoBsonMinKey.IMinKey)
-  {$REGION 'Internal Declarations'}
-  protected
-    { TgoBsonValue.IValue }
-    function GetBsonType: TgoBsonType; override;
-    function ToString(const ADefault: String): String; override;
-  {$REGION 'Internal Declarations'}
+  TValueMaxKey = record {TValue, TgoBsonMaxKey._IMaxKey}
+  public
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function ToString(const ADefault: String): String;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
   end;
+
+const
+  VTABLE_MAX_KEY: TVTableValue = (
+    Intf:
+      (QueryInterface: @TValueMaxKey.QueryInterface;
+       AddRef: @TNonRefCountedInterface.AddRef;
+       Release: @TNonRefCountedInterface.Release);
+    GetBsonType: @TValueMaxKey.GetBsonType;
+    AsBoolean: @TValue.AsBoolean;
+    AsInteger: @TValue.AsInteger;
+    AsInt64: @TValue.AsInt64;
+    AsDouble: @TValue.AsDouble;
+    AsString: @TValue.AsString;
+    AsArray: @TValue.AsArray;
+    AsByteArray: @TValue.AsByteArray;
+    AsGuid: @TValue.AsGuid;
+    AsObjectId: @TValue.AsObjectId;
+
+    ToBoolean: @TValue.ToBoolean;
+    ToDouble: @TValue.ToDouble;
+    ToInteger: @TValue.ToInteger;
+    ToInt64: @TValue.ToInt64;
+    ToString: @TValueMaxKey.ToString;
+    ToLocalTime: @TValue.ToLocalTime;
+    ToUniversalTime: @TValue.ToUniversalTime;
+    ToByteArray: @TValue.ToByteArray;
+    ToGuid: @TValue.ToGuid;
+    ToObjectId: @TValue.ToObjectId;
+
+    Equals: @TValueMaxKey.Equals;
+
+    Clone: @TValue.Clone;
+    DeepClone: @TValue.Clone);
+
+const
+  VALUE_MAX_KEY: Pointer = @VTABLE_MAX_KEY;
+
+type
+  TValueMinKey = record {TValue, TgoBsonMinKey._IMinKey}
+  public
+    { IInterface }
+    function QueryInterface(const IID: TGUID; out Obj): HResult; stdcall;
+  public
+    { TgoBsonValue._IValue }
+    function GetBsonType: TgoBsonType;
+    function ToString(const ADefault: String): String;
+    function Equals(const AOther: TgoBsonValue._IValue): Boolean;
+  end;
+
+const
+  VTABLE_MIN_KEY: TVTableValue = (
+    Intf:
+      (QueryInterface: @TValueMinKey.QueryInterface;
+       AddRef: @TNonRefCountedInterface.AddRef;
+       Release: @TNonRefCountedInterface.Release);
+    GetBsonType: @TValueMinKey.GetBsonType;
+    AsBoolean: @TValue.AsBoolean;
+    AsInteger: @TValue.AsInteger;
+    AsInt64: @TValue.AsInt64;
+    AsDouble: @TValue.AsDouble;
+    AsString: @TValue.AsString;
+    AsArray: @TValue.AsArray;
+    AsByteArray: @TValue.AsByteArray;
+    AsGuid: @TValue.AsGuid;
+    AsObjectId: @TValue.AsObjectId;
+
+    ToBoolean: @TValue.ToBoolean;
+    ToDouble: @TValue.ToDouble;
+    ToInteger: @TValue.ToInteger;
+    ToInt64: @TValue.ToInt64;
+    ToString: @TValueMinKey.ToString;
+    ToLocalTime: @TValue.ToLocalTime;
+    ToUniversalTime: @TValue.ToUniversalTime;
+    ToByteArray: @TValue.ToByteArray;
+    ToGuid: @TValue.ToGuid;
+    ToObjectId: @TValue.ToObjectId;
+
+    Equals: @TValueMinKey.Equals;
+
+    Clone: @TValue.Clone;
+    DeepClone: @TValue.Clone);
+
+const
+  VALUE_MIN_KEY: Pointer = @VTABLE_MIN_KEY;
+
+function _goBsonValueFromDouble(const AValue: Double): TgoBsonValue._IValue;
+begin
+  if (not AValue.IsNan) and (AValue = 0) then
+    Result := TValueDoubleZero.FValue
+  else
+    Result := TValueDouble.Create(AValue);
+end;
+
+function _goBsonValueFromString(const AValue: String): TgoBsonValue._IValue;
+begin
+  if (AValue = '') then
+    Result := TValueStringEmpty.FValue
+  else if (StringRefCount(AValue) < 0) then
+    Result := TValueStringConstant.Create(AValue)
+  else
+    Result := TValueString.Create(AValue);
+end;
+
+function _goBsonValueFromObjectId(const AValue: TgoObjectId): TgoBsonValue._IValue;
+begin
+  Result := TValueObjectId.Create(AValue);
+end;
+
+function _goBsonValueFromBoolean(const AValue: Boolean): TgoBsonValue._IValue;
+begin
+  if (AValue) then
+    Result := TValueTrue.FValue
+  else
+    Result := TValueFalse.FValue;
+end;
+
+function _goBsonValueFromDateTime(const AValue: Int64): TgoBsonValue._IValue;
+begin
+  Result := TValueDateTime.Create(AValue);
+end;
+
+function _goBsonValueFromInt32(const AValue: Int32): TgoBsonValue._IValue;
+begin
+  if (AValue >= TValueIntegerConst.MIN_PRECREATED_VALUE) and (AValue <= TValueIntegerConst.MAX_PRECREATED_VALUE) then
+    Result := TValueIntegerConst.FPrecreatedValues[AValue]
+  else
+    Result := TValueInteger.Create(AValue);
+end;
+
+function _goBsonValueFromInt64(const AValue: Int64): TgoBsonValue._IValue;
+begin
+  if (AValue >= TValueInt64Const.MIN_PRECREATED_VALUE) and (AValue <= TValueInt64Const.MAX_PRECREATED_VALUE) then
+    Result := TValueInt64Const.FPrecreatedValues[AValue]
+  else
+    Result := TValueInt64.Create(AValue);
+end;
+
+function _goCreateArray: TgoBsonArray._IArray;
+begin
+  Result := TValueArray.Create;
+end;
+
+function _goCreateDocument: TgoBsonDocument._IDocument;
+begin
+  Result := TValueDocument.Create;
+end;
+
+procedure _goGetBinaryData(const ASrc: TgoBsonValue._IValue;
+  out ADst: TgoBsonBinaryData);
+begin
+  ASrc.QueryInterface(TgoBsonBinaryData._IBinaryData, ADst.FImpl);
+end;
+
+procedure _goGetDateTime(const ASrc: TgoBsonValue._IValue;
+  out ADst: TgoBsonDateTime);
+begin
+  ASrc.QueryInterface(TgoBsonDateTime._IDateTime, ADst.FImpl);
+end;
+
+procedure _goGetRegularExpression(const ASrc: TgoBsonValue._IValue;
+  out ADst: TgoBsonRegularExpression);
+begin
+  ASrc.QueryInterface(TgoBsonRegularExpression._IRegularExpression, ADst.FImpl);
+end;
+
+procedure _goGetJavaScript(const ASrc: TgoBsonValue._IValue;
+  out ADst: TgoBsonJavaScript);
+begin
+  ASrc.QueryInterface(TgoBsonJavaScript._IJavaScript, ADst.FImpl);
+end;
+
+procedure _goGetJavaScriptWithScope(const ASrc: TgoBsonValue._IValue;
+  out ADst: TgoBsonJavaScriptWithScope);
+begin
+  ASrc.QueryInterface(TgoBsonJavaScriptWithScope._IJavaScriptWithScope, ADst.FImpl);
+end;
+
+procedure _goGetSymbol(const ASrc: TgoBsonValue._IValue;
+  out ADst: TgoBsonSymbol);
+begin
+  ASrc.QueryInterface(TgoBsonSymbol._ISymbol, ADst.FImpl);
+end;
+
+procedure _goGetTimestamp(const ASrc: TgoBsonValue._IValue;
+  out ADst: TgoBsonTimestamp);
+begin
+  ASrc.QueryInterface(TgoBsonTimestamp._ITimestamp, ADst.FImpl);
+end;
 
 { TgoJsonWriterSettings }
 
@@ -3692,7 +5129,7 @@ begin
   FIncrement := Random($1000000);
 
   MachineName := goGetMachineName;
-  FMachine := THashBobJenkins.GetHashValue(MachineName) and $00FFFFFF;
+  FMachine := goMurmurHash2(MachineName[Low(String)], Length(MachineName) * SizeOf(Char)) and $00FFFFFF;
   FPid := goGetCurrentProcessId;
 
   FInitialized := True;
@@ -4103,18 +5540,9 @@ begin
 end;
 
 class operator TgoBsonValue.Implicit(const A: Single): TgoBsonValue;
-var
-  IntVal: Integer;
 begin
-  if (not A.IsNan) and (A >= TValueDouble.MIN_PRECREATED_VALUE)
-    and (A <= TValueDouble.MAX_PRECREATED_VALUE) then
-  begin
-    IntVal := Trunc(A);
-    if (IntVal = A) then
-      Result := TValueDouble.FPrecreatedValues[IntVal]
-    else
-      Result.FImpl := TValueDouble.Create(A);
-  end
+  if (not A.IsNan) and (A = 0) then
+    Result.FImpl := TValueDoubleZero.FValue
   else
     Result.FImpl := TValueDouble.Create(A);
 end;
@@ -4127,8 +5555,8 @@ end;
 
 class operator TgoBsonValue.Implicit(const A: UInt32): TgoBsonValue;
 begin
-  if (A <= TValueInteger.MAX_PRECREATED_VALUE) then
-    Result := TValueInteger.FPrecreatedValues[A]
+  if (A <= TValueIntegerConst.MAX_PRECREATED_VALUE) then
+    Result.FImpl := TValueIntegerConst.FPrecreatedValues[A]
   else
     Result.FImpl := TValueInteger.Create(A);
 end;
@@ -4159,8 +5587,8 @@ end;
 
 class operator TgoBsonValue.Implicit(const A: UInt64): TgoBsonValue;
 begin
-  if (A <= TValueInt64.MAX_PRECREATED_VALUE) then
-    Result := TValueInt64.FPrecreatedValues[A]
+  if (A <= TValueInt64Const.MAX_PRECREATED_VALUE) then
+    Result.FImpl := TValueInt64Const.FPrecreatedValues[A]
   else
     Result.FImpl := TValueInt64.Create(A);
 end;
@@ -4223,40 +5651,31 @@ end;
 class operator TgoBsonValue.Implicit(const A: Boolean): TgoBsonValue;
 begin
   if (A) then
-    Result := TValueBoolean.FTrue
+    Result.FImpl := TValueTrue.FValue
   else
-    Result := TValueBoolean.FFalse;
+    Result.FImpl := TValueFalse.FValue;
 end;
 
 class operator TgoBsonValue.Implicit(const A: Double): TgoBsonValue;
-var
-  IntVal: Integer;
 begin
-  if (not A.IsNan) and (A >= TValueDouble.MIN_PRECREATED_VALUE)
-    and (A <= TValueDouble.MAX_PRECREATED_VALUE) then
-  begin
-    IntVal := Trunc(A);
-    if (IntVal = A) then
-      Result := TValueDouble.FPrecreatedValues[IntVal]
-    else
-      Result.FImpl := TValueDouble.Create(A);
-  end
+  if (not A.IsNan) and (A = 0) then
+    Result.FImpl := TValueDoubleZero.FValue
   else
     Result.FImpl := TValueDouble.Create(A);
 end;
 
 class operator TgoBsonValue.Implicit(const A: Integer): TgoBsonValue;
 begin
-  if (A >= TValueInteger.MIN_PRECREATED_VALUE) and (A <= TValueInteger.MAX_PRECREATED_VALUE) then
-    Result := TValueInteger.FPrecreatedValues[A]
+  if (A >= TValueIntegerConst.MIN_PRECREATED_VALUE) and (A <= TValueIntegerConst.MAX_PRECREATED_VALUE) then
+    Result.FImpl := TValueIntegerConst.FPrecreatedValues[A]
   else
     Result.FImpl := TValueInteger.Create(A);
 end;
 
 class operator TgoBsonValue.Implicit(const A: Int64): TgoBsonValue;
 begin
-  if (A >= TValueInt64.MIN_PRECREATED_VALUE) and (A <= TValueInt64.MAX_PRECREATED_VALUE) then
-    Result := TValueInt64.FPrecreatedValues[A]
+  if (A >= TValueInt64Const.MIN_PRECREATED_VALUE) and (A <= TValueInt64Const.MAX_PRECREATED_VALUE) then
+    Result.FImpl := TValueInt64Const.FPrecreatedValues[A]
   else
     Result.FImpl := TValueInt64.Create(A);
 end;
@@ -4264,7 +5683,9 @@ end;
 class operator TgoBsonValue.Implicit(const A: String): TgoBsonValue;
 begin
   if (A = '') then
-    Result := TValueString.FEmpty
+    Result.FImpl := TValueStringEmpty.FValue
+  else if (StringRefCount(A) < 0) then
+    Result.FImpl := TValueStringConstant.Create(A)
   else
     Result.FImpl := TValueString.Create(A);
 end;
@@ -4486,91 +5907,91 @@ end;
 
 function TgoBsonValueHelper.AsBsonBinaryData: TgoBsonBinaryData;
 begin
-  if (not Supports(FImpl, TgoBsonBinaryData.IBinaryData, Result.FImpl)) then
+  if (FImpl.QueryInterface(TgoBsonBinaryData._IBinaryData, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonValue.AsBsonBinaryData)');
 end;
 
 function TgoBsonValueHelper.AsBsonArray: TgoBsonArray;
 begin
-  if (not Supports(FImpl, TgoBsonArray.IArray, Result.FImpl)) then
+  if (FImpl.QueryInterface(TgoBsonArray._IArray, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonValue.AsBsonArray)');
 end;
 
 function TgoBsonValueHelper.AsBsonDateTime: TgoBsonDateTime;
 begin
-  if (not Supports(FImpl, TgoBsonDateTime.IDateTime, Result.FImpl)) then
+  if (FImpl.QueryInterface(TgoBsonDateTime._IDateTime, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonValue.AsBsonDateTime)');
 end;
 
 function TgoBsonValueHelper.AsBsonDocument: TgoBsonDocument;
 begin
-  if (not Supports(FImpl, TgoBsonDocument.IDocument, Result.FImpl)) then
+  if (FImpl.QueryInterface(TgoBsonDocument._IDocument, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonValue.AsBsonDocument)');
 end;
 
 function TgoBsonValueHelper.AsBsonJavaScript: TgoBsonJavaScript;
 begin
-  if (not Supports(FImpl, TgoBsonJavaScript.IJavaScript, Result.FImpl)) then
+  if (FImpl.QueryInterface(TgoBsonJavaScript._IJavaScript, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonValue.AsBsonJavaScript)');
 end;
 
 function TgoBsonValueHelper.AsBsonJavaScriptWithScope: TgoBsonJavaScriptWithScope;
 begin
-  if (not Supports(FImpl, TgoBsonJavaScriptWithScope.IJavaScriptWithScope, Result.FImpl)) then
+  if (FImpl.QueryInterface(TgoBsonJavaScriptWithScope._IJavaScriptWithScope, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonValue.AsBsonJavaScriptWithScope)');
 end;
 
 function TgoBsonValueHelper.AsBsonMaxKey: TgoBsonMaxKey;
 begin
-  if (not Supports(FImpl, TgoBsonMaxKey.IMaxKey, Result.FValue)) then
+  if (FImpl.QueryInterface(TgoBsonMaxKey._IMaxKey, Result.FValue) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonValue.AsBsonMaxKey)');
 end;
 
 function TgoBsonValueHelper.AsBsonMinKey: TgoBsonMinKey;
 begin
-  if (not Supports(FImpl, TgoBsonMinKey.IMinKey, Result.FValue)) then
+  if (FImpl.QueryInterface(TgoBsonMinKey._IMinKey, Result.FValue) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonValue.AsBsonMinKey)');
 end;
 
 function TgoBsonValueHelper.AsBsonNull: TgoBsonNull;
 begin
-  if (not Supports(FImpl, TgoBsonNull.INull, Result.FValue)) then
+  if (FImpl.QueryInterface(TgoBsonNull._INull, Result.FValue) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonValue.AsBsonNull)');
 end;
 
 function TgoBsonValueHelper.AsBsonRegularExpression: TgoBsonRegularExpression;
 begin
-  if (not Supports(FImpl, TgoBsonRegularExpression.IRegularExpression, Result.FImpl)) then
+  if (FImpl.QueryInterface(TgoBsonRegularExpression._IRegularExpression, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonValue.AsBsonRegularExpression)');
 end;
 
 function TgoBsonValueHelper.AsBsonSymbol: TgoBsonSymbol;
 begin
-  if (not Supports(FImpl, TgoBsonSymbol.ISymbol, Result.FImpl)) then
+  if (FImpl.QueryInterface(TgoBsonSymbol._ISymbol, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonValue.AsBsonSymbol)');
 end;
 
 function TgoBsonValueHelper.AsBsonTimestamp: TgoBsonTimestamp;
 begin
-  if (not Supports(FImpl, TgoBsonTimestamp.ITimestamp, Result.FImpl)) then
+  if (FImpl.QueryInterface(TgoBsonTimestamp._ITimestamp, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonValue.AsBsonTimestamp)');
 end;
 
 function TgoBsonValueHelper.AsBsonUndefined: TgoBsonUndefined;
 begin
-  if (not Supports(FImpl, TgoBsonUndefined.IUndefined, Result.FValue)) then
+  if (FImpl.QueryInterface(TgoBsonUndefined._IUndefined, Result.FValue) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonValue.AsBsonUndefined)');
 end;
 
 function TgoBsonValueHelper.ToBsonArray: TgoBsonArray;
 begin
-  if (not Supports(FImpl, TgoBsonArray.IArray, Result.FImpl)) then
+  if (FImpl.QueryInterface(TgoBsonArray._IArray, Result.FImpl) <> S_OK) then
     Result := TgoBsonArray.Create;
 end;
 
 function TgoBsonValueHelper.ToBsonDocument: TgoBsonDocument;
 begin
-  if (not Supports(FImpl, TgoBsonDocument.IDocument, Result.FImpl)) then
+  if (FImpl.QueryInterface(TgoBsonDocument._IDocument, Result.FImpl) <> S_OK) then
     Result := TgoBsonDocument.Create;
 end;
 
@@ -4579,7 +6000,7 @@ end;
 function TgoBsonArray.Add(const AValue: TgoBsonValue): TgoBsonArray;
 begin
   Assert(Assigned(FImpl));
-  FImpl.Add(AValue);
+  FImpl.Add(AValue.FImpl);
   Result.FImpl := FImpl;
 end;
 
@@ -4625,11 +6046,11 @@ end;
 
 function TgoBsonArray.Clone: TgoBsonArray;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.Clone;
-  if (not Supports(C, IArray, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonArray._IArray, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonArray.Clone)');
 end;
 
@@ -4646,11 +6067,11 @@ end;
 
 function TgoBsonArray.DeepClone: TgoBsonArray;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.DeepClone;
-  if (not Supports(C, IArray, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonArray._IArray, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonArray.DeepClone)');
 end;
 
@@ -4678,7 +6099,7 @@ end;
 
 function TgoBsonArray.GetItem(const AIndex: Integer): TgoBsonValue;
 begin
-  Result := FImpl[AIndex];
+  FImpl.GetItem(AIndex, Result.FImpl);
 end;
 
 class operator TgoBsonArray.Implicit(const A: TgoBsonArray): TgoBsonValue;
@@ -4821,7 +6242,7 @@ end;
 procedure TgoBsonArray.SetItem(const AIndex: Integer;
   const AValue: TgoBsonValue);
 begin
-  FImpl[AIndex] := AValue;
+  FImpl.SetItem(AIndex, AValue.FImpl);
 end;
 
 procedure TgoBsonArray.SetNil;
@@ -4884,7 +6305,8 @@ end;
 
 function TgoBsonElement.Clone: TgoBsonElement;
 begin
-  Result := TgoBsonElement.Create(FName, FImpl);
+  Result.FName := FName;
+  Result.FImpl := FImpl;
 end;
 
 class function TgoBsonElement.Create(const AName: String;
@@ -4893,27 +6315,42 @@ begin
   if (AValue.FImpl = nil) then
     raise EArgumentNilException.CreateRes(@SArgumentNil);
   Result.FName := AName;
-  Result.FImpl := AValue;
+  Result.FImpl := AValue.FImpl;
 end;
 
 function TgoBsonElement.DeepClone: TgoBsonElement;
 begin
-  Result := TgoBsonElement.Create(FName, FImpl.DeepClone);
+  Result.FName := FName;
+  Result.FImpl := FImpl.DeepClone;
 end;
 
 class operator TgoBsonElement.Equal(const A, B: TgoBsonElement): Boolean;
 begin
-  Result := (A.FName = B.FName) and (A.FImpl = B.FImpl);
+  Result := (A.FName = B.FName);
+  if (Result) then
+  begin
+    if (A.FImpl = nil) then
+      Result := (B.FImpl = nil)
+    else if (B.FImpl = nil) then
+      Result := False
+    else
+      Result := A.FImpl.Equals(B.FImpl);
+  end;
+end;
+
+function TgoBsonElement.GetValue: TgoBsonValue;
+begin
+  Result.FImpl := FImpl;
 end;
 
 class operator TgoBsonElement.NotEqual(const A, B: TgoBsonElement): Boolean;
 begin
-  Result := (A.FName <> B.FName) or (A.FImpl <> B.FImpl);
+  Result := not (A = B);
 end;
 
 { TgoBsonArray.TEnumerator }
 
-constructor TgoBsonArray.TEnumerator.Create(const AImpl: IArray);
+constructor TgoBsonArray.TEnumerator.Create(const AImpl: _IArray);
 begin
   Assert(Assigned(AImpl));
   FImpl := AImpl;
@@ -4923,7 +6360,7 @@ end;
 
 function TgoBsonArray.TEnumerator.GetCurrent: TgoBsonValue;
 begin
-  Result := FImpl[FIndex];
+  FImpl.GetItem(FIndex, Result.FImpl);
 end;
 
 function TgoBsonArray.TEnumerator.MoveNext: Boolean;
@@ -4935,22 +6372,17 @@ end;
 
 { TgoBsonDocument }
 
-class function TgoBsonDocument.Create: TgoBsonDocument;
-begin
-  Result.FImpl := TValueDocument.Create;
-end;
-
 function TgoBsonDocument.Add(const AName: String; const AValue: TgoBsonValue): TgoBsonDocument;
 begin
   Assert(Assigned(FImpl));
-  FImpl.Add(TgoBsonElement.Create(AName, AValue));
+  FImpl.Add(AName, AValue.FImpl);
   Result.FImpl := FImpl;
 end;
 
 function TgoBsonDocument.Add(const AElement: TgoBsonElement): TgoBsonDocument;
 begin
   Assert(Assigned(FImpl));
-  FImpl.Add(AElement);
+  FImpl.Add(AElement.FName, AElement.FImpl);
   Result.FImpl := FImpl;
 end;
 
@@ -4962,24 +6394,17 @@ end;
 
 function TgoBsonDocument.Clone: TgoBsonDocument;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.Clone;
-  if (not Supports(C, IDocument, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonDocument._IDocument, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonDocument.Clone)');
 end;
 
-function TgoBsonDocument.Contains(const AName: String): Boolean;
+class function TgoBsonDocument.Create: TgoBsonDocument;
 begin
-  Assert(Assigned(FImpl));
-  Result := FImpl.Contains(AName);
-end;
-
-function TgoBsonDocument.ContainsValue(const AValue: TgoBsonValue): Boolean;
-begin
-  Assert(Assigned(FImpl));
-  Result := FImpl.ContainsValue(AValue);
+  Result.FImpl := TValueDocument.Create;
 end;
 
 class function TgoBsonDocument.Create(
@@ -5000,13 +6425,25 @@ begin
   Result.FImpl := TValueDocument.Create(AName, AValue);
 end;
 
+function TgoBsonDocument.Contains(const AName: String): Boolean;
+begin
+  Assert(Assigned(FImpl));
+  Result := FImpl.Contains(AName);
+end;
+
+function TgoBsonDocument.ContainsValue(const AValue: TgoBsonValue): Boolean;
+begin
+  Assert(Assigned(FImpl));
+  Result := FImpl.ContainsValue(AValue);
+end;
+
 function TgoBsonDocument.DeepClone: TgoBsonDocument;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.DeepClone;
-  if (not Supports(C, IDocument, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonDocument._IDocument, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonDocument.DeepClone)');
 end;
 
@@ -5025,7 +6462,7 @@ function TgoBsonDocument.Get(const AName: String;
   const ADefault: TgoBsonValue): TgoBsonValue;
 begin
   Assert(Assigned(FImpl));
-  Result := FImpl.Get(AName, ADefault);
+  FImpl.Get(AName, ADefault.FImpl, Result.FImpl);
 end;
 
 function TgoBsonDocument.GetAllowDuplicateNames: Boolean;
@@ -5054,13 +6491,13 @@ end;
 function TgoBsonDocument.GetValue(const AIndex: Integer): TgoBsonValue;
 begin
   Assert(Assigned(FImpl));
-  Result := FImpl.Values[AIndex];
+  FImpl.GetValue(AIndex, Result.FImpl);
 end;
 
 function TgoBsonDocument.GetValueByName(const AName: String): TgoBsonValue;
 begin
   Assert(Assigned(FImpl));
-  Result := FImpl.ValuesByName[AName];
+  FImpl.GetValueByName(AName, Result.FImpl);
 end;
 
 class operator TgoBsonDocument.Implicit(const A: TgoBsonDocument): TgoBsonValue;
@@ -5223,14 +6660,14 @@ procedure TgoBsonDocument.SetValue(const AIndex: Integer;
   const AValue: TgoBsonValue);
 begin
   Assert(Assigned(FImpl));
-  FImpl.Values[AIndex] := AValue;
+  FImpl.SetValue(AIndex, AValue.FImpl);
 end;
 
 procedure TgoBsonDocument.SetValueByName(const AName: String;
   const AValue: TgoBsonValue);
 begin
   Assert(Assigned(FImpl));
-  FImpl.ValuesByName[AName] := AValue;
+  FImpl.SetValueByName(AName, AValue.FImpl);
 end;
 
 function TgoBsonDocument.ToArray: TArray<TgoBsonElement>;
@@ -5265,7 +6702,7 @@ function TgoBsonDocument.TryGetValue(const AName: String;
   out AValue: TgoBsonValue): Boolean;
 begin
   Assert(Assigned(FImpl));
-  Result := FImpl.TryGetValue(AName, AValue);
+  Result := FImpl.TryGetValue(AName, AValue.FImpl);
 end;
 
 class function TgoBsonDocument.TryLoad(const ABson: TBytes;
@@ -5300,7 +6737,7 @@ end;
 
 { TgoBsonDocument.TEnumerator }
 
-constructor TgoBsonDocument.TEnumerator.Create(const AImpl: IDocument);
+constructor TgoBsonDocument.TEnumerator.Create(const AImpl: _IDocument);
 begin
   Assert(Assigned(AImpl));
   FImpl := AImpl;
@@ -5324,11 +6761,11 @@ end;
 
 function TgoBsonBinaryData.Clone: TgoBsonBinaryData;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.Clone;
-  if (not Supports(C, IBinaryData, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonBinaryData._IBinaryData, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonBinaryData.Clone)');
 end;
 
@@ -5350,11 +6787,11 @@ end;
 
 function TgoBsonBinaryData.DeepClone: TgoBsonBinaryData;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.DeepClone;
-  if (not Supports(C, IBinaryData, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonBinaryData._IBinaryData, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonArray.TgoBsonBinaryData)');
 end;
 
@@ -5438,7 +6875,7 @@ end;
 
 class constructor TgoBsonNull.Create;
 begin
-  FImpl.FValue := TValueNull.Create;
+  FImpl.FValue := _INull(@VALUE_NULL);
 end;
 
 function TgoBsonNull.DeepClone: TgoBsonNull;
@@ -5490,7 +6927,7 @@ end;
 
 class constructor TgoBsonUndefined.Create;
 begin
-  FImpl.FValue := TValueUndefined.Create;
+  FImpl.FValue := _IUndefined(@VALUE_UNDEFINED);
 end;
 
 function TgoBsonUndefined.DeepClone: TgoBsonUndefined;
@@ -5537,11 +6974,11 @@ end;
 
 function TgoBsonRegularExpression.Clone: TgoBsonRegularExpression;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.Clone;
-  if (not Supports(C, IRegularExpression, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonRegularExpression._IRegularExpression, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonRegularExpression.Clone)');
 end;
 
@@ -5559,11 +6996,11 @@ end;
 
 function TgoBsonRegularExpression.DeepClone: TgoBsonRegularExpression;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.DeepClone;
-  if (not Supports(C, IRegularExpression, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonRegularExpression._IRegularExpression, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonRegularExpression.DeepClone)');
 end;
 
@@ -5632,11 +7069,11 @@ end;
 
 function TgoBsonJavaScript.Clone: TgoBsonJavaScript;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.Clone;
-  if (not Supports(C, IJavaScript, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonJavaScript._IJavaScript, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonJavaScript.Clone)');
 end;
 
@@ -5647,11 +7084,11 @@ end;
 
 function TgoBsonJavaScript.DeepClone: TgoBsonJavaScript;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.DeepClone;
-  if (not Supports(C, IJavaScript, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonJavaScript._IJavaScript, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonJavaScript.DeepClone)');
 end;
 
@@ -5708,11 +7145,11 @@ end;
 
 function TgoBsonJavaScriptWithScope.Clone: TgoBsonJavaScriptWithScope;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.Clone;
-  if (not Supports(C, IJavaScriptWithScope, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonJavaScriptWithScope._IJavaScriptWithScope, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonJavaScriptWithScope.Clone)');
 end;
 
@@ -5724,11 +7161,11 @@ end;
 
 function TgoBsonJavaScriptWithScope.DeepClone: TgoBsonJavaScriptWithScope;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.DeepClone;
-  if (not Supports(C, IJavaScriptWithScope, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonJavaScriptWithScope._IJavaScriptWithScope, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonJavaScriptWithScope.DeepClone)');
 end;
 
@@ -5792,21 +7229,21 @@ end;
 
 function TgoBsonSymbol.Clone: TgoBsonSymbol;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.Clone;
-  if (not Supports(C, ISymbol, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonSymbol._ISymbol, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonSymbol.Clone)');
 end;
 
 function TgoBsonSymbol.DeepClone: TgoBsonSymbol;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.DeepClone;
-  if (not Supports(C, ISymbol, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonSymbol._ISymbol, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonSymbol.DeepClone)');
 end;
 
@@ -5888,11 +7325,11 @@ end;
 
 function TgoBsonDateTime.Clone: TgoBsonDateTime;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.Clone;
-  if (not Supports(C, IDateTime, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonDateTime._IDateTime, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonDateTime.Clone)');
 end;
 
@@ -5910,11 +7347,11 @@ end;
 
 function TgoBsonDateTime.DeepClone: TgoBsonDateTime;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.DeepClone;
-  if (not Supports(C, IDateTime, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonDateTime._IDateTime, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonDateTime.DeepClone)');
 end;
 
@@ -5985,11 +7422,11 @@ end;
 
 function TgoBsonTimestamp.Clone: TgoBsonTimestamp;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.Clone;
-  if (not Supports(C, ITimestamp, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonTimestamp._ITimestamp, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonTimestamp.Clone)');
 end;
 
@@ -6000,11 +7437,11 @@ end;
 
 function TgoBsonTimestamp.DeepClone: TgoBsonTimestamp;
 var
-  C: TgoBsonValue.IValue;
+  C: TgoBsonValue._IValue;
 begin
   Assert(Assigned(FImpl));
   C := FImpl.DeepClone;
-  if (not Supports(C, ITimestamp, Result.FImpl)) then
+  if (C.QueryInterface(TgoBsonTimestamp._ITimestamp, Result.FImpl) <> S_OK) then
     raise EIntfCastError.Create('Invalid cast (TgoBsonTimestamp.DeepClone)');
 end;
 
@@ -6077,7 +7514,7 @@ end;
 
 class constructor TgoBsonMaxKey.Create;
 begin
-  FImpl.FValue := TValueMaxKey.Create;
+  FImpl.FValue := _IMaxKey(@VALUE_MAX_KEY);
 end;
 
 function TgoBsonMaxKey.DeepClone: TgoBsonMaxKey;
@@ -6129,7 +7566,7 @@ end;
 
 class constructor TgoBsonMinKey.Create;
 begin
-  FImpl.FValue := TValueMinKey.Create;
+  FImpl.FValue := _IMinKey(@VALUE_MIN_KEY);
 end;
 
 function TgoBsonMinKey.DeepClone: TgoBsonMinKey;
@@ -6172,69 +7609,112 @@ begin
   Result := TgoBsonValue(Self).ToJson(ASettings);
 end;
 
+{ TNonRefCountedInterface }
+
+function TNonRefCountedInterface.Addref: Integer;
+begin
+  Result := -1;
+end;
+
+function TNonRefCountedInterface.QueryInterface(const IID: TGUID; out Obj): HResult;
+begin
+  Result := E_NOINTERFACE;
+end;
+
+function TNonRefCountedInterface.Release: Integer;
+begin
+  Result := -1;
+end;
+
+{ TRefCountedInterface }
+
+function TRefCountedInterface.Addref: Integer;
+begin
+  Result := AtomicIncrement(FRefCount);
+end;
+
+function TRefCountedInterface.QueryInterface(const IID: TGUID;
+  out Obj): HResult;
+begin
+  Result := E_NOINTERFACE;
+end;
+
+function TRefCountedInterface.Release: Integer;
+begin
+  Result := AtomicDecrement(FRefCount);
+  if (Result = 0) then
+    FreeMem(@Self);
+end;
+
 { TValue }
 
 function TValue.AsArray: TArray<TgoBsonValue>;
 begin
-  raise EIntfCastError.CreateFmt('Invalid cast (%s.AsArray)', [ClassName]);
+  raise EIntfCastError.Create('Invalid cast');
 end;
 
 function TValue.AsBoolean: Boolean;
 begin
-  raise EIntfCastError.CreateFmt('Invalid cast (%s.AsBoolean)', [ClassName]);
+  raise EIntfCastError.Create('Invalid cast');
 end;
 
 function TValue.AsByteArray: TBytes;
 begin
-  raise EIntfCastError.CreateFmt('Invalid cast (%s.AsByteArray)', [ClassName]);
+  raise EIntfCastError.Create('Invalid cast');
 end;
 
 function TValue.AsDouble: Double;
 begin
-  raise EIntfCastError.CreateFmt('Invalid cast (%s.AsDouble)', [ClassName]);
+  raise EIntfCastError.Create('Invalid cast');
 end;
 
 function TValue.AsGuid: TGUID;
 begin
-  raise EIntfCastError.CreateFmt('Invalid cast (%s.AsGuid)', [ClassName]);
+  raise EIntfCastError.Create('Invalid cast');
 end;
 
 function TValue.AsInt64: Int64;
 begin
-  raise EIntfCastError.CreateFmt('Invalid cast (%s.AsInt64)', [ClassName]);
+  raise EIntfCastError.Create('Invalid cast');
 end;
 
 function TValue.AsInteger: Integer;
 begin
-  raise EIntfCastError.CreateFmt('Invalid cast (%s.AsInteger)', [ClassName]);
+  raise EIntfCastError.Create('Invalid cast');
 end;
 
 function TValue.AsObjectId: TgoObjectId;
 begin
-  raise EIntfCastError.CreateFmt('Invalid cast (%s.AsObjectId)', [ClassName]);
+  raise EIntfCastError.Create('Invalid cast');
 end;
 
 function TValue.AsString: String;
 begin
-  raise EIntfCastError.CreateFmt('Invalid cast (%s.AsString)', [ClassName]);
+  raise EIntfCastError.Create('Invalid cast');
 end;
 
-function TValue.Clone: TgoBsonValue.IValue;
+function TValue.Clone: TgoBsonValue._IValue;
 begin
-  Result := Self;
+  Result := TgoBsonValue._IValue(@Self);
 end;
 
-function TValue.DeepClone: TgoBsonValue.IValue;
+function TValue.DeepClone: TgoBsonValue._IValue;
 begin
-  Result := Self;
+  Result := TgoBsonValue._IValue(@Self);
 end;
 
-function TValue.Equals(const AOther: TgoBsonValue.IValue): Boolean;
+function TValue.Equals(const AOther: TgoBsonValue._IValue): Boolean;
 var
-  Other: TValue;
+  This, Other: TgoBsonValue;
 begin
-  Other := TValue(AOther);
-  Result := (Self = Other);
+  This.FImpl := TgoBsonValue._IValue(@Self);
+  Other.FImpl := AOther;
+  Result := (This = Other);
+end;
+
+function TValue.GetBsonType: TgoBsonType;
+begin
+  raise EAbstractError.CreateRes(@SAbstractError);
 end;
 
 function TValue.ToBoolean(const ADefault: Boolean): Boolean;
@@ -6244,7 +7724,7 @@ end;
 
 function TValue.ToByteArray: TBytes;
 begin
-  Result := [];
+  Result := nil;
 end;
 
 function TValue.ToDouble(const ADefault: Double): Double;
@@ -6287,88 +7767,125 @@ begin
   Result := 0;
 end;
 
-{ TValueBoolean }
+{ TValueFalse }
 
-class constructor TValueBoolean.Create;
+function TValueFalse.AsBoolean: Boolean;
 begin
-  FFalse.FImpl := TValueBoolean.Create(False);
-  FTrue.FImpl := TValueBoolean.Create(True);
+  Result := False;
 end;
 
-function TValueBoolean.AsBoolean: Boolean;
+class constructor TValueFalse.Create;
 begin
-  Result := FValue;
+  FValue := TgoBsonValue._IValue(@VALUE_BOOLEAN_FALSE);
 end;
 
-constructor TValueBoolean.Create(const AValue: Boolean);
-begin
-  inherited Create;
-  FValue := AValue;
-end;
-
-function TValueBoolean.Equals(const AOther: TgoBsonValue.IValue): Boolean;
+function TValueFalse.Equals(const AOther: TgoBsonValue._IValue): Boolean;
 begin
   if (AOther.BsonType = TgoBsonType.Boolean) then
-    Result := (FValue = AOther.AsBoolean)
+    Result := (not AOther.AsBoolean)
   else
     Result := False;
 end;
 
-function TValueBoolean.GetBsonType: TgoBsonType;
+function TValueFalse.GetBsonType: TgoBsonType;
 begin
   Result := TgoBsonType.Boolean;
 end;
 
-function TValueBoolean.ToBoolean(const ADefault: Boolean): Boolean;
+function TValueFalse.ToBoolean(const ADefault: Boolean): Boolean;
 begin
-  Result := FValue;
+  Result := False;
 end;
 
-function TValueBoolean.ToDouble(const ADefault: Double): Double;
+function TValueFalse.ToDouble(const ADefault: Double): Double;
 begin
-  Result := Ord(FValue);
+  Result := 0;
 end;
 
-function TValueBoolean.ToInt64(const ADefault: Int64): Int64;
+function TValueFalse.ToInt64(const ADefault: Int64): Int64;
 begin
-  Result := Ord(FValue);
+  Result := 0;
 end;
 
-function TValueBoolean.ToInteger(const ADefault: Integer): Integer;
+function TValueFalse.ToInteger(const ADefault: Integer): Integer;
 begin
-  Result := Ord(FValue);
+  Result := 0;
 end;
 
-function TValueBoolean.ToString(const ADefault: String): String;
+function TValueFalse.ToString(const ADefault: String): String;
 begin
-  if (FValue) then
-    Result := 'true'
+  Result := 'false';
+end;
+
+{ TValueTrue }
+
+function TValueTrue.AsBoolean: Boolean;
+begin
+  Result := True;
+end;
+
+class constructor TValueTrue.Create;
+begin
+  FValue := TgoBsonValue._IValue(@VALUE_BOOLEAN_TRUE);
+end;
+
+function TValueTrue.Equals(const AOther: TgoBsonValue._IValue): Boolean;
+begin
+  if (AOther.BsonType = TgoBsonType.Boolean) then
+    Result := AOther.AsBoolean
   else
-    Result := 'false';
+    Result := False;
+end;
+
+function TValueTrue.GetBsonType: TgoBsonType;
+begin
+  Result := TgoBsonType.Boolean;
+end;
+
+function TValueTrue.ToBoolean(const ADefault: Boolean): Boolean;
+begin
+  Result := True;
+end;
+
+function TValueTrue.ToDouble(const ADefault: Double): Double;
+begin
+  Result := 1;
+end;
+
+function TValueTrue.ToInt64(const ADefault: Int64): Int64;
+begin
+  Result := 1;
+end;
+
+function TValueTrue.ToInteger(const ADefault: Integer): Integer;
+begin
+  Result := 1;
+end;
+
+function TValueTrue.ToString(const ADefault: String): String;
+begin
+  Result := 'true';
 end;
 
 { TValueInteger }
-
-class constructor TValueInteger.Create;
-var
-  I: Integer;
-begin
-  for I := MIN_PRECREATED_VALUE to MAX_PRECREATED_VALUE do
-    FPrecreatedValues[I].FImpl := TValueInteger.Create(I);
-end;
 
 function TValueInteger.AsInteger: Integer;
 begin
   Result := FValue;
 end;
 
-constructor TValueInteger.Create(const AValue: Integer);
+class function TValueInteger.Create(const AValue: Integer): TgoBsonValue._IValue;
+var
+  V: PValueInteger;
 begin
-  inherited Create;
-  FValue := AValue;
+  GetMem(V, SizeOf(TValueInteger));
+  V.FBase.FVTable := @VTABLE_INTEGER;
+  V.FBase.FRefCount := 0;
+  V.FValue := AValue;
+  Result := TgoBsonValue._IValue(V);
 end;
 
-function TValueInteger.Equals(const AOther: TgoBsonValue.IValue): Boolean;
+function TValueInteger.Equals(const AOther: TgoBsonValue._IValue): Boolean;
 begin
   case AOther.BsonType of
     TgoBsonType.Int32:
@@ -6414,28 +7931,104 @@ begin
   Result := IntToStr(FValue);
 end;
 
-{ TValueInt64 }
+{ TValueIntegerConst }
 
-class constructor TValueInt64.Create;
+function TValueIntegerConst.AsInteger: Integer;
+begin
+  Result := FValue;
+end;
+
+class constructor TValueIntegerConst.Create;
+var
+  I: Integer;
+  P: PValueIntegerConst;
+begin
+  GetMem(FPrecreatedData, ((MAX_PRECREATED_VALUE - MIN_PRECREATED_VALUE) + 1) * SizeOf(TValueIntegerConst));
+  P := FPrecreatedData;
+  for I := MIN_PRECREATED_VALUE to MAX_PRECREATED_VALUE do
+  begin
+    P.FBase.FVTable := @VTABLE_INTEGER_CONST;
+    P.FValue := I;
+    FPrecreatedValues[I] := TgoBsonValue._IValue(P);
+    Inc(P);
+  end;
+end;
+
+class destructor TValueIntegerConst.Destroy;
 var
   I: Integer;
 begin
   for I := MIN_PRECREATED_VALUE to MAX_PRECREATED_VALUE do
-    FPrecreatedValues[I].FImpl := TValueInt64.Create(I);
+    FPrecreatedValues[I] := nil;
+  FreeMem(FPrecreatedData);
+  FPrecreatedData := nil;
 end;
+
+function TValueIntegerConst.Equals(const AOther: TgoBsonValue._IValue): Boolean;
+begin
+  case AOther.BsonType of
+    TgoBsonType.Int32:
+      Result := (FValue = AOther.AsInteger);
+
+    TgoBsonType.Int64:
+      Result := (FValue = AOther.AsInt64);
+
+    TgoBsonType.Double:
+      Result := (FValue = AOther.AsDouble);
+  else
+    Result := False;
+  end;
+end;
+
+function TValueIntegerConst.GetBsonType: TgoBsonType;
+begin
+  Result := TgoBsonType.Int32;
+end;
+
+function TValueIntegerConst.ToBoolean(const ADefault: Boolean): Boolean;
+begin
+  Result := (FValue <> 0);
+end;
+
+function TValueIntegerConst.ToDouble(const ADefault: Double): Double;
+begin
+  Result := FValue;
+end;
+
+function TValueIntegerConst.ToInt64(const ADefault: Int64): Int64;
+begin
+  Result := FValue;
+end;
+
+function TValueIntegerConst.ToInteger(const ADefault: Integer): Integer;
+begin
+  Result := FValue;
+end;
+
+function TValueIntegerConst.ToString(const ADefault: String): String;
+begin
+  Result := IntToStr(FValue);
+end;
+
+{ TValueInt64 }
 
 function TValueInt64.AsInt64: Int64;
 begin
   Result := FValue;
 end;
 
-constructor TValueInt64.Create(const AValue: Int64);
+class function TValueInt64.Create(const AValue: Int64): TgoBsonValue._IValue;
+var
+  V: PValueInt64;
 begin
-  inherited Create;
-  FValue := AValue;
+  GetMem(V, SizeOf(TValueInt64));
+  V.FBase.FVTable := @VTABLE_INT64;
+  V.FBase.FRefCount := 0;
+  V.FValue := AValue;
+  Result := TgoBsonValue._IValue(V);
 end;
 
-function TValueInt64.Equals(const AOther: TgoBsonValue.IValue): Boolean;
+function TValueInt64.Equals(const AOther: TgoBsonValue._IValue): Boolean;
 begin
   case AOther.BsonType of
     TgoBsonType.Int32:
@@ -6481,28 +8074,104 @@ begin
   Result := IntToStr(FValue);
 end;
 
-{ TValueDouble }
+{ TValueInt64Const }
 
-class constructor TValueDouble.Create;
+function TValueInt64Const.AsInt64: Int64;
+begin
+  Result := FValue;
+end;
+
+class constructor TValueInt64Const.Create;
+var
+  I: Integer;
+  P: PValueInt64Const;
+begin
+  GetMem(FPrecreatedData, ((MAX_PRECREATED_VALUE - MIN_PRECREATED_VALUE) + 1) * SizeOf(TValueInt64Const));
+  P := FPrecreatedData;
+  for I := MIN_PRECREATED_VALUE to MAX_PRECREATED_VALUE do
+  begin
+    P.FBase.FVTable := @VTABLE_INT64_CONST;
+    P.FValue := I;
+    FPrecreatedValues[I] := TgoBsonValue._IValue(P);
+    Inc(P);
+  end;
+end;
+
+class destructor TValueInt64Const.Destroy;
 var
   I: Integer;
 begin
   for I := MIN_PRECREATED_VALUE to MAX_PRECREATED_VALUE do
-    FPrecreatedValues[I].FImpl := TValueDouble.Create(I);
+    FPrecreatedValues[I] := nil;
+  FreeMem(FPrecreatedData);
+  FPrecreatedData := nil;
 end;
+
+function TValueInt64Const.Equals(const AOther: TgoBsonValue._IValue): Boolean;
+begin
+  case AOther.BsonType of
+    TgoBsonType.Int32:
+      Result := (FValue = AOther.AsInteger);
+
+    TgoBsonType.Int64:
+      Result := (FValue = AOther.AsInt64);
+
+    TgoBsonType.Double:
+      Result := (FValue = AOther.AsDouble);
+  else
+    Result := False;
+  end;
+end;
+
+function TValueInt64Const.GetBsonType: TgoBsonType;
+begin
+  Result := TgoBsonType.Int64;
+end;
+
+function TValueInt64Const.ToBoolean(const ADefault: Boolean): Boolean;
+begin
+  Result := (FValue <> 0);
+end;
+
+function TValueInt64Const.ToDouble(const ADefault: Double): Double;
+begin
+  Result := FValue;
+end;
+
+function TValueInt64Const.ToInt64(const ADefault: Int64): Int64;
+begin
+  Result := FValue;
+end;
+
+function TValueInt64Const.ToInteger(const ADefault: Integer): Integer;
+begin
+  Result := FValue;
+end;
+
+function TValueInt64Const.ToString(const ADefault: String): String;
+begin
+  Result := IntToStr(FValue);
+end;
+
+{ TValueDouble }
 
 function TValueDouble.AsDouble: Double;
 begin
   Result := FValue;
 end;
 
-constructor TValueDouble.Create(const AValue: Double);
+class function TValueDouble.Create(const AValue: Double): TgoBsonValue._IValue;
+var
+  V: PValueDouble;
 begin
-  inherited Create;
-  FValue := AValue;
+  GetMem(V, SizeOf(TValueDouble));
+  V.FBase.FVTable := @VTABLE_DOUBLE;
+  V.FBase.FRefCount := 0;
+  V.FValue := AValue;
+  Result := TgoBsonValue._IValue(V);
 end;
 
-function TValueDouble.Equals(const AOther: TgoBsonValue.IValue): Boolean;
+function TValueDouble.Equals(const AOther: TgoBsonValue._IValue): Boolean;
 begin
   case AOther.BsonType of
     TgoBsonType.Int32:
@@ -6548,27 +8217,91 @@ begin
   Result := FloatToStr(FValue, goUSFormatSettings);
 end;
 
+{ TValueDoubleZero }
+
+function TValueDoubleZero.AsDouble: Double;
+begin
+  Result := 0;
+end;
+
+class constructor TValueDoubleZero.Create;
+begin
+  FValue := TgoBsonValue._IValue(@VALUE_DOUBLE_ZERO);
+end;
+
+function TValueDoubleZero.Equals(const AOther: TgoBsonValue._IValue): Boolean;
+begin
+  case AOther.BsonType of
+    TgoBsonType.Int32:
+      Result := (AOther.AsInteger = 0);
+
+    TgoBsonType.Int64:
+      Result := (AOther.AsInt64 = 0);
+
+    TgoBsonType.Double:
+      Result := (AOther.AsDouble = 0);
+  else
+    Result := False;
+  end;
+end;
+
+function TValueDoubleZero.GetBsonType: TgoBsonType;
+begin
+  Result := TgoBsonType.Double;
+end;
+
+function TValueDoubleZero.ToBoolean(const ADefault: Boolean): Boolean;
+begin
+  Result := False;
+end;
+
+function TValueDoubleZero.ToDouble(const ADefault: Double): Double;
+begin
+  Result := 0;
+end;
+
+function TValueDoubleZero.ToInt64(const ADefault: Int64): Int64;
+begin
+  Result := 0;
+end;
+
+function TValueDoubleZero.ToInteger(const ADefault: Integer): Integer;
+begin
+  Result := 0;
+end;
+
+function TValueDoubleZero.ToString(const ADefault: String): String;
+begin
+  Result := '0';
+end;
+
 { TValueDateTime }
 
-constructor TValueDateTime.Create(const ADateTime: TDateTime; const ADateTimeIsUTC: Boolean);
+class function TValueDateTime.Create(const ADateTime: TDateTime;
+  const ADateTimeIsUTC: Boolean): TgoBsonDateTime._IDateTime;
 begin
-  inherited Create;
-  FMillisecondsSinceEpoch := goDateTimeToMillisecondsSinceEpoch(ADateTime, ADateTimeIsUTC);
+  Result := Create(goDateTimeToMillisecondsSinceEpoch(ADateTime, ADateTimeIsUTC));
 end;
 
-constructor TValueDateTime.Create(const AMillisecondsSinceEpoch: Int64);
-begin
-  inherited Create;
-  FMillisecondsSinceEpoch := AMillisecondsSinceEpoch;
-end;
-
-function TValueDateTime.Equals(const AOther: TgoBsonValue.IValue): Boolean;
+class function TValueDateTime.Create(
+  const AMillisecondsSinceEpoch: Int64): TgoBsonDateTime._IDateTime;
 var
-  Other: TValueDateTime;
+  V: PValueDateTime;
+begin
+  GetMem(V, SizeOf(TValueDateTime));
+  V.FBase.FVTable := @VTABLE_DATE_TIME;
+  V.FBase.FRefCount := 0;
+  V.FMillisecondsSinceEpoch := AMillisecondsSinceEpoch;
+  Result := TgoBsonDateTime._IDateTime(V);
+end;
+
+function TValueDateTime.Equals(const AOther: TgoBsonValue._IValue): Boolean;
+var
+  Other: PValueDateTime;
 begin
   if (AOther.BsonType = TgoBsonType.DateTime) then
   begin
-    Other := TValueDateTime(AOther);
+    Other := PValueDateTime(AOther);
     Result := (FMillisecondsSinceEpoch = Other.FMillisecondsSinceEpoch);
   end
   else
@@ -6583,6 +8316,17 @@ end;
 function TValueDateTime.GetMillisecondsSinceEpoch: Int64;
 begin
   Result := FMillisecondsSinceEpoch;
+end;
+
+function TValueDateTime.QueryInterface(const IID: TGUID; out Obj): HResult;
+begin
+  if (IID = TgoBsonDateTime._IDateTime) then
+  begin
+    TgoBsonDateTime._IDateTime(Obj) := TgoBsonDateTime._IDateTime(@Self);
+    Result := S_OK;
+  end
+  else
+    Result := E_NOINTERFACE;
 end;
 
 function TValueDateTime.ToLocalTime: TDateTime;
@@ -6602,26 +8346,30 @@ end;
 
 { TValueString }
 
-class constructor TValueString.Create;
-begin
-  FEmpty.FImpl := TValueString.Create('');
-end;
-
 function TValueString.AsString: String;
 begin
-  Result := FValue;
+  Result := Value;
 end;
 
-constructor TValueString.Create(const AValue: String);
+class function TValueString.Create(const AValue: String): TgoBsonValue._IValue;
+var
+  Len: Integer;
+  V: PValueString;
 begin
-  inherited Create;
-  FValue := AValue;
+  Len := Length(AValue);
+  GetMem(V, SizeOf(TValueString) + Len * SizeOf(Char));
+  V.FBase.FVTable := @VTABLE_STRING;
+  V.FBase.FRefCount := 0;
+  V.FLength := Len;
+  Result := TgoBsonValue._IValue(V);
+  Inc(V);
+  Move(AValue[Low(String)], V^, Len * SizeOf(Char));
 end;
 
-function TValueString.Equals(const AOther: TgoBsonValue.IValue): Boolean;
+function TValueString.Equals(const AOther: TgoBsonValue._IValue): Boolean;
 begin
   if (AOther.BsonType = TgoBsonType.String) then
-    Result := (FValue = AOther.AsString)
+    Result := (Value = AOther.AsString)
   else
     Result := False;
 end;
@@ -6633,36 +8381,152 @@ end;
 
 function TValueString.ToBoolean(const ADefault: Boolean): Boolean;
 begin
-  Result := (FValue <> '');
+  Result := True;
 end;
 
 function TValueString.ToDouble(const ADefault: Double): Double;
 begin
-  Result := StrToFloatDef(FValue, ADefault, goUSFormatSettings);
+  Result := StrToFloatDef(Value, ADefault, goUSFormatSettings);
 end;
 
 function TValueString.ToInt64(const ADefault: Int64): Int64;
 begin
-  Result := StrToInt64Def(FValue, ADefault);
+  Result := StrToInt64Def(Value, ADefault);
 end;
 
 function TValueString.ToInteger(const ADefault: Integer): Integer;
 begin
-  Result := StrToIntDef(FValue, ADefault);
+  Result := StrToIntDef(Value, ADefault);
 end;
 
 function TValueString.ToString(const ADefault: String): String;
 begin
-  Result := FValue;
+  Result := Value;
+end;
+
+function TValueString.Value: String;
+begin
+  SetString(Result, PChar(PByte(@Self) + SizeOf(TValueString)), FLength);
+end;
+
+{ TValueStringEmpty }
+
+function TValueStringEmpty.AsString: String;
+begin
+  Result := '';
+end;
+
+class constructor TValueStringEmpty.Create;
+begin
+  FValue := TgoBsonValue._IValue(@VALUE_STRING_EMPTY);
+end;
+
+function TValueStringEmpty.Equals(const AOther: TgoBsonValue._IValue): Boolean;
+begin
+  if (AOther.BsonType = TgoBsonType.String) then
+    Result := (AOther.AsString = '')
+  else
+    Result := False;
+end;
+
+function TValueStringEmpty.GetBsonType: TgoBsonType;
+begin
+  Result := TgoBsonType.String;
+end;
+
+function TValueStringEmpty.ToBoolean(const ADefault: Boolean): Boolean;
+begin
+  Result := False;
+end;
+
+function TValueStringEmpty.ToDouble(const ADefault: Double): Double;
+begin
+  Result := ADefault;
+end;
+
+function TValueStringEmpty.ToInt64(const ADefault: Int64): Int64;
+begin
+  Result := ADefault;
+end;
+
+function TValueStringEmpty.ToInteger(const ADefault: Integer): Integer;
+begin
+  Result := ADefault;
+end;
+
+function TValueStringEmpty.ToString(const ADefault: String): String;
+begin
+  Result := '';
+end;
+
+{ TValueStringConstant }
+
+function TValueStringConstant.AsString: String;
+begin
+  Result := Value;
+end;
+
+class function TValueStringConstant.Create(const AValue: String): TgoBsonValue._IValue;
+var
+  V: PValueStringConstant;
+begin
+  GetMem(V, SizeOf(TValueStringConstant));
+  V.FBase.FVTable := @VTABLE_STRING_CONSTANT;
+  V.FBase.FRefCount := 0;
+  V.FValue := Pointer(AValue);
+  Result := TgoBsonValue._IValue(V);
+end;
+
+function TValueStringConstant.Equals(const AOther: TgoBsonValue._IValue): Boolean;
+begin
+  if (AOther.BsonType = TgoBsonType.String) then
+    Result := (Value = AOther.AsString)
+  else
+    Result := False;
+end;
+
+function TValueStringConstant.GetBsonType: TgoBsonType;
+begin
+  Result := TgoBsonType.String;
+end;
+
+function TValueStringConstant.ToBoolean(const ADefault: Boolean): Boolean;
+begin
+  Result := True;
+end;
+
+function TValueStringConstant.ToDouble(const ADefault: Double): Double;
+begin
+  Result := StrToFloatDef(Value, ADefault, goUSFormatSettings);
+end;
+
+function TValueStringConstant.ToInt64(const ADefault: Int64): Int64;
+begin
+  Result := StrToInt64Def(Value, ADefault);
+end;
+
+function TValueStringConstant.ToInteger(const ADefault: Integer): Integer;
+begin
+  Result := StrToIntDef(Value, ADefault);
+end;
+
+function TValueStringConstant.ToString(const ADefault: String): String;
+begin
+  Result := Value;
+end;
+
+function TValueStringConstant.Value: String;
+begin
+  Result := String(FValue);
 end;
 
 { TValueArray }
 
-procedure TValueArray.Add(const AValue: TgoBsonValue);
+procedure TValueArray.Add(const AValue: TgoBsonValue._IValue);
 var
   Capacity: Integer;
 begin
-  if (AValue.FImpl = nil) then
+  if (AValue = nil) then
     raise EArgumentNilException.CreateRes(@SArgumentNil);
 
   Capacity := Length(FItems);
@@ -6680,23 +8544,23 @@ begin
   Inc(FCount);
 end;
 
-procedure TValueArray.AddRange(const AValues: array of TgoBsonValue);
+procedure TValueArray.AddRangeOpenArray(const AValues: array of TgoBsonValue);
 var
   I: Integer;
 begin
   for I := 0 to Length(AValues) - 1 do
-    Add(AValues[I]);
+    Add(AValues[I].FImpl);
 end;
 
-procedure TValueArray.AddRange(const AValues: TArray<TgoBsonValue>);
+procedure TValueArray.AddRangeGenArray(const AValues: TArray<TgoBsonValue>);
 var
   I: Integer;
 begin
   for I := 0 to Length(AValues) - 1 do
-    Add(AValues[I]);
+    Add(AValues[I].FImpl);
 end;
 
-procedure TValueArray.AddRange(const AValues: TgoBsonArray);
+procedure TValueArray.AddRangeBsonArray(const AValues: TgoBsonArray);
 var
   I: Integer;
 begin
@@ -6704,26 +8568,16 @@ begin
     raise EArgumentNilException.CreateRes(@SArgumentNil);
 
   for I := 0 to AValues.Count - 1 do
-    Add(AValues[I]);
+    Add(AValues[I].FImpl);
 end;
 
 function TValueArray.AsArray: TArray<TgoBsonValue>;
+var
+  I: Integer;
 begin
-  SetLength(FItems, FCount);
-  Result := FItems;
-end;
-
-constructor TValueArray.Create(const ACapacity: Integer);
-begin
-  SetLength(FItems, ACapacity);
-  FCount := 0;
-end;
-
-constructor TValueArray.Create(const AValues: array of TgoBsonValue);
-begin
-  inherited Create;
-  SetLength(FItems, Length(AValues));
-  AddRange(AValues);
+  SetLength(Result, FCount);
+  for I := 0 to FCount - 1 do
+    Result[I].FImpl := FItems[I];
 end;
 
 procedure TValueArray.Clear;
@@ -6732,45 +8586,68 @@ begin
   FCount := 0;
 end;
 
-function TValueArray.Clone: TgoBsonValue.IValue;
+function TValueArray.Clone: TgoBsonValue._IValue;
 var
-  A: TValueArray;
+  A: PValueArray;
   I: Integer;
 begin
-  A := TValueArray.Create(FCount);
+  Result := TValueArray.Create(FCount);
+  A := PValueArray(Result);
   for I := 0 to FCount - 1 do
     A.Add(FItems[I]);
-  Result := A;
 end;
 
 function TValueArray.Contains(const AValue: TgoBsonValue): Boolean;
 var
   I: Integer;
+  Item: TgoBsonValue;
 begin
   for I := 0 to FCount - 1 do
   begin
-    if (FItems[I] = AValue) then
+    Item.FImpl := FItems[I];
+    if (Item = AValue) then
       Exit(True);
   end;
   Result := False;
 end;
 
-constructor TValueArray.Create(const AValues: TArray<TgoBsonValue>);
+class function TValueArray.Create(
+  const AValues: array of TgoBsonValue): TgoBsonArray._IArray;
 begin
-  inherited Create;
-  SetLength(FItems, Length(AValues));
-  AddRange(AValues);
+  Result := Create(Length(AValues));
+  Result.AddRange(AValues);
 end;
 
-function TValueArray.DeepClone: TgoBsonValue.IValue;
+class function TValueArray.Create(
+  const ACapacity: Integer): TgoBsonArray._IArray;
 var
-  A: TValueArray;
+  V: PValueArray;
+begin
+  GetMem(V, SizeOf(TValueArray));
+  V.FBase.FVTable := @VTABLE_ARRAY;
+  V.FBase.FRefCount := 0;
+  Pointer(V.FItems) := nil;
+  SetLength(V.FItems, ACapacity);
+  V.FCount := 0;
+  Result := TgoBsonArray._IArray(V);
+end;
+
+class function TValueArray.Create(
+  const AValues: TArray<TgoBsonValue>): TgoBsonArray._IArray;
+begin
+  Result := Create(Length(AValues));
+  Result.AddRange(AValues);
+end;
+
+function TValueArray.DeepClone: TgoBsonValue._IValue;
+var
+  A: PValueArray;
   I: Integer;
 begin
-  A := TValueArray.Create(FCount);
+  Result := TValueArray.Create(FCount);
+  A := PValueArray(Result);
   for I := 0 to FCount - 1 do
     A.Add(FItems[I].DeepClone);
-  Result := A;
 end;
 
 procedure TValueArray.Delete(const AIndex: Integer);
@@ -6778,19 +8655,20 @@ begin
   if (AIndex < 0) or (AIndex >= FCount) then
     raise EArgumentOutOfRangeException.CreateRes(@SArgumentOutOfRange);
 
-  FItems[AIndex].FImpl := nil;
+  FItems[AIndex] := nil;
 
   Dec(FCount);
   if (AIndex <> FCount) then
   begin
-    Move(FItems[AIndex + 1], FItems[AIndex], (FCount - AIndex) * SizeOf(TgoBsonValue));
+    Move(FItems[AIndex + 1], FItems[AIndex], (FCount - AIndex) * SizeOf(TgoBsonValue._IValue));
     FillChar(FItems[FCount], SizeOf(TgoBsonValue), 0);
   end;
 end;
 
-function TValueArray.Equals(const AOther: TgoBsonValue.IValue): Boolean;
+function TValueArray.Equals(const AOther: TgoBsonValue._IValue): Boolean;
 var
   Other: TArray<TgoBsonValue>;
+  Item: TgoBsonValue;
   I: Integer;
 begin
   if (AOther.BsonType = TgoBsonType.&Array) then
@@ -6801,7 +8679,8 @@ begin
     begin
       for I := 0 to FCount - 1 do
       begin
-        if (FItems[I] <> Other[I]) then
+        Item.FImpl := FItems[I];
+        if (Item <> Other[I]) then
           Exit(False);
       end;
     end;
@@ -6820,23 +8699,47 @@ begin
   Result := FCount;
 end;
 
-function TValueArray.GetItem(const AIndex: Integer): TgoBsonValue;
+procedure TValueArray.GetItem(const AIndex: Integer;
+  out AValue: TgoBsonValue._IValue);
 begin
   if (AIndex < 0) or (AIndex >= FCount) then
     raise EArgumentOutOfRangeException.CreateRes(@SArgumentOutOfRange);
-  Result := FItems[AIndex];
+  AValue := FItems[AIndex];
 end;
 
 function TValueArray.IndexOf(const AValue: TgoBsonValue): Integer;
 var
   I: Integer;
+  Item: TgoBsonValue;
 begin
   for I := 0 to FCount - 1 do
   begin
-    if (FItems[I] = AValue) then
+    Item.FImpl := FItems[I];
+    if (Item = AValue) then
       Exit(I);
   end;
   Result := -1;
+end;
+
+function TValueArray.QueryInterface(const IID: TGUID; out Obj): HResult;
+begin
+  if (IID = TgoBsonArray._IArray) then
+  begin
+    TgoBsonArray._IArray(Obj) := TgoBsonArray._IArray(@Self);
+    Result := S_OK;
+  end
+  else
+    Result := E_NOINTERFACE;
+end;
+
+function TValueArray.Release: Integer;
+begin
+  Result := AtomicDecrement(FBase.FRefCount);
+  if (Result = 0) then
+  begin
+    FItems := nil;
+    FreeMem(@Self);
+  end;
 end;
 
 function TValueArray.Remove(const AValue: TgoBsonValue): Boolean;
@@ -6852,21 +8755,16 @@ begin
 end;
 
 procedure TValueArray.SetItem(const AIndex: Integer;
-  const AValue: TgoBsonValue);
+  const AValue: TgoBsonValue._IValue);
 begin
   if (AIndex < 0) or (AIndex >= FCount) then
     raise EArgumentOutOfRangeException.CreateRes(@SArgumentOutOfRange);
-  if (AValue.FImpl = nil) then
+  if (AValue = nil) then
     raise EArgumentNilException.CreateRes(@SArgumentNil);
   FItems[AIndex] := AValue;
 end;
 
 { TValueBinaryData }
-
-class constructor TValueBinaryData.Create;
-begin
-  FEmpty.FImpl := TValueBinaryData.Create(nil);
-end;
 
 function TValueBinaryData.AsByteArray: TBytes;
 begin
@@ -6882,43 +8780,48 @@ begin
     TgoBsonBinarySubType.UuidStandard:
       Result := TGUID.Create(FValue, TEndian.Big);
   else
-    raise EIntfCastError.CreateFmt('Invalid cast (%s.AsGuid)', [ClassName]);
+    raise EIntfCastError.Create('Invalid cast (AsGuid)');
   end;
 end;
 
-constructor TValueBinaryData.Create(const AValue: TGUID);
+class function TValueBinaryData.Create(const AValue: TBytes;
+  const ASubType: TgoBsonBinarySubType): TgoBsonBinaryData._IBinaryData;
+var
+  V: PValueBinaryData;
 begin
-  inherited Create;
-  FValue := AValue.ToByteArray(TEndian.Big);
-  FSubType := TgoBsonBinarySubType.UuidStandard;
+  GetMem(V, SizeOf(TValueBinaryData));
+  V.FBase.FVTable := @VTABLE_BINARY_DATA;
+  V.FBase.FRefCount := 0;
+  Pointer(V.FValue) := nil;
+  V.FValue := AValue;
+  V.FSubType := ASubType;
+  Result := TgoBsonBinaryData._IBinaryData(V);
 end;
 
-function TValueBinaryData.Equals(const AOther: TgoBsonValue.IValue): Boolean;
+class function TValueBinaryData.Create: TgoBsonBinaryData._IBinaryData;
+begin
+  Result := Create(nil);
+end;
+
+class function TValueBinaryData.Create(
+  const AValue: TGUID): TgoBsonBinaryData._IBinaryData;
+begin
+  Result := Create(AValue.ToByteArray(TEndian.Big), TgoBsonBinarySubType.UuidStandard);
+end;
+
+function TValueBinaryData.Equals(const AOther: TgoBsonValue._IValue): Boolean;
 var
-  Other: TValueBinaryData;
+  Other: PValueBinaryData;
 begin
   if (AOther.BsonType = TgoBsonType.Binary) then
   begin
-    Other := TValueBinaryData(AOther);
+    Other := PValueBinaryData(AOther);
     Result := (FSubType = Other.FSubType)
       and (Length(FValue) = Length(Other.FValue))
       and (CompareMem(@FValue[0], @Other.FValue[0], Length(FValue)));
   end
   else
     Result := False;
-end;
-
-constructor TValueBinaryData.Create(const AValue: TBytes;
-  const ASubType: TgoBsonBinarySubType);
-begin
-  inherited Create;
-  FValue := AValue;
-  FSubType := ASubType;
-end;
-
-constructor TValueBinaryData.Create;
-begin
-  inherited Create;
 end;
 
 function TValueBinaryData.GetBsonType: TgoBsonType;
@@ -6948,6 +8851,27 @@ begin
   Result := FSubType;
 end;
 
+function TValueBinaryData.QueryInterface(const IID: TGUID; out Obj): HResult;
+begin
+  if (IID = TgoBsonBinaryData._IBinaryData) then
+  begin
+    TgoBsonBinaryData._IBinaryData(Obj) := TgoBsonBinaryData._IBinaryData(@Self);
+    Result := S_OK;
+  end
+  else
+    Result := E_NOINTERFACE;
+end;
+
+function TValueBinaryData.Release: Integer;
+begin
+  Result := AtomicDecrement(FBase.FRefCount);
+  if (Result = 0) then
+  begin
+    FValue := nil;
+    FreeMem(@Self);
+  end;
+end;
+
 procedure TValueBinaryData.SetByte(const AIndex: Integer; const AValue: Byte);
 begin
   if (AIndex < 0) or (AIndex >= Length(FValue)) then
@@ -6975,12 +8899,13 @@ end;
 
 { TValueDocument }
 
-procedure TValueDocument.Add(const AElement: TgoBsonElement);
+procedure TValueDocument.Add(const AName: String;
+  const AValue: TgoBsonValue._IValue);
 var
   IsDuplicate: Boolean;
   Capacity: Integer;
 begin
-  IsDuplicate := (IndexOfName(AElement.Name) >= 0);
+  IsDuplicate := (IndexOfName(AName) >= 0);
   if (IsDuplicate) and (not FAllowDuplicateNames) then
     raise EInvalidOperation.CreateRes(@SGenericDuplicateItem);
 
@@ -6995,7 +8920,8 @@ begin
       Inc(Capacity, 4);
     SetLength(FElements, Capacity);
   end;
-  FElements[FCount] := AElement;
+  FElements[FCount].FName := AName;
+  FElements[FCount].FImpl := AValue;
   Inc(FCount);
 
   if (not IsDuplicate) then
@@ -7003,26 +8929,30 @@ begin
     if (FIndices = nil) then
       RebuildIndices
     else
-      FIndices.Add(AElement.Name, FCount - 1);
+      FIndices.Add(AName, FCount - 1);
   end;
 end;
 
 procedure TValueDocument.Clear;
 begin
   FElements := nil;
-  FIndices := nil;
+  if (FIndices <> nil) then
+  begin
+    FIndices.Release;
+    FIndices := nil;
+  end;
   FCount := 0;
 end;
 
-function TValueDocument.Clone: TgoBsonValue.IValue;
+function TValueDocument.Clone: TgoBsonValue._IValue;
 var
-  D: TValueDocument;
+  D: PValueDocument;
   I: Integer;
 begin
-  D := TValueDocument.Create;
+  Result := TValueDocument.Create;
+  D := PValueDocument(Result);
   for I := 0 to FCount - 1 do
-    D.Add(FElements[I]);
-  Result := D;
+    D.Add(FElements[I].FName, FElements[I].FImpl);
 end;
 
 function TValueDocument.Contains(const AName: String): Boolean;
@@ -7042,39 +8972,48 @@ begin
   Result := False;
 end;
 
-constructor TValueDocument.Create;
-begin
-  inherited Create;
-end;
-
-constructor TValueDocument.Create(const AAllowDuplicateNames: Boolean);
-begin
-  inherited Create;
-  FAllowDuplicateNames := True;
-end;
-
-constructor TValueDocument.Create(const AElement: TgoBsonElement);
-begin
-  inherited Create;
-  Add(AElement);
-end;
-
-constructor TValueDocument.Create(const AName: String;
-  const AValue: TgoBsonValue);
-begin
-  inherited Create;
-  Add(TgoBsonElement.Create(AName, AValue));
-end;
-
-function TValueDocument.DeepClone: TgoBsonValue.IValue;
+class function TValueDocument.Create(
+  const AAllowDuplicateNames: Boolean): TgoBsonDocument._IDocument;
 var
-  D: TValueDocument;
-  I: Integer;
+  V: PValueDocument;
 begin
-  D := TValueDocument.Create;
+  GetMem(V, SizeOf(TValueDocument));
+  V.FBase.FVTable := @VTABLE_DOCUMENT;
+  V.FBase.FRefCount := 0;
+  V.FAllowDuplicateNames := AAllowDuplicateNames;
+  Pointer(V.FElements) := nil;
+  Pointer(V.FIndices) := nil;
+  V.FCount := 0;
+  Result := TgoBsonDocument._IDocument(V);
+end;
+
+class function TValueDocument.Create(
+  const AElement: TgoBsonElement): TgoBsonDocument._IDocument;
+begin
+  Result := Create;
+  Result.Add(AElement.FName, AElement.FImpl);
+end;
+
+class function TValueDocument.Create(const AName: String;
+  const AValue: TgoBsonValue): TgoBsonDocument._IDocument;
+begin
+  Result := Create;
+  Result.Add(AName, AValue.FImpl);
+end;
+
+function TValueDocument.DeepClone: TgoBsonValue._IValue;
+var
+  D: PValueDocument;
+  I: Integer;
+  E: TgoBsonElement;
+begin
+  Result := TValueDocument.Create;
+  D := PValueDocument(Result);
   for I := 0 to FCount - 1 do
-    D.Add(FElements[I].DeepClone);
-  Result := D;
+  begin
+    E := FElements[I].DeepClone;
+    D.Add(E.FName, E.FImpl);
+  end;
 end;
 
 procedure TValueDocument.Delete(const AIndex: Integer);
@@ -7092,20 +9031,14 @@ begin
   end;
 end;
 
-destructor TValueDocument.Destroy;
-begin
-  FIndices.Free;
-  inherited;
-end;
-
-function TValueDocument.Equals(const AOther: TgoBsonValue.IValue): Boolean;
+function TValueDocument.Equals(const AOther: TgoBsonValue._IValue): Boolean;
 var
-  Other: TValueDocument;
+  Other: PValueDocument;
   I: Integer;
 begin
   if (AOther.BsonType = TgoBsonType.Document) then
   begin
-    Other := TValueDocument(AOther);
+    Other := PValueDocument(AOther);
     Result := (FCount = Other.FCount);
     for I := 0 to FCount - 1 do
     begin
@@ -7117,16 +9050,16 @@ begin
     Result := False;
 end;
 
-function TValueDocument.Get(const AName: String;
-  const ADefault: TgoBsonValue): TgoBsonValue;
+procedure TValueDocument.Get(const AName: String;
+  const ADefault: TgoBsonValue._IValue; out AValue: TgoBsonValue._IValue);
 var
   Index: Integer;
 begin
   Index := IndexOfName(AName);
   if (Index < 0) then
-    Result := ADefault
+    AValue := ADefault
   else
-    Result := FElements[Index].Value;
+    AValue := FElements[Index].FImpl;
 end;
 
 function TValueDocument.GetAllowDuplicateNames: Boolean;
@@ -7151,22 +9084,24 @@ begin
   Result := FElements[AIndex];
 end;
 
-function TValueDocument.GetValue(const AIndex: Integer): TgoBsonValue;
+procedure TValueDocument.GetValue(const AIndex: Integer;
+  out AValue: TgoBsonValue._IValue);
 begin
   if (AIndex < 0) or (AIndex >= Length(FElements)) then
     raise EArgumentOutOfRangeException.CreateRes(@SArgumentOutOfRange);
-  Result := FElements[AIndex].Value;
+  AValue := FElements[AIndex].FImpl;
 end;
 
-function TValueDocument.GetValueByName(const AName: String): TgoBsonValue;
+procedure TValueDocument.GetValueByName(const AName: String;
+  out AValue: TgoBsonValue._IValue);
 var
   Index: Integer;
 begin
   Index := IndexOfName(AName);
   if (Index < 0) then
-    Result := TgoBsonNull.Value
+    AValue := TgoBsonNull.Value._Value
   else
-    Result := FElements[Index].Value;
+    AValue := FElements[Index].FImpl;
 end;
 
 function TValueDocument.IndexOfName(const AName: String): Integer;
@@ -7182,8 +9117,8 @@ begin
     end;
     Result := -1;
   end
-  else if (not FIndices.TryGetValue(AName, Result)) then
-    Result := -1;
+  else
+    Result := FIndices.Get(AName);
 end;
 
 procedure TValueDocument.Merge(const AOtherDocument: TgoBsonDocument;
@@ -7197,8 +9132,19 @@ begin
   for Element in AOtherDocument do
   begin
     if (AOverwriteExistingElements) or (not Contains(Element.Name)) then
-      SetValueByName(Element.Name, Element.Value);
+      SetValueByName(Element.Name, Element.FImpl);
   end;
+end;
+
+function TValueDocument.QueryInterface(const IID: TGUID; out Obj): HResult;
+begin
+  if (IID = TgoBsonDocument._IDocument) then
+  begin
+    TgoBsonDocument._IDocument(Obj) := TgoBsonDocument._IDocument(@Self);
+    Result := S_OK;
+  end
+  else
+    Result := E_NOINTERFACE;
 end;
 
 procedure TValueDocument.RebuildIndices;
@@ -7207,19 +9153,38 @@ var
 begin
   if (FCount < INDICES_COUNT_THRESHOLD) then
   begin
-    FreeAndNil(FIndices);
+    if (FIndices <> nil) then
+    begin
+      FIndices.Release;
+      FIndices := nil;
+    end;
     Exit;
   end;
 
   if (FIndices = nil) then
-    FIndices := TDictionary<String, Integer>.Create
+  begin
+    GetMem(FIndices, SizeOf(TIndexMap));
+    FillChar(FIndices^, SizeOf(TIndexMap), 0);
+  end
   else
     FIndices.Clear;
 
   { Process the elements in reverse order so that in case of duplicates the
     dictionary ends up pointing at the first one }
   for I := FCount - 1 downto 0 do
-    FIndices.AddOrSetValue(FElements[I].Name, I);
+    FIndices.Add(FElements[I].Name, I);
+end;
+
+function TValueDocument.Release: Integer;
+begin
+  Result := AtomicDecrement(FBase.FRefCount);
+  if (Result = 0) then
+  begin
+    FElements := nil;
+    if (FIndices <> nil) then
+      FIndices.Release;
+    FreeMem(@Self);
+  end;
 end;
 
 procedure TValueDocument.Remove(const AName: String);
@@ -7259,26 +9224,26 @@ begin
 end;
 
 procedure TValueDocument.SetValue(const AIndex: Integer;
-  const AValue: TgoBsonValue);
+  const AValue: TgoBsonValue._IValue);
 begin
   if (AIndex < 0) or (AIndex >= Length(FElements)) then
     raise EArgumentOutOfRangeException.CreateRes(@SArgumentOutOfRange);
-  if (AValue.FImpl = nil) then
+  if (AValue = nil) then
     raise EArgumentNilException.CreateRes(@SArgumentNil);
   FElements[AIndex].FImpl := AValue;
 end;
 
 procedure TValueDocument.SetValueByName(const AName: String;
-  const AValue: TgoBsonValue);
+  const AValue: TgoBsonValue._IValue);
 var
   Index: Integer;
 begin
-  if (AValue.FImpl = nil) then
+  if (AValue = nil) then
     raise EArgumentNilException.CreateRes(@SArgumentNil);
 
   Index := IndexOfName(AName);
   if (Index < 0) then
-    Add(TgoBsonElement.Create(AName, AValue))
+    Add(AName, AValue)
   else
     FElements[Index].FImpl := AValue;
 end;
@@ -7308,26 +9273,126 @@ begin
 end;
 
 function TValueDocument.TryGetValue(const AName: String;
-  out AValue: TgoBsonValue): Boolean;
+  out AValue: TgoBsonValue._IValue): Boolean;
 var
   Index: Integer;
 begin
   Index := IndexOfName(AName);
   if (Index < 0) then
   begin
-    AValue.FImpl := nil;
+    AValue := nil;
     Result := False;
   end
   else
   begin
-    AValue := FElements[Index].Value;
+    AValue := FElements[Index].FImpl;
     Result := True;
   end;
 end;
 
+{ TValueDocument.TIndexMap }
+
+procedure TValueDocument.TIndexMap.Add(const AName: String;
+  const AIndex: Integer);
+var
+  Mask, Index, HashCode, HC: Integer;
+begin
+  if (FCount >= FGrowThreshold) then
+    Resize(Length(FEntries) * 2);
+
+  HashCode := goMurmurHash2(AName[Low(String)], Length(AName) * SizeOf(Char)) and $7FFFFFFF;
+  Mask := Length(FEntries) - 1;
+  Index := HashCode and Mask;
+
+  while True do
+  begin
+    HC := FEntries[Index].HashCode;
+    if (HC = EMPTY_HASH) then
+      Break;
+
+    if (HC = HashCode) and (FEntries[Index].Name = AName) then
+    begin
+      FEntries[Index].Index := AIndex;
+      Exit;
+    end;
+
+    Index := (Index + 1) and Mask;
+  end;
+
+  FEntries[Index].HashCode := HashCode;
+  FEntries[Index].Name := AName;
+  FEntries[Index].Index := AIndex;
+  Inc(FCount);
+end;
+
+procedure TValueDocument.TIndexMap.Clear;
+begin
+  FEntries := nil;
+  FCount := 0;
+  FGrowThreshold := 0;
+end;
+
+function TValueDocument.TIndexMap.Get(const AName: String): Integer;
+var
+  Mask, Index, HashCode, HC: Integer;
+begin
+  if (FCount = 0) then
+    Exit(-1);
+
+  Mask := Length(FEntries) - 1;
+  HashCode := goMurmurHash2(AName[Low(String)], Length(AName) * SizeOf(Char)) and $7FFFFFFF;
+  Index := HashCode and Mask;
+
+  while True do
+  begin
+    HC := FEntries[Index].HashCode;
+    if (HC = EMPTY_HASH) then
+      Exit(-1);
+
+    if (HC = HashCode) and (FEntries[Index].Name = AName) then
+      Exit(FEntries[Index].Index);
+
+    Index := (Index + 1) and Mask;
+  end;
+end;
+
+procedure TValueDocument.TIndexMap.Release;
+begin
+  FEntries := nil;
+  FreeMem(@Self);
+end;
+
+procedure TValueDocument.TIndexMap.Resize(ANewSize: Integer);
+var
+  NewMask, I, NewIndex: Integer;
+  OldEntries, NewEntries: TMapEntries;
+begin
+  if (ANewSize < 4) then
+    ANewSize := 4;
+  NewMask := ANewSize - 1;
+  SetLength(NewEntries, ANewSize);
+  for I := 0 to ANewSize - 1 do
+    NewEntries[I].HashCode := EMPTY_HASH;
+  OldEntries := FEntries;
+
+  for I := 0 to Length(OldEntries) - 1 do
+  begin
+    if (OldEntries[I].HashCode <> EMPTY_HASH) then
+    begin
+      NewIndex := OldEntries[I].HashCode and NewMask;
+      while (NewEntries[NewIndex].HashCode <> EMPTY_HASH) do
+        NewIndex := (NewIndex + 1) and NewMask;
+      NewEntries[NewIndex] := OldEntries[I];
+    end;
+  end;
+
+  FEntries := NewEntries;
+  FGrowThreshold := (ANewSize * 3) shr 2; // 75%
+end;
+
 { TValueNull }
 
-function TValueNull.Equals(const AOther: TgoBsonValue.IValue): Boolean;
+function TValueNull.Equals(const AOther: TgoBsonValue._IValue): Boolean;
 begin
   Result := (AOther.BsonType = TgoBsonType.Null);
 end;
@@ -7335,6 +9400,17 @@ end;
 function TValueNull.GetBsonType: TgoBsonType;
 begin
   Result := TgoBsonType.Null;
+end;
+
+function TValueNull.QueryInterface(const IID: TGUID; out Obj): HResult;
+begin
+  if (IID = TgoBsonNull._INull) then
+  begin
+    TgoBsonNull._INull(Obj) := TgoBsonNull._INull(@VALUE_NULL);
+    Result := S_OK;
+  end
+  else
+    Result := E_NOINTERFACE;
 end;
 
 function TValueNull.ToBoolean(const ADefault: Boolean): Boolean;
@@ -7349,7 +9425,7 @@ end;
 
 { TValueUndefined }
 
-function TValueUndefined.Equals(const AOther: TgoBsonValue.IValue): Boolean;
+function TValueUndefined.Equals(const AOther: TgoBsonValue._IValue): Boolean;
 begin
   Result := (AOther.BsonType = TgoBsonType.Undefined);
 end;
@@ -7357,6 +9433,17 @@ end;
 function TValueUndefined.GetBsonType: TgoBsonType;
 begin
   Result := TgoBsonType.Undefined;
+end;
+
+function TValueUndefined.QueryInterface(const IID: TGUID; out Obj): HResult;
+begin
+  if (IID = TgoBsonUndefined._IUndefined) then
+  begin
+    TgoBsonUndefined._IUndefined(Obj) := TgoBsonUndefined._IUndefined(@VALUE_UNDEFINED);
+    Result := S_OK;
+  end
+  else
+    Result := E_NOINTERFACE;
 end;
 
 function TValueUndefined.ToBoolean(const ADefault: Boolean): Boolean;
@@ -7376,13 +9463,19 @@ begin
   Result := FValue;
 end;
 
-constructor TValueObjectId.Create(const AValue: TgoObjectId);
+class function TValueObjectId.Create(
+  const AValue: TgoObjectId): TgoBsonValue._IValue;
+var
+  V: PValueObjectId;
 begin
-  inherited Create;
-  FValue := AValue;
+  GetMem(V, SizeOf(TValueObjectId));
+  V.FBase.FVTable := @VTABLE_OBJECT_ID;
+  V.FBase.FRefCount := 0;
+  V.FValue := AValue;
+  Result := TgoBsonValue._IValue(V);
 end;
 
-function TValueObjectId.Equals(const AOther: TgoBsonValue.IValue): Boolean;
+function TValueObjectId.Equals(const AOther: TgoBsonValue._IValue): Boolean;
 begin
   if (AOther.BsonType = TgoBsonType.ObjectId) then
     Result := (FValue = AOther.AsObjectId)
@@ -7407,19 +9500,12 @@ end;
 
 { TValueRegularExpression }
 
-constructor TValueRegularExpression.Create(const APattern, AOptions: String);
-begin
-  inherited Create;
-  FPattern := APattern;
-  FOptions := AOptions;
-end;
-
-constructor TValueRegularExpression.Create(const APattern: String);
+class function TValueRegularExpression.Create(
+  const APattern: String): TgoBsonRegularExpression._IRegularExpression;
 var
   Index: Integer;
-  Escaped, Unescaped: String;
+  Escaped, Unescaped, Pattern, Options: String;
 begin
-  inherited Create;
   if (APattern <> '') and (APattern.Chars[0] = '/') then
   begin
     Index := APattern.LastIndexOf('/');
@@ -7428,21 +9514,40 @@ begin
       Unescaped := ''
     else
       Unescaped := Escaped.Replace('\/', '/', [rfReplaceAll]);
-    FPattern := Unescaped;
-    FOptions := APattern.Substring(Index + 1);
+    Pattern := Unescaped;
+    Options := APattern.Substring(Index + 1);
   end
   else
-    FPattern := APattern;
+  begin
+    Pattern := APattern;
+    Options := '';
+  end;
+  Result := Create(Pattern, Options);
+end;
+
+class function TValueRegularExpression.Create(const APattern,
+  AOptions: String): TgoBsonRegularExpression._IRegularExpression;
+var
+  V: PValueRegularExpression;
+begin
+  GetMem(V, SizeOf(TValueRegularExpression));
+  V.FBase.FVTable := @VTABLE_REGULAR_EXPRESSION;
+  V.FBase.FRefCount := 0;
+  Pointer(V.FPattern) := nil;
+  Pointer(V.FOptions) := nil;
+  V.FPattern := APattern;
+  V.FOptions := AOptions;
+  Result := TgoBsonRegularExpression._IRegularExpression(V);
 end;
 
 function TValueRegularExpression.Equals(
-  const AOther: TgoBsonValue.IValue): Boolean;
+  const AOther: TgoBsonValue._IValue): Boolean;
 var
-  Other: TValueRegularExpression;
+  Other: PValueRegularExpression;
 begin
   if (AOther.BsonType = TgoBsonType.RegularExpression) then
   begin
-    Other := TValueRegularExpression(AOther);
+    Other := PValueRegularExpression(AOther);
     Result := (FPattern = Other.FPattern) and (FOptions = Other.FOptions);
   end
   else
@@ -7464,21 +9569,51 @@ begin
   Result := FPattern;
 end;
 
-{ TValueJavaScript }
-
-constructor TValueJavaScript.Create(const ACode: String);
+function TValueRegularExpression.QueryInterface(const IID: TGUID;
+  out Obj): HResult;
 begin
-  inherited Create;
-  FCode := ACode;
+  if (IID = TgoBsonRegularExpression._IRegularExpression) then
+  begin
+    TgoBsonRegularExpression._IRegularExpression(Obj) := TgoBsonRegularExpression._IRegularExpression(@Self);
+    Result := S_OK;
+  end
+  else
+    Result := E_NOINTERFACE;
 end;
 
-function TValueJavaScript.Equals(const AOther: TgoBsonValue.IValue): Boolean;
+function TValueRegularExpression.Release: Integer;
+begin
+  Result := AtomicDecrement(FBase.FRefCount);
+  if (Result = 0) then
+  begin
+    FPattern := '';
+    FOptions := '';
+    FreeMem(@Self);
+  end;
+end;
+
+{ TValueJavaScript }
+
+class function TValueJavaScript.Create(
+  const ACode: String): TgoBsonJavaScript._IJavaScript;
 var
-  Other: TValueJavaScript;
+  V: PValueJavaScript;
+begin
+  GetMem(V, SizeOf(TValueJavaScript));
+  V.FBase.FVTable := @VTABLE_JAVA_SCRIPT;
+  V.FBase.FRefCount := 0;
+  Pointer(V.FCode) := nil;
+  V.FCode := ACode;
+  Result := TgoBsonJavaScript._IJavaScript(V);
+end;
+
+function TValueJavaScript.Equals(const AOther: TgoBsonValue._IValue): Boolean;
+var
+  Other: PValueJavaScript;
 begin
   if (AOther.BsonType = TgoBsonType.JavaScript) then
   begin
-    Other := TValueJavaScript(AOther);
+    Other := PValueJavaScript(AOther);
     Result := (FCode = Other.FCode);
   end
   else
@@ -7495,36 +9630,67 @@ begin
   Result := FCode;
 end;
 
-{ TValueJavaScriptWithScope }
-
-function TValueJavaScriptWithScope.Clone: TgoBsonValue.IValue;
+function TValueJavaScript.QueryInterface(const IID: TGUID; out Obj): HResult;
 begin
-  Result := TValueJavaScriptWithScope.Create(FCode, FScope.Clone);
+  if (IID = TgoBsonJavaScript._IJavaScript) then
+  begin
+    TgoBsonJavaScript._IJavaScript(Obj) := TgoBsonJavaScript._IJavaScript(@Self);
+    Result := S_OK;
+  end
+  else
+    Result := E_NOINTERFACE;
 end;
 
-constructor TValueJavaScriptWithScope.Create(const ACode: String;
-  const AScope: TgoBsonDocument);
+function TValueJavaScript.Release: Integer;
+begin
+  Result := AtomicDecrement(FBase.FRefCount);
+  if (Result = 0) then
+  begin
+    FCode := '';
+    FreeMem(@Self);
+  end;
+end;
+
+{ TValueJavaScriptWithScope }
+
+function TValueJavaScriptWithScope.Clone: TgoBsonValue._IValue;
+begin
+  Result := TValueJavaScriptWithScope.Create(FBase.FCode, FScope.Clone);
+end;
+
+class function TValueJavaScriptWithScope.Create(const ACode: String;
+  const AScope: TgoBsonDocument): TgoBsonJavaScriptWithScope._IJavaScriptWithScope;
+var
+  V: PValueJavaScriptWithScope;
 begin
   if (AScope.FImpl = nil) then
     raise EArgumentNilException.CreateRes(@SArgumentNil);
-  inherited Create(ACode);
-  FScope := AScope;
+
+  GetMem(V, SizeOf(TValueJavaScriptWithScope));
+  V.FBase.FBase.FVTable := @VTABLE_JAVA_SCRIPT_WITH_SCOPE;
+  V.FBase.FBase.FRefCount := 0;
+  Pointer(V.FBase.FCode) := nil;
+  V.FBase.FCode := ACode;
+  Pointer(V.FScope) := nil;
+  V.FScope := AScope;
+
+  Result := TgoBsonJavaScriptWithScope._IJavaScriptWithScope(V);
 end;
 
-function TValueJavaScriptWithScope.DeepClone: TgoBsonValue.IValue;
+function TValueJavaScriptWithScope.DeepClone: TgoBsonValue._IValue;
 begin
-  Result := TValueJavaScriptWithScope.Create(FCode, FScope.DeepClone);
+  Result := TValueJavaScriptWithScope.Create(FBase.FCode, FScope.DeepClone);
 end;
 
 function TValueJavaScriptWithScope.Equals(
-  const AOther: TgoBsonValue.IValue): Boolean;
+  const AOther: TgoBsonValue._IValue): Boolean;
 var
-  Other: TValueJavaScriptWithScope;
+  Other: PValueJavaScriptWithScope;
 begin
   if (AOther.BsonType = TgoBsonType.JavaScriptWithScope) then
   begin
-    Other := TValueJavaScriptWithScope(AOther);
-    Result := (FCode = Other.FCode) and (FScope = Other.FScope);
+    Other := PValueJavaScriptWithScope(AOther);
+    Result := (FBase.FCode = Other.FBase.FCode) and (FScope = Other.FScope);
   end
   else
     Result := False;
@@ -7540,12 +9706,55 @@ begin
   Result := FScope;
 end;
 
+function TValueJavaScriptWithScope.QueryInterface(const IID: TGUID;
+  out Obj): HResult;
+begin
+  if (IID = TgoBsonJavaScript._IJavaScript)
+    or (IID = TgoBsonJavaScriptWithScope._IJavaScriptWithScope) then
+  begin
+    TgoBsonJavaScript._IJavaScript(Obj) := TgoBsonJavaScript._IJavaScript(@Self);
+    Result := S_OK;
+  end
+  else
+    Result := E_NOINTERFACE;
+end;
+
+function TValueJavaScriptWithScope.Release: Integer;
+begin
+  Result := AtomicDecrement(FBase.FBase.FRefCount);
+  if (Result = 0) then
+  begin
+    FBase.FCode := '';
+    FScope.FImpl := nil;
+    FreeMem(@Self);
+  end;
+end;
+
 { TValueSymbol }
 
-constructor TValueSymbol.Create(const AName: String);
+class function TValueSymbol.Create(const AName: String): TgoBsonSymbol._ISymbol;
+var
+  V: PValueSymbol;
 begin
-  inherited Create;
-  FName := AName;
+  GetMem(V, SizeOf(TValueSymbol));
+  V.FBase.FVTable := @VTABLE_SYMBOL;
+  V.FBase.FRefCount := 0;
+  Pointer(V.FName) := nil;
+  V.FName := AName;
+  Result := TgoBsonSymbol._ISymbol(V);
+end;
+
+function TValueSymbol.Equals(const AOther: TgoBsonValue._IValue): Boolean;
+var
+  Other: PValueSymbol;
+begin
+  if (AOther.BsonType = TgoBsonType.Symbol) then
+  begin
+    Other := PValueSymbol(AOther);
+    Result := (FName = Other.FName);
+  end
+  else
+    Result := False;
 end;
 
 function TValueSymbol.GetBsonType: TgoBsonType;
@@ -7558,6 +9767,27 @@ begin
   Result := FName;
 end;
 
+function TValueSymbol.QueryInterface(const IID: TGUID; out Obj): HResult;
+begin
+  if (IID = TgoBsonSymbol._ISymbol) then
+  begin
+    TgoBsonSymbol._ISymbol(Obj) := TgoBsonSymbol._ISymbol(@Self);
+    Result := S_OK;
+  end
+  else
+    Result := E_NOINTERFACE;
+end;
+
+function TValueSymbol.Release: Integer;
+begin
+  Result := AtomicDecrement(FBase.FRefCount);
+  if (Result = 0) then
+  begin
+    FName := '';
+    FreeMem(@Self);
+  end;
+end;
+
 function TValueSymbol.ToString(const ADefault: String): String;
 begin
   Result := FName;
@@ -7565,25 +9795,31 @@ end;
 
 { TValueTimestamp }
 
-constructor TValueTimestamp.Create(const AValue: Int64);
-begin
-  inherited Create;
-  FValue := AValue;
-end;
-
-constructor TValueTimestamp.Create(const ATimestamp, AIncrement: Integer);
-begin
-  inherited Create;
-  FValue := (UInt64(ATimestamp) shl 32) or UInt32(AIncrement);
-end;
-
-function TValueTimestamp.Equals(const AOther: TgoBsonValue.IValue): Boolean;
+class function TValueTimestamp.Create(
+  const AValue: Int64): TgoBsonTimestamp._ITimestamp;
 var
-  Other: TValueTimestamp;
+  V: PValueTimestamp;
+begin
+  GetMem(V, SizeOf(TValueTimestamp));
+  V.FBase.FVTable := @VTABLE_TIMESTAMP;
+  V.FBase.FRefCount := 0;
+  V.FValue := AValue;
+  Result := TgoBsonTimestamp._ITimestamp(V);
+end;
+
+class function TValueTimestamp.Create(const ATimestamp,
+  AIncrement: Integer): TgoBsonTimestamp._ITimestamp;
+begin
+  Result := Create((UInt64(ATimestamp) shl 32) or UInt32(AIncrement));
+end;
+
+function TValueTimestamp.Equals(const AOther: TgoBsonValue._IValue): Boolean;
+var
+  Other: PValueTimestamp;
 begin
   if (AOther.BsonType = TgoBsonType.Timestamp) then
   begin
-    Other := TValueTimestamp(AOther);
+    Other := PValueTimestamp(AOther);
     Result := (FValue = Other.FValue);
   end
   else
@@ -7610,11 +9846,38 @@ begin
   Result := FValue;
 end;
 
+function TValueTimestamp.QueryInterface(const IID: TGUID; out Obj): HResult;
+begin
+  if (IID = TgoBsonTimestamp._ITimestamp) then
+  begin
+    TgoBsonTimestamp._ITimestamp(Obj) := TgoBsonTimestamp._ITimestamp(@Self);
+    Result := S_OK;
+  end
+  else
+    Result := E_NOINTERFACE;
+end;
+
 { TValueMaxKey }
+
+function TValueMaxKey.Equals(const AOther: TgoBsonValue._IValue): Boolean;
+begin
+  Result := (AOther.BsonType = TgoBsonType.MaxKey);
+end;
 
 function TValueMaxKey.GetBsonType: TgoBsonType;
 begin
   Result := TgoBsonType.MaxKey;
+end;
+
+function TValueMaxKey.QueryInterface(const IID: TGUID; out Obj): HResult;
+begin
+  if (IID = TgoBsonMaxKey._IMaxKey) then
+  begin
+    TgoBsonMaxKey._IMaxKey(Obj) := TgoBsonMaxKey._IMaxKey(@VALUE_MAX_KEY);
+    Result := S_OK;
+  end
+  else
+    Result := E_NOINTERFACE;
 end;
 
 function TValueMaxKey.ToString(const ADefault: String): String;
@@ -7624,9 +9887,25 @@ end;
 
 { TValueMinKey }
 
+function TValueMinKey.Equals(const AOther: TgoBsonValue._IValue): Boolean;
+begin
+  Result := (AOther.BsonType = TgoBsonType.MinKey);
+end;
+
 function TValueMinKey.GetBsonType: TgoBsonType;
 begin
   Result := TgoBsonType.MinKey;
+end;
+
+function TValueMinKey.QueryInterface(const IID: TGUID; out Obj): HResult;
+begin
+  if (IID = TgoBsonMinKey._IMinKey) then
+  begin
+    TgoBsonMinKey._IMinKey(Obj) := TgoBsonMinKey._IMinKey(@VALUE_MIN_KEY);
+    Result := S_OK;
+  end
+  else
+    Result := E_NOINTERFACE;
 end;
 
 function TValueMinKey.ToString(const ADefault: String): String;

@@ -45,7 +45,7 @@ unit Grijjy.Bson.IO;
   interfaces. However, these are a bit more complicated to use since you don't
   know the deserialized BSON types in advance.
 
-  You can look at the unit tests in the unit Tests.Grijjy.Bson.IO
+  You can look at the unit tests in the unit Grijjy.Data.Bson.IO.Tests
   for examples of manual serialization and deserialization. *)
 
 {$INCLUDE 'Grijjy.inc'}
@@ -872,9 +872,17 @@ type
     FState: TgoBsonWriterState;
     FName: String;
   private
-    procedure WriteArray(const AArray: TgoBsonArray);
-    procedure WriteDocument(const ADocument: TgoBsonDocument);
-    procedure DoWriteJavaScriptWithScope(const AValue: TgoBsonJavaScriptWithScope);
+    procedure WriteValueIntf(const AValue: TgoBsonValue._IValue);
+    procedure WriteArray(const AArray: TgoBsonArray._IArray);
+    procedure WriteDocument(const ADocument: TgoBsonDocument._IDocument);
+    procedure DoWriteBinaryData(const AValue: TgoBsonValue._IValue);
+    procedure DoWriteDateTime(const AValue: TgoBsonValue._IValue);
+    procedure DoWriteRegularExpression(const AValue: TgoBsonValue._IValue);
+    procedure DoWriteJavaScript(const AValue: TgoBsonValue._IValue);
+    procedure DoWriteJavaScriptWithScope(const AValue: TgoBsonJavaScriptWithScope); overload;
+    procedure DoWriteJavaScriptWithScope(const AValue: TgoBsonValue._IValue); overload;
+    procedure DoWriteSymbol(const AValue: TgoBsonValue._IValue);
+    procedure DoWriteTimestamp(const AValue: TgoBsonValue._IValue);
   protected
     { IgoBsonBaseWriter }
     procedure WriteName(const AName: String); virtual;
@@ -940,7 +948,6 @@ type
       FSize: Integer;
       FCapacity: Integer;
       FTempBytes: TBytes;
-    private
     public
       procedure Initialize;
 
@@ -1053,9 +1060,28 @@ type
       property ContextType: TgoBsonContextType read FContextType;
       property HasElements: Boolean read FHasElements write FHasElements;
     end;
+  private type
+    TOutput = record
+    private
+      FBuffer: PByte;
+      FSize: Integer;
+      FCapacity: Integer;
+    public
+      procedure Initialize;
+      procedure Finalize;
+
+      procedure Append(const AValue; const ASize: Integer); overload;
+      procedure Append(const AValue: Char); overload; inline;
+      procedure Append(const AValue: String); overload; inline;
+      procedure Append(const AValue: Integer); overload; inline;
+      procedure Append(const AValue: Int64); overload; inline;
+      procedure AppendFormat(const AValue: String; const AArgs: array of const); overload;
+
+      function ToString: String; inline;
+    end;
   private
     FSettings: TgoJsonWriterSettings;
-    FOutput: TStringBuilder;
+    FOutput: TOutput;
     FContextStack: TArray<TContext>;
     FContextIndex: Integer;
     FContext: PContext;
@@ -1256,6 +1282,17 @@ type
     function ReadBinaryData: TgoBsonBinaryData; virtual; abstract;
     function ReadRegularExpression: TgoBsonRegularExpression; virtual; abstract;
   protected
+    function ReadDocumentIntf: TgoBsonDocument._IDocument;
+    function ReadArrayIntf: TgoBsonArray._IArray;
+    function ReadValueIntf: TgoBsonValue._IValue;
+    function ReadBinaryDataIntf: TgoBsonValue._IValue;
+    function ReadRegularExpressionIntf: TgoBsonValue._IValue;
+    function ReadJavaScriptIntf: TgoBsonValue._IValue;
+    function ReadJavaScriptWithScopeIntf: TgoBsonValue._IValue;
+    function ReadTimeStampIntf: TgoBsonValue._IValue;
+    function ReadStringIntf: TgoBsonValue._IValue;
+    function ReadSymbolIntf: TgoBsonValue._IValue;
+  protected
     procedure EnsureBsonTypeEquals(const ABsonType: TgoBsonType);
     procedure VerifyBsonType(const ARequiredBsonType: TgoBsonType);
 
@@ -1422,7 +1459,6 @@ type
       FLineNumber: Integer;
       FLineStart: PChar;
       FPrevLineStart: PChar;
-      FEof: Boolean;
     public
       class function Create(const AJson: String): TBuffer; static;
       function Read: Char; inline;
@@ -1442,7 +1478,7 @@ type
       RightParen, EndObject, Colon, Comma, DateTime, Double, Int32, Int64,
       ObjectId, RegularExpression, &String, UnquotedString, EndOfFile);
   private type
-    TToken = record
+    TToken = class
     {$REGION 'Internal Declarations'}
     private type
       TTokenValue = record
@@ -1453,84 +1489,131 @@ type
       end;
     private
       FTokenType: TTokenType;
-      FLexeme: String;
+      FLexemeStart: PChar;
+      FLexemeLength: Integer;
       FStringValue: String;
-      FRegExValue: TgoBsonRegularExpression;
       FValue: TTokenValue;
     {$ENDREGION 'Internal Declarations'}
     public
       procedure Initialize(const ATokenType: TTokenType;
-        const ALexeme: String); overload; inline;
+        const ALexemeStart: PChar; const ALexemeLength: Integer); overload; inline;
       procedure Initialize(const ATokenType: TTokenType;
-        const ALexeme, AStringValue: String); overload; inline;
-      procedure Initialize(const ALexeme: String;
+        const ALexemeStart: PChar; const ALexemeLength: Integer;
+        const AStringValue: String); overload; inline;
+      procedure Initialize(const ALexemeStart: PChar; const ALexemeLength: Integer;
         const AInt32Value: Int32); overload; inline;
-      procedure Initialize(const ALexeme: String;
+      procedure Initialize(const ALexemeStart: PChar; const ALexemeLength: Integer;
         const AInt64Value: Int64); overload; inline;
-      procedure Initialize(const ALexeme: String;
+      procedure Initialize(const ALexemeStart: PChar; const ALexemeLength: Integer;
         const ADoubleValue: Double); overload; inline;
-      procedure Initialize(const ALexeme: String;
-        const ARegExValue: TgoBsonRegularExpression); overload; inline;
+      procedure InitializeRegEx(const ALexemeStart: PChar;
+        const ALexemeLength: Integer); overload; inline;
+
+      procedure Assign(const AOther: TToken);
+
+      function IsLexeme(const AValue: PChar; const AValueLength: Integer): Boolean; inline;
+      function LexemeToString: String; inline;
 
       property TokenType: TTokenType read FTokenType;
-      property Lexeme: String read FLexeme;
+      property LexemeStart: PChar read FLexemeStart;
+      property LexemeLength: Integer read FLexemeLength;
       property StringValue: String read FStringValue;
       property Int32Value: Int32 read FValue.Int32Value;
       property Int64Value: Int64 read FValue.Int64Value;
       property DoubleValue: Double read FValue.DoubleValue;
-      property RegExValue: TgoBsonRegularExpression read FRegExValue;
     end;
   private type
     TScanner = record
     private type
-      TNumberState = (SawLeadingMinus, SawLeadingZero, SawIntegerDigits,
-        SawDecimalPoint, SawFractionDigits, SawExponentLetter, SawExponentSign,
-        SawExponentDigits, SawMinusI, Done, Invalid);
-    private type
       TRegularExpressionState = (InPattern, InEscapeSequence, InOptions,
         Done, Invalid);
+    private type
+      TCharHandler = procedure(var ABuffer: TBuffer; const AChar: Char;
+        const AToken: TToken);
+    private class var
+      FCharHandlers: array [#0..#127] of TCharHandler;
     private
       class function IsWhitespace(const AChar: Char): Boolean; inline; static;
-      class procedure GetStringToken(const ABuffer: TBuffer;
-        const AQuoteCharacter: Char; out AToken: TToken); static;
-      class procedure GetUnquotedStringToken(
-        const ABuffer: TBuffer; out AToken: TToken); static;
-      class procedure GetNumberToken(const ABuffer: TBuffer;
-        const AFirstChar: Char; out AToken: TToken); static;
-      class procedure GetRegularExpressionToken(
-        const ABuffer: TBuffer; out AToken: TToken); static;
+    private
+      { Character handlers }
+      class procedure CharError(var ABuffer: TBuffer; const AChar: Char;
+        const AToken: TToken); static;
+      class procedure CharEof(var ABuffer: TBuffer; const AChar: Char;
+        const AToken: TToken); static;
+      class procedure CharWhitespace(var ABuffer: TBuffer; const AChar: Char;
+        const AToken: TToken); static;
+      class procedure CharBeginObject(var ABuffer: TBuffer; const AChar: Char;
+        const AToken: TToken); static;
+      class procedure CharEndObject(var ABuffer: TBuffer; const AChar: Char;
+        const AToken: TToken); static;
+      class procedure CharBeginArray(var ABuffer: TBuffer; const AChar: Char;
+        const AToken: TToken); static;
+      class procedure CharEndArray(var ABuffer: TBuffer; const AChar: Char;
+        const AToken: TToken); static;
+      class procedure CharLeftParen(var ABuffer: TBuffer; const AChar: Char;
+        const AToken: TToken); static;
+      class procedure CharRightParen(var ABuffer: TBuffer; const AChar: Char;
+        const AToken: TToken); static;
+      class procedure CharColon(var ABuffer: TBuffer; const AChar: Char;
+        const AToken: TToken); static;
+      class procedure CharComma(var ABuffer: TBuffer; const AChar: Char;
+        const AToken: TToken); static;
+      class procedure CharNumberToken(var ABuffer: TBuffer; const AChar: Char;
+        const AToken: TToken); static;
+      class procedure CharStringToken(var ABuffer: TBuffer; const AChar: Char;
+        const AToken: TToken); static;
+      class procedure CharStringTokenUnscape(var ABuffer: TBuffer;
+        const AQuoteChar: Char; const AToken: TToken; const AStart: PChar;
+        const APrefix: String); static;
+      class procedure CharUnquotedStringToken(var ABuffer: TBuffer; const AChar: Char;
+        const AToken: TToken); static;
+      class procedure CharRegularExpressionToken(var ABuffer: TBuffer; const AChar: Char;
+        const AToken: TToken); static;
     public
-      class procedure GetNextToken(const ABuffer: TBuffer; out AToken: TToken); static;
+      class procedure Initialize; static;
+      class procedure GetNextToken(var ABuffer: TBuffer; const AToken: TToken); static;
+    end;
+  private type
+    TValue = record
+      StrVal: String;
+      Bytes: TBytes;
+      case Byte of
+        0: (BoolVal: Boolean);
+        1: (Int32Val: Int32);
+        2: (Int64Val: Int64);
+        3: (DoubleVal: Double);
+        4: (ObjectIdVal: TgoObjectId);
+        5: (BinarySubType: TgoBsonBinarySubType);
     end;
   private type
     TJsonBookmark = class(TBookmark)
     private
       FContextIndex: Integer;
       FCurrentToken: TToken;
-      FCurrentValue: TgoBsonValue;
+      FCurrentValue: TValue;
       FPushedToken: TToken;
       FCurrent: PChar;
-      FHasPushedToken: Boolean;
     public
       constructor Create(const AState: TgoBsonReaderState;
         const ACurrentBsonType: TgoBsonType; const ACurrentName: String;
         const AContextIndex: Integer; const ACurrentToken: TToken;
-        const ACurrentValue: TgoBsonValue; const APushedToken: TToken;
-        const AHasPushedToken: Boolean; const ACurrent: PChar);
+        const ACurrentValue: TValue; const APushedToken: TToken;
+        const ACurrent: PChar);
+      destructor Destroy; override;
 
       property ContextIndex: Integer read FContextIndex;
       property CurrentToken: TToken read FCurrentToken;
-      property CurrentValue: TgoBsonValue read FCurrentValue;
+      property CurrentValue: TValue read FCurrentValue;
       property PushedToken: TToken read FPushedToken;
-      property HasPushedToken: Boolean read FHasPushedToken write FHasPushedToken;
       property Current: PChar read FCurrent;
     end;
   private
     FBuffer: TBuffer;
+    FTokenBase: TToken;
+    FTokenToPush: TToken;
     FCurrentToken: TToken;
-    FCurrentValue: TgoBsonValue;
+    FCurrentValue: TValue;
     FPushedToken: TToken;
-    FHasPushedToken: Boolean;
     FContextStack: TArray<TContext>;
     FContextIndex: Integer;
     FContext: PContext;
@@ -1540,33 +1623,37 @@ type
     procedure PopContext;
     procedure PushToken(const AToken: TToken);
     procedure PopToken(out AToken: TToken);
-    function ParseExtendedJson: TgoBsonType;
-    function ParseExtendedJsonBinaryData: TgoBsonValue;
-    function ParseExtendedJsonDateTime: TgoBsonValue;
-    function ParseExtendedJsonNumberLong: TgoBsonValue;
-    function ParseExtendedJsonJavaScript(out AValue: TgoBsonValue): TgoBsonType;
-    function ParseExtendedJsonMaxKey: TgoBsonValue;
-    function ParseExtendedJsonMinKey: TgoBsonValue;
-    function ParseExtendedJsonUndefined: TgoBsonValue;
-    function ParseExtendedJsonObjectId: TgoBsonValue;
-    function ParseExtendedJsonRegularExpression: TgoBsonValue;
-    function ParseExtendedJsonSymbol: TgoBsonValue;
-    function ParseExtendedJsonTimestamp: TgoBsonValue;
-    function ParseExtendedJsonTimestampNew: TgoBsonValue;
-    function ParseExtendedJsonTimestampOld(const AValueToken: TToken): TgoBsonValue;
-    function ParseConstructorBinaryData: TgoBsonValue;
-    function ParseConstructorDateTime(const AWithNew: Boolean): TgoBsonValue;
-    function ParseConstructorHexData: TgoBsonValue;
-    function ParseConstructorISODateTime: TgoBsonValue;
-    function ParseConstructorNumber: TgoBsonValue;
-    function ParseConstructorNumberLong: TgoBsonValue;
-    function ParseConstructorObjectId: TgoBsonValue;
-    function ParseConstructorRegularExpression: TgoBsonValue;
-    function ParseConstructorTimestamp: TgoBsonValue;
-    function ParseConstructorUUID(const AConstructorName: String): TgoBsonValue;
-    function ParseNew(out AValue: TgoBsonValue): TgoBsonType;
-    procedure VerifyToken(const AExpectedLexeme: String);
+    function ParseDocumentOrExtendedJson: TgoBsonType;
+    function ParseExtendedJson(const ANameToken: TToken): TgoBsonType;
+    procedure ParseExtendedJsonBinaryData;
+    function ParseExtendedJsonDateTime: Int64;
+    function ParseExtendedJsonNumberLong: Int64;
+    function ParseExtendedJsonJavaScript: TgoBsonType;
+    procedure ParseExtendedJsonMaxKey;
+    procedure ParseExtendedJsonMinKey;
+    procedure ParseExtendedJsonUndefined;
+    function ParseExtendedJsonObjectId: TgoObjectId;
+    procedure ParseExtendedJsonRegularExpression;
+    procedure ParseExtendedJsonSymbol;
+    function ParseExtendedJsonTimestamp: Int64;
+    function ParseExtendedJsonTimestampNew: Int64;
+    function ParseExtendedJsonTimestampOld(const AValueToken: TToken): Int64;
+    procedure ParseConstructorBinaryData;
+    procedure ParseConstructorDateTime(const AWithNew: Boolean);
+    procedure ParseConstructorHexData;
+    procedure ParseConstructorISODateTime;
+    procedure ParseConstructorNumber;
+    procedure ParseConstructorNumberLong;
+    procedure ParseConstructorObjectId;
+    procedure ParseConstructorRegularExpression;
+    procedure ParseConstructorTimestamp;
+    procedure ParseConstructorUUID(const ALexemeStart: Char);
+    function ParseNew: TgoBsonType;
+    procedure VerifyToken(const AExpectedLexeme: Char); overload;
+    procedure VerifyToken(const AExpectedLexeme: PChar;
+      const AExpectedLexemeLength: Integer); overload;
     procedure VerifyString(const AExpectedString: String);
+    procedure SetCurrentValueRegEx(const AToken: TToken);
     class function FormatJavaScriptDateTimeString(const ALocalDateTime: TDateTime): String; static;
   protected
     { IgoBsonBaseReader }
@@ -1599,8 +1686,8 @@ type
     procedure ReadEndDocument; override;
     function ReadBinaryData: TgoBsonBinaryData; override;
     function ReadRegularExpression: TgoBsonRegularExpression; override;
-  protected
-    { IgoBsonReader }
+  public
+    class constructor Create;
   {$ENDREGION 'Internal Declarations'}
   public
     { Creates a JSON reader.
@@ -1608,6 +1695,9 @@ type
       Parameters:
         AJson: the JSON string to parse. }
     constructor Create(const AJson: String);
+
+    { Destructor }
+    destructor Destroy; override;
 
     { Creates a JSON reader from a file.
 
@@ -1760,6 +1850,86 @@ uses
   Grijjy.DateUtils,
   Grijjy.BinaryCoding;
 
+type
+  TgoCharBuffer = record
+  private const
+    SIZE = 256;
+  private type
+    TBuffer = array [0..SIZE - 1] of Char;
+    PBuffer = ^TBuffer;
+  private
+    FStatic: TBuffer;
+    FDynamic: PBuffer;
+    FCurrent: PChar;
+    FCurrentEnd: PChar;
+    FDynamicCount: Integer;
+  public
+    procedure Initialize; inline;
+    procedure Release; inline;
+    procedure Append(const AChar: Char); inline;
+    function ToString: String; inline;
+  end;
+
+procedure TgoCharBuffer.Append(const AChar: Char);
+begin
+  if (FCurrent < FCurrentEnd) then
+  begin
+    FCurrent^ := AChar;
+    Inc(FCurrent);
+    Exit;
+  end;
+
+  ReallocMem(FDynamic, (FDynamicCount + 1) * SizeOf(TBuffer));
+  FCurrent := PChar(FDynamic) + (FDynamicCount * SIZE);
+  FCurrentEnd := FCurrent + SIZE;
+  Inc(FDynamicCount);
+
+  FCurrent^ := AChar;
+  Inc(FCurrent);
+end;
+
+function TgoCharBuffer.ToString: String;
+var
+  I, StrIndex, TrailingLength: Integer;
+  Src: PBuffer;
+  Start: PChar;
+begin
+  if (FDynamic = nil) then
+  begin
+    Start := @FStatic;
+    SetString(Result, Start, FCurrent - Start);
+    Exit;
+  end;
+
+  TrailingLength := SIZE - (FCurrentEnd - FCurrent);
+  SetLength(Result, (FDynamicCount * SIZE) + TrailingLength);
+  Move(FStatic, Result[Low(String)], SizeOf(TBuffer));
+  StrIndex := Low(String) + SIZE;
+
+  Src := FDynamic;
+  for I := 0 to FDynamicCount - 2 do
+  begin
+    Move(Src^, Result[StrIndex], SizeOf(TBuffer));
+    Inc(Src);
+    Inc(StrIndex, SIZE);
+  end;
+
+  Move(Src^, Result[StrIndex], TrailingLength * SizeOf(Char));
+end;
+
+procedure TgoCharBuffer.Initialize;
+begin
+  FDynamic := nil;
+  FCurrent := @FStatic;
+  FCurrentEnd := FCurrent + SIZE;
+  FDynamicCount := 0;
+end;
+
+procedure TgoCharBuffer.Release;
+begin
+  FreeMem(FDynamic);
+end;
+
 { EgoJsonParserError }
 
 constructor EgoJsonParserError.Create(const AMsg: String;
@@ -1773,11 +1943,71 @@ end;
 
 { TgoBsonBaseWriter }
 
+procedure TgoBsonBaseWriter.DoWriteBinaryData(
+  const AValue: TgoBsonValue._IValue);
+var
+  Value: TgoBsonBinaryData;
+begin
+  _goGetBinaryData(AValue, Value);
+  WriteBinaryData(Value);
+end;
+
+procedure TgoBsonBaseWriter.DoWriteDateTime(const AValue: TgoBsonValue._IValue);
+var
+  Value: TgoBsonDateTime;
+begin
+  _goGetDateTime(AValue, Value);
+  WriteDateTime(Value.MillisecondsSinceEpoch);
+end;
+
+procedure TgoBsonBaseWriter.DoWriteJavaScript(
+  const AValue: TgoBsonValue._IValue);
+var
+  Value: TgoBsonJavaScript;
+begin
+  _goGetJavaScript(AValue, Value);
+  WriteJavaScript(Value.Code);
+end;
+
+procedure TgoBsonBaseWriter.DoWriteJavaScriptWithScope(
+  const AValue: TgoBsonValue._IValue);
+var
+  Value: TgoBsonJavaScriptWithScope;
+begin
+  _goGetJavaScriptWithScope(AValue, Value);
+  DoWriteJavaScriptWithScope(Value);
+end;
+
 procedure TgoBsonBaseWriter.DoWriteJavaScriptWithScope(
   const AValue: TgoBsonJavaScriptWithScope);
 begin
   WriteJavaScriptWithScope(AValue.Code);
-  WriteDocument(AValue.Scope);
+  WriteDocument(AValue.Scope._Impl);
+end;
+
+procedure TgoBsonBaseWriter.DoWriteRegularExpression(
+  const AValue: TgoBsonValue._IValue);
+var
+  Value: TgoBsonRegularExpression;
+begin
+  _goGetRegularExpression(AValue, Value);
+  WriteRegularExpression(Value);
+end;
+
+procedure TgoBsonBaseWriter.DoWriteSymbol(const AValue: TgoBsonValue._IValue);
+var
+  Value: TgoBsonSymbol;
+begin
+  _goGetSymbol(AValue, Value);
+  WriteSymbol(Value.Name);
+end;
+
+procedure TgoBsonBaseWriter.DoWriteTimestamp(const AValue: TgoBsonValue._IValue);
+var
+  Value: TgoBsonTimestamp;
+begin
+  _goGetTimestamp(AValue, Value);
+  WriteTimestamp(Value.Value);
 end;
 
 function TgoBsonBaseWriter.GetState: TgoBsonWriterState;
@@ -1785,14 +2015,18 @@ begin
   Result := FState;
 end;
 
-procedure TgoBsonBaseWriter.WriteArray(const AArray: TgoBsonArray);
+procedure TgoBsonBaseWriter.WriteArray(const AArray: TgoBsonArray._IArray);
 var
   I: Integer;
+  Item: TgoBsonValue._IValue;
 begin
   WriteStartArray;
 
   for I := 0 to AArray.Count - 1 do
-    WriteValue(AArray[I]);
+  begin
+    AArray.GetItem(I, Item);
+    WriteValueIntf(Item);
+  end;
 
   WriteEndArray;
 end;
@@ -1823,7 +2057,8 @@ begin
   WriteDateTime(AMillisecondsSinceEpoch);
 end;
 
-procedure TgoBsonBaseWriter.WriteDocument(const ADocument: TgoBsonDocument);
+procedure TgoBsonBaseWriter.WriteDocument(
+  const ADocument: TgoBsonDocument._IDocument);
 var
   I: Integer;
   Element: TgoBsonElement;
@@ -1834,7 +2069,7 @@ begin
   begin
     Element := ADocument.Elements[I];
     WriteName(Element.Name);
-    WriteValue(Element.Value);
+    WriteValueIntf(Element._Impl);
   end;
 
   WriteEndDocument;
@@ -1961,20 +2196,51 @@ begin
     TgoBsonType.EndOfDocument      : ;
     TgoBsonType.Double             : WriteDouble(AValue.AsDouble);
     TgoBsonType.&String            : WriteString(AValue.AsString);
-    TgoBsonType.Document           : WriteDocument(AValue.AsBsonDocument);
-    TgoBsonType.&Array             : WriteArray(AValue.AsBsonArray);
-    TgoBsonType.Binary             : WriteBinaryData(AValue.AsBsonBinaryData);
+    TgoBsonType.Document           : WriteDocument(TgoBsonDocument._IDocument(AValue._Impl));
+    TgoBsonType.&Array             : WriteArray(TgoBsonArray._IArray(AValue._Impl));
+    TgoBsonType.Binary             : DoWriteBinaryData(AValue._Impl);
     TgoBsonType.Undefined          : WriteUndefined;
     TgoBsonType.ObjectId           : WriteObjectId(AValue.AsObjectId);
     TgoBsonType.Boolean            : WriteBoolean(AValue.AsBoolean);
-    TgoBsonType.DateTime           : WriteDateTime(AValue.AsBsonDateTime.MillisecondsSinceEpoch);
+    TgoBsonType.DateTime           : DoWriteDateTime(AValue._Impl);
     TgoBsonType.Null               : WriteNull;
-    TgoBsonType.RegularExpression  : WriteRegularExpression(AValue.AsBsonRegularExpression);
-    TgoBsonType.JavaScript         : WriteJavaScript(AValue.AsBsonJavaScript.Code);
-    TgoBsonType.Symbol             : WriteSymbol(AValue.AsBsonSymbol.Name);
-    TgoBsonType.JavaScriptWithScope: DoWriteJavaScriptWithScope(AValue.AsBsonJavaScriptWithScope);
+    TgoBsonType.RegularExpression  : DoWriteRegularExpression(AValue._Impl);
+    TgoBsonType.JavaScript         : DoWriteJavaScript(AValue._Impl);
+    TgoBsonType.Symbol             : DoWriteSymbol(AValue._Impl);
+    TgoBsonType.JavaScriptWithScope: DoWriteJavaScriptWithScope(AValue._Impl);
     TgoBsonType.Int32              : WriteInt32(AValue.AsInteger);
-    TgoBsonType.Timestamp          : WriteTimestamp(AValue.AsBsonTimestamp.Value);
+    TgoBsonType.Timestamp          : DoWriteTimestamp(AValue._Impl);
+    TgoBsonType.Int64              : WriteInt64(AValue.AsInt64);
+    TgoBsonType.MaxKey             : WriteMaxKey;
+    TgoBsonType.MinKey             : WriteMinKey;
+  else
+    Assert(False);
+  end;
+end;
+
+procedure TgoBsonBaseWriter.WriteValueIntf(const AValue: TgoBsonValue._IValue);
+begin
+  if (AValue = nil) then
+    raise EArgumentNilException.CreateRes(@SArgumentNil);
+
+  case AValue.BsonType of
+    TgoBsonType.EndOfDocument      : ;
+    TgoBsonType.Double             : WriteDouble(AValue.AsDouble);
+    TgoBsonType.&String            : WriteString(AValue.AsString);
+    TgoBsonType.Document           : WriteDocument(TgoBsonDocument._IDocument(AValue));
+    TgoBsonType.&Array             : WriteArray(TgoBsonArray._IArray(AValue));
+    TgoBsonType.Binary             : DoWriteBinaryData(AValue);
+    TgoBsonType.Undefined          : WriteUndefined;
+    TgoBsonType.ObjectId           : WriteObjectId(AValue.AsObjectId);
+    TgoBsonType.Boolean            : WriteBoolean(AValue.AsBoolean);
+    TgoBsonType.DateTime           : DoWriteDateTime(AValue);
+    TgoBsonType.Null               : WriteNull;
+    TgoBsonType.RegularExpression  : DoWriteRegularExpression(AValue);
+    TgoBsonType.JavaScript         : DoWriteJavaScript(AValue);
+    TgoBsonType.Symbol             : DoWriteSymbol(AValue);
+    TgoBsonType.JavaScriptWithScope: DoWriteJavaScriptWithScope(AValue);
+    TgoBsonType.Int32              : WriteInt32(AValue.AsInteger);
+    TgoBsonType.Timestamp          : DoWriteTimestamp(AValue);
     TgoBsonType.Int64              : WriteInt64(AValue.AsInt64);
     TgoBsonType.MaxKey             : WriteMaxKey;
     TgoBsonType.MinKey             : WriteMinKey;
@@ -2102,7 +2368,10 @@ begin
   BackpatchSize;
 
   PopContext;
-  State := GetNextState;
+  if (FContext = nil) then
+    State := TgoBsonWriterState.Done
+  else
+    State := GetNextState;
 end;
 
 procedure TgoBsonWriter.WriteEndDocument;
@@ -2277,11 +2546,14 @@ end;
 
 procedure TgoBsonWriter.WriteStartArray;
 begin
-  if (State <> TgoBsonWriterState.Value) then
+  if (not (State in [TgoBsonWriterState.Initial, TgoBsonWriterState.Value])) then
     raise EInvalidOperation.CreateRes(@RS_BSON_INVALID_WRITER_STATE);
 
-  FOutput.WriteBsonType(TgoBsonType.&Array);
-  WriteNameHelper;
+  if (State = TgoBsonWriterState.Value) then
+  begin
+    FOutput.WriteBsonType(TgoBsonType.&Array);
+    WriteNameHelper;
+  end;
 
   PushContext(TgoBsonContextType.&Array, FOutput.Position);
   FOutput.WriteInt32(0); // Reserve space for size
@@ -2375,16 +2647,15 @@ end;
 
 procedure TgoBsonWriter.TOutput.Write(const AValue; const ASize: Integer);
 begin
-  if (ASize > 0) then
+  if ((FSize + ASize) > FCapacity) then
   begin
-    if ((FSize + ASize) > FCapacity) then
-    begin
-      FCapacity := FSize + ASize + 256;
-      SetLength(FBuffer, FCapacity);
-    end;
-    Move(AValue, FBuffer[FSize], ASize);
-    Inc(FSize, ASize);
+    repeat
+      FCapacity := FCapacity shl 1;
+    until (FCapacity >= (FSize + ASize));
+    SetLength(FBuffer, FCapacity);
   end;
+  Move(AValue, FBuffer[FSize], ASize);
+  Inc(FSize, ASize);
 end;
 
 procedure TgoBsonWriter.TOutput.WriteBinarySubType(
@@ -2414,14 +2685,14 @@ var
   Bytes: TBytes;
 begin
   CharCount := AValue.Length;
-  if (TEncoding.UTF8.GetMaxByteCount(CharCount) <= TEMP_BYTES_LENGTH) then
+  if (((CharCount + 1) * 3) <= TEMP_BYTES_LENGTH) then
   begin
     Bytes := FTempBytes;
-    Utf8Count := TEncoding.UTF8.GetBytes(AValue, Low(AValue), CharCount, Bytes, 0);
+    Utf8Count := goUtf16ToUtf8(AValue, CharCount, FTempBytes);
   end
   else
   begin
-    Bytes := TEncoding.UTF8.GetBytes(AValue);
+    Bytes := goUtf16ToUtf8(AValue);
     Utf8Count := Length(Bytes);
   end;
   Write(Bytes[0], Utf8Count);
@@ -2466,14 +2737,14 @@ var
   Bytes: TBytes;
 begin
   CharCount := AValue.Length;
-  if (TEncoding.UTF8.GetMaxByteCount(CharCount) <= TEMP_BYTES_LENGTH) then
+  if (((CharCount + 1) * 3) <= TEMP_BYTES_LENGTH) then
   begin
     Bytes := FTempBytes;
-    Utf8Count := TEncoding.UTF8.GetBytes(AValue, Low(AValue), CharCount, Bytes, 0);
+    Utf8Count := goUtf16ToUtf8(AValue, CharCount, Bytes);
   end
   else
   begin
-    Bytes := TEncoding.UTF8.GetBytes(AValue);
+    Bytes := goUtf16ToUtf8(AValue);
     Utf8Count := Length(Bytes);
   end;
   WriteInt32(Utf8Count + 1);
@@ -2577,14 +2848,14 @@ constructor TgoJsonWriter.Create(const ASettings: TgoJsonWriterSettings);
 begin
   inherited Create;
   FSettings := ASettings;
-  FOutput := TStringBuilder.Create;
+  FOutput.Initialize;
   FContextIndex := -1;
   PushContext(TgoBsonContextType.TopLevel, '');
 end;
 
 destructor TgoJsonWriter.Destroy;
 begin
-  FOutput.Free;
+  FOutput.Finalize;
   inherited;
 end;
 
@@ -2810,10 +3081,12 @@ end;
 
 procedure TgoJsonWriter.WriteEscapedString(const AValue: String);
 var
+  I: Integer;
   C: Char;
 begin
-  for C in AValue do
+  for I := Low(String) to Low(String) + Length(AValue) - 1 do
   begin
+    C := AValue[I];
     case C of
       '"', '\':
         begin
@@ -2830,7 +3103,7 @@ begin
       if (C < ' ') or (C >= #$0080) then
       begin
         FOutput.Append('\u');
-        FOutput.Append(IntToHex(Ord(C), 4).ToLower);
+        FOutput.Append(LowerCase(IntToHex(Ord(C), 4)));
       end
       else
         FOutput.Append(C);
@@ -3163,6 +3436,65 @@ begin
     FIndentation := AIndentString;
   FContextType := AContextType;
   FHasElements := False;
+end;
+
+{ TgoJsonWriter.TOutput }
+
+procedure TgoJsonWriter.TOutput.Append(const AValue: String);
+begin
+  Append(AValue[Low(String)], Length(AValue) * SizeOf(Char));
+end;
+
+procedure TgoJsonWriter.TOutput.Append(const AValue: Integer);
+begin
+  Append(IntToStr(AValue));
+end;
+
+procedure TgoJsonWriter.TOutput.Append(const AValue: Int64);
+begin
+  Append(IntToStr(AValue));
+end;
+
+procedure TgoJsonWriter.TOutput.Append(const AValue; const ASize: Integer);
+begin
+  if ((FSize + ASize) > FCapacity) then
+  begin
+    repeat
+      FCapacity := FCapacity shl 1;
+    until (FCapacity >= (FSize + ASize));
+    ReallocMem(FBuffer, FCapacity);
+  end;
+  Move(AValue, FBuffer[FSize], ASize);
+  Inc(FSize, ASize);
+end;
+
+procedure TgoJsonWriter.TOutput.Append(const AValue: Char);
+begin
+  Append(AValue, SizeOf(Char));
+end;
+
+procedure TgoJsonWriter.TOutput.AppendFormat(const AValue: String;
+  const AArgs: array of const);
+begin
+  Append(Format(AValue, AArgs));
+end;
+
+procedure TgoJsonWriter.TOutput.Finalize;
+begin
+  FreeMem(FBuffer);
+  FBuffer := nil;
+end;
+
+procedure TgoJsonWriter.TOutput.Initialize;
+begin
+  GetMem(FBuffer, 512);
+  FCapacity := 512;
+  FSize := 0;
+end;
+
+function TgoJsonWriter.TOutput.ToString: String;
+begin
+  SetString(Result, PChar(FBuffer), FSize shr 1);
 end;
 
 { TgoBsonDocumentWriter }
@@ -3515,63 +3847,161 @@ end;
 
 function TgoBsonBaseReader.ReadArray: TgoBsonArray;
 var
-  Item: TgoBsonValue;
+  Item: TgoBsonValue._IValue;
+  Arr: TgoBsonArray._IArray;
 begin
   EnsureBsonTypeEquals(TgoBsonType.&Array);
 
   ReadStartArray;
   Result := TgoBsonArray.Create;
+  Arr := Result._Impl;
   while (ReadBsonType <> TgoBsonType.EndOfDocument) do
   begin
-    Item := ReadValue;
+    Item := ReadValueIntf;
+    Arr.Add(Item);
+  end;
+  ReadEndArray;
+end;
+
+function TgoBsonBaseReader.ReadArrayIntf: TgoBsonArray._IArray;
+var
+  Item: TgoBsonValue._IValue;
+begin
+  EnsureBsonTypeEquals(TgoBsonType.&Array);
+
+  ReadStartArray;
+  Result := _goCreateArray;
+  while (ReadBsonType <> TgoBsonType.EndOfDocument) do
+  begin
+    Item := ReadValueIntf;
     Result.Add(Item);
   end;
   ReadEndArray;
 end;
 
+function TgoBsonBaseReader.ReadBinaryDataIntf: TgoBsonValue._IValue;
+var
+  Value: TgoBsonBinaryData;
+begin
+  Value := ReadBinaryData;
+  Result := Value._Impl;
+end;
+
 function TgoBsonBaseReader.ReadDocument: TgoBsonDocument;
 var
+  Doc: TgoBsonDocument._IDocument;
   Name: String;
-  Value: TgoBsonValue;
+  Value: TgoBsonValue._IValue;
 begin
   EnsureBsonTypeEquals(TgoBsonType.Document);
 
   ReadStartDocument;
 
   Result := TgoBsonDocument.Create;
+  Doc := Result._Impl;
   while (ReadBsonType <> TgoBsonType.EndOfDocument) do
   begin
     Name := ReadName;
-    Value := ReadValue;
-    Result.Add(Name, Value)
+    Value := ReadValueIntf;
+    Doc.Add(Name, Value);
   end;
 
   ReadEndDocument;
 end;
 
+function TgoBsonBaseReader.ReadDocumentIntf: TgoBsonDocument._IDocument;
+var
+  Name: String;
+  Value: TgoBsonValue._IValue;
+begin
+  EnsureBsonTypeEquals(TgoBsonType.Document);
+
+  ReadStartDocument;
+
+  Result := _goCreateDocument;
+  while (ReadBsonType <> TgoBsonType.EndOfDocument) do
+  begin
+    Name := ReadName;
+    Value := ReadValueIntf;
+    Result.Add(Name, Value);
+  end;
+
+  ReadEndDocument;
+end;
+
+function TgoBsonBaseReader.ReadJavaScriptIntf: TgoBsonValue._IValue;
+var
+  Value: TgoBsonJavaScript;
+begin
+  Value := TgoBsonJavaScript.Create(ReadJavaScript);
+  Result := Value._Impl;
+end;
+
+function TgoBsonBaseReader.ReadJavaScriptWithScopeIntf: TgoBsonValue._IValue;
+var
+  Value: TgoBsonValue;
+begin
+  Value := DoReadJavaScriptWithScope;
+  Result := Value._Impl;
+end;
+
+function TgoBsonBaseReader.ReadRegularExpressionIntf: TgoBsonValue._IValue;
+var
+  Value: TgoBsonRegularExpression;
+begin
+  Value := ReadRegularExpression;
+  Result := Value._Impl;
+end;
+
+function TgoBsonBaseReader.ReadStringIntf: TgoBsonValue._IValue;
+begin
+  Result := _goBsonValueFromString(ReadString);
+end;
+
+function TgoBsonBaseReader.ReadSymbolIntf: TgoBsonValue._IValue;
+var
+  Value: TgoBsonSymbol;
+begin
+  Value := TgoBsonSymbolTable.Lookup(ReadSymbol);
+  Result := Value._Impl;
+end;
+
+function TgoBsonBaseReader.ReadTimeStampIntf: TgoBsonValue._IValue;
+var
+  Value: TgoBsonTimestamp;
+begin
+  Value := TgoBsonTimestamp.Create(ReadTimestamp);
+  Result := Value._Impl;
+end;
+
 function TgoBsonBaseReader.ReadValue: TgoBsonValue;
+begin
+  Result._Impl := ReadValueIntf;
+end;
+
+function TgoBsonBaseReader.ReadValueIntf: TgoBsonValue._IValue;
 begin
   case GetCurrentBsonType of
     TgoBsonType.EndOfDocument: ;
-    TgoBsonType.Double: Result := ReadDouble;
-    TgoBsonType.&String: Result := ReadString;
-    TgoBsonType.Document: Result := ReadDocument;
-    TgoBsonType.&Array: Result := ReadArray;
-    TgoBsonType.Binary: Result := ReadBinaryData;
-    TgoBsonType.Undefined: begin ReadUndefined; Result := TgoBsonUndefined.Value end;
-    TgoBsonType.ObjectId: Result := ReadObjectId;
-    TgoBsonType.Boolean: Result := ReadBoolean;
-    TgoBsonType.DateTime: Result := TgoBsonDateTime.Create(ReadDateTime);
-    TgoBsonType.Null: begin ReadNull; Result := TgoBsonNull.Value end;
-    TgoBsonType.RegularExpression: Result := ReadRegularExpression;
-    TgoBsonType.JavaScript: Result := TgoBsonJavaScript.Create(ReadJavaScript);
-    TgoBsonType.Symbol: Result := TgoBsonSymbolTable.Lookup(ReadSymbol);
-    TgoBsonType.JavaScriptWithScope: Result := DoReadJavaScriptWithScope;
-    TgoBsonType.Int32: Result := ReadInt32;
-    TgoBsonType.Timestamp: Result := TgoBsonTimestamp.Create(ReadTimestamp);
-    TgoBsonType.Int64: Result := ReadInt64;
-    TgoBsonType.MaxKey: begin ReadMaxKey; Result := TgoBsonMaxKey.Value end;
-    TgoBsonType.MinKey: begin ReadMinKey; Result := TgoBsonMinKey.Value end;
+    TgoBsonType.Double: Result := _goBsonValueFromDouble(ReadDouble);
+    TgoBsonType.&String: Result := ReadStringIntf;
+    TgoBsonType.Document: Result := ReadDocumentIntf;
+    TgoBsonType.&Array: Result := ReadArrayIntf;
+    TgoBsonType.Binary: Result := ReadBinaryDataIntf;
+    TgoBsonType.Undefined: begin ReadUndefined; Result := TgoBsonUndefined.Value._Value end;
+    TgoBsonType.ObjectId: Result := _goBsonValueFromObjectId(ReadObjectId);
+    TgoBsonType.Boolean: Result := _goBsonValueFromBoolean(ReadBoolean);
+    TgoBsonType.DateTime: Result := _goBsonValueFromDateTime(ReadDateTime);
+    TgoBsonType.Null: begin ReadNull; Result := TgoBsonNull.Value._Value end;
+    TgoBsonType.RegularExpression: Result := ReadRegularExpressionIntf;
+    TgoBsonType.JavaScript: Result := ReadJavaScriptIntf;
+    TgoBsonType.Symbol: Result := ReadSymbolIntf;
+    TgoBsonType.JavaScriptWithScope: Result := ReadJavaScriptWithScopeIntf;
+    TgoBsonType.Int32: Result := _goBsonValueFromInt32(ReadInt32);
+    TgoBsonType.Timestamp: Result := ReadTimeStampIntf;
+    TgoBsonType.Int64: Result := _goBsonValueFromInt64(ReadInt64);
+    TgoBsonType.MaxKey: begin ReadMaxKey; Result := TgoBsonMaxKey.Value._Value end;
+    TgoBsonType.MinKey: begin ReadMinKey; Result := TgoBsonMinKey.Value._Value end;
   else
     raise EInvalidOperation.CreateRes(@RS_BSON_INVALID_READER_STATE);
   end;
@@ -4267,7 +4697,21 @@ constructor TgoJsonReader.Create(const AJson: String);
 begin
   inherited Create;
   FBuffer := TBuffer.Create(AJson);
+  FTokenBase := TToken.Create;
+  FTokenToPush := TToken.Create;
   PushContext(TgoBsonContextType.TopLevel);
+end;
+
+class constructor TgoJsonReader.Create;
+begin
+  TScanner.Initialize;
+end;
+
+destructor TgoJsonReader.Destroy;
+begin
+  FTokenBase.Free;
+  FTokenToPush.Free;
+  inherited;
 end;
 
 function TgoJsonReader.EndOfStream: Boolean;
@@ -4313,7 +4757,7 @@ end;
 function TgoJsonReader.GetBookmark: IgoBsonReaderBookmark;
 begin
   Result := TJsonBookmark.Create(State, CurrentBsonType, CurrentName,
-    FContextIndex, FCurrentToken, FCurrentValue, FPushedToken, FHasPushedToken,
+    FContextIndex, FCurrentToken, FCurrentValue, FPushedToken,
     FBuffer.FCurrent);
 end;
 
@@ -4358,19 +4802,18 @@ begin
   Result := TgoJsonReader.Create(Json);
 end;
 
-function TgoJsonReader.ParseConstructorBinaryData: TgoBsonValue;
+procedure TgoJsonReader.ParseConstructorBinaryData;
 { BinData(0, "AQ==") }
 var
   Token: TToken;
-  Base64, Bytes: TBytes;
-  SubType: TgoBsonBinarySubType;
+  Base64: TBytes;
 begin
   VerifyToken('(');
 
   PopToken(Token);
   if (Token.TokenType <> TTokenType.Int32) then
     raise FBuffer.ParseError(@RS_BSON_INT_EXPECTED);
-  SubType := TgoBsonBinarySubType(Token.Int32Value);
+  FCurrentValue.BinarySubType := TgoBsonBinarySubType(Token.Int32Value);
 
   VerifyToken(',');
 
@@ -4381,12 +4824,11 @@ begin
 
   VerifyToken(')');
 
-  Bytes := goBase64Decode(Base64);
-  Result := TgoBsonBinaryData.Create(Bytes, SubType);
+  FCurrentValue.Bytes := goBase64Decode(Base64);
 end;
 
-function TgoJsonReader.ParseConstructorDateTime(
-  const AWithNew: Boolean): TgoBsonValue;
+procedure TgoJsonReader.ParseConstructorDateTime(
+  const AWithNew: Boolean);
 { Date()
   new Date()
   new Date(9223372036854775807)
@@ -4403,13 +4845,16 @@ begin
   if (not AWithNew) then
   begin
     VerifyToken(')');
-    Result := FormatJavaScriptDateTimeString(Now);
+    FCurrentValue.StrVal := FormatJavaScriptDateTimeString(Now);
     Exit;
   end;
 
   PopToken(Token);
-  if (Token.Lexeme = ')') then
-    Exit(TgoBsonDateTime.Create(Now, False));
+  if (Token.LexemeLength = 1) and (Token.LexemeStart^ = ')') then
+  begin
+    FCurrentValue.Int64Val := goDateTimeToMillisecondsSinceEpoch(Now, False);
+    Exit;
+  end;
 
   if (Token.TokenType = TTokenType.String) then
   begin
@@ -4429,10 +4874,10 @@ begin
       Inc(ArgCount);
 
       PopToken(Token);
-      if (Token.Lexeme = ')') then
+      if (Token.LexemeLength = 1) and (Token.LexemeStart^ = ')') then
         Break;
 
-      if (Token.Lexeme <> ',') then
+      if (Token.LexemeLength <> 1) or (Token.LexemeStart^ <> ',') then
         raise FBuffer.ParseError(@RS_BSON_COMMA_EXPECTED);
 
       PopToken(Token);
@@ -4441,13 +4886,13 @@ begin
     end;
 
     case ArgCount of
-      1: Result := TgoBsonDateTime.Create(Args[0]);
+      1: FCurrentValue.Int64Val := Args[0];
       3..7:
         begin
           DateTime := EncodeDateTime(
             Args[0], Args[1] + 1, Args[2],
             Args[3], Args[3], Args[5], Args[6]);
-          Result := TgoBsonDateTime.Create(DateTime, True);
+          FCurrentValue.Int64Val := goDateTimeToMillisecondsSinceEpoch(DateTime, True);
         end
     else
       raise FBuffer.ParseError(@RS_BSON_INVALID_DATE);
@@ -4458,18 +4903,16 @@ begin
   raise FBuffer.ParseError(@RS_BSON_INVALID_DATE);
 end;
 
-function TgoJsonReader.ParseConstructorHexData: TgoBsonValue;
+procedure TgoJsonReader.ParseConstructorHexData;
 { HexData(0, "123") }
 var
   Token: TToken;
-  SubType: TgoBsonBinarySubType;
-  Bytes: TBytes;
 begin
   VerifyToken('(');
   PopToken(Token);
   if (Token.TokenType <> TTokenType.Int32) then
     raise FBuffer.ParseError(@RS_BSON_INT_EXPECTED);
-  SubType := TgoBsonBinarySubType(Token.Int32Value);
+  FCurrentValue.BinarySubType := TgoBsonBinarySubType(Token.Int32Value);
 
   VerifyToken(',');
   PopToken(Token);
@@ -4477,11 +4920,10 @@ begin
     raise FBuffer.ParseError(@RS_BSON_STRING_EXPECTED);
   VerifyToken(')');
 
-  Bytes := goParseHexString(Token.StringValue);
-  Result := TgoBsonBinaryData.Create(Bytes, SubType);
+  FCurrentValue.Bytes := goParseHexString(Token.StringValue);
 end;
 
-function TgoJsonReader.ParseConstructorISODateTime: TgoBsonValue;
+procedure TgoJsonReader.ParseConstructorISODateTime;
 { ISODate("1970-01-01T00:00:00Z")
   ISODate("1970-01-01T00:00:00.000Z") }
 var
@@ -4500,10 +4942,10 @@ begin
   if (not TryISO8601ToDate(Token.StringValue, DateTime, True)) then
     raise FBuffer.ParseError(@RS_BSON_INVALID_DATE);
 
-  Result := TgoBsonDateTime.Create(DateTime, True);
+  FCurrentValue.Int64Val := goDateTimeToMillisecondsSinceEpoch(DateTime, True);
 end;
 
-function TgoJsonReader.ParseConstructorNumber: TgoBsonValue;
+procedure TgoJsonReader.ParseConstructorNumber;
 { Number(42)
   Number("42")
   NumberInt(42)
@@ -4514,15 +4956,15 @@ begin
   VerifyToken('(');
   PopToken(Token);
   if (Token.TokenType = TTokenType.Int32) then
-    Result := Token.Int32Value
+    FCurrentValue.Int32Val := Token.Int32Value
   else if (Token.TokenType = TTokenType.String) then
-    Result := StrToInt(Token.StringValue)
+    FCurrentValue.Int32Val := StrToInt(Token.StringValue)
   else
     raise FBuffer.ParseError(@RS_BSON_INT_OR_STRING_EXPECTED);
   VerifyToken(')');
 end;
 
-function TgoJsonReader.ParseConstructorNumberLong: TgoBsonValue;
+procedure TgoJsonReader.ParseConstructorNumberLong;
 { NumberLong(42)
   NumberLong("42") }
 var
@@ -4531,15 +4973,15 @@ begin
   VerifyToken('(');
   PopToken(Token);
   if (Token.TokenType in [TTokenType.Int32, TTokenType.Int64]) then
-    Result := Token.Int64Value
+    FCurrentValue.Int64Val := Token.Int64Value
   else if (Token.TokenType = TTokenType.String) then
-    Result := StrToInt64(Token.StringValue)
+    FCurrentValue.Int64Val := StrToInt64(Token.StringValue)
   else
     raise FBuffer.ParseError(@RS_BSON_INT_OR_STRING_EXPECTED);
   VerifyToken(')');
 end;
 
-function TgoJsonReader.ParseConstructorObjectId: TgoBsonValue;
+procedure TgoJsonReader.ParseConstructorObjectId;
 // ObjectId("0102030405060708090a0b0c")
 var
   Token: TToken;
@@ -4549,10 +4991,10 @@ begin
   if (Token.TokenType <> TTokenType.String) then
     raise FBuffer.ParseError(@RS_BSON_STRING_EXPECTED);
   VerifyToken(')');
-  Result := TgoObjectId.Create(Token.StringValue);
+  FCurrentValue.ObjectIdVal := TgoObjectId.Create(Token.StringValue);
 end;
 
-function TgoJsonReader.ParseConstructorRegularExpression: TgoBsonValue;
+procedure TgoJsonReader.ParseConstructorRegularExpression;
 { RegExp("pattern")
   RegExp("pattern", "options") }
 var
@@ -4567,7 +5009,7 @@ begin
   Options := '';
 
   PopToken(Token);
-  if (Token.Lexeme = ',') then
+  if (Token.LexemeLength = 1) and (Token.LexemeStart^ = ',') then
   begin
     PopToken(Token);
     if (Token.TokenType <> TTokenType.String) then
@@ -4578,10 +5020,10 @@ begin
     PushToken(Token);
 
   VerifyToken(')');
-  Result := TgoBsonRegularExpression.Create(Pattern, Options);
+  FCurrentValue.StrVal := Pattern + #1 + Options;
 end;
 
-function TgoJsonReader.ParseConstructorTimestamp: TgoBsonValue;
+procedure TgoJsonReader.ParseConstructorTimestamp;
 { Timestamp(1, 2) }
 var
   Token: TToken;
@@ -4604,17 +5046,13 @@ begin
     raise FBuffer.ParseError(@RS_BSON_INT_EXPECTED);
 
   VerifyToken(')');
-  Result := TgoBsonTimestamp.Create(SecondsSinceEpoch, Increment);
+  FCurrentValue.Int64Val := (UInt64(SecondsSinceEpoch) shl 32) or UInt32(Increment);
 end;
 
-function TgoJsonReader.ParseConstructorUUID(
-  const AConstructorName: String): TgoBsonValue;
+procedure TgoJsonReader.ParseConstructorUUID(const ALexemeStart: Char);
 var
   Token: TToken;
   HexString: String;
-  Bytes: TBytes;
-  SubType: TgoBsonBinarySubType;
-  C: Char;
 begin
   VerifyToken('(');
   PopToken(Token);
@@ -4624,119 +5062,120 @@ begin
 
   HexString := Token.StringValue.Replace('{', '').Replace('}', '');
   HexString := HexString.Replace('-', '', [rfReplaceAll]);
-  Bytes := goParseHexString(HexString);
-  if (Length(Bytes) <> 16) then
+  FCurrentValue.Bytes := goParseHexString(HexString);
+  if (Length(FCurrentValue.Bytes) <> 16) then
     raise FBuffer.ParseError(@RS_BSON_INVALID_GUID);
-  SubType := TgoBsonBinarySubType.UuidLegacy;
+  FCurrentValue.BinarySubType := TgoBsonBinarySubType.UuidLegacy;
 
-  Assert(AConstructorName <> '');
-  C := AConstructorName.Chars[0];
-  if (C = 'C') then // C#
+  if (ALexemeStart = 'C') then // C#
   begin
     // No conversion needed
-    goReverseBytes(Bytes, 0, 4);
-    goReverseBytes(Bytes, 4, 2);
-    goReverseBytes(Bytes, 6, 2);
+    goReverseBytes(FCurrentValue.Bytes, 0, 4);
+    goReverseBytes(FCurrentValue.Bytes, 4, 2);
+    goReverseBytes(FCurrentValue.Bytes, 6, 2);
   end
   else
   begin
-    if (C = 'J') then // Java
+    if (ALexemeStart = 'J') then // Java
     begin
-      goReverseBytes(Bytes, 0, 8);
-      goReverseBytes(Bytes, 8, 8);
+      goReverseBytes(FCurrentValue.Bytes, 0, 8);
+      goReverseBytes(FCurrentValue.Bytes, 8, 8);
     end
-    else if (C <> 'P') then // Python
-      SubType := TgoBsonBinarySubType.UuidStandard;
+    else if (ALexemeStart <> 'P') then // Python
+      FCurrentValue.BinarySubType := TgoBsonBinarySubType.UuidStandard;
   end;
-
-  Result := TgoBsonBinaryData.Create(Bytes, SubType);
 end;
 
-function TgoJsonReader.ParseExtendedJson: TgoBsonType;
+function TgoJsonReader.ParseDocumentOrExtendedJson: TgoBsonType;
 var
   NameToken: TToken;
-  S: String;
 begin
   PopToken(NameToken);
-  if (NameToken.TokenType in [TTokenType.String, TTokenType.UnquotedString]) then
+  if (NameToken.TokenType in [TTokenType.String, TTokenType.UnquotedString])
+    and (NameToken.StringValue <> '')
+  then
+    Result := ParseExtendedJson(NameToken)
+  else
   begin
-    S := NameToken.StringValue;
-    if (S = '') then
-    begin
-      PushToken(NameToken);
-      Exit(TgoBsonType.Document);
-    end;
+    PushToken(NameToken);
+    Result := TgoBsonType.Document;
+  end;
+end;
 
-    if (S.Chars[0] = '$') and (S.Length > 1) then
-    begin
-      case S.Chars[1] of
-        'b': if (S = '$binary') then
-             begin
-               FCurrentValue := ParseExtendedJsonBinaryData;
-               Exit(TgoBsonType.Binary);
-             end;
-        'c': if (S = '$code') then
-               Exit(ParseExtendedJsonJavaScript(FCurrentValue));
-        'd': if (S = '$date') then
-             begin
-               FCurrentValue := ParseExtendedJsonDateTime;
-               Exit(TgoBsonType.DateTime);
-             end;
-        'm': if (S = '$maxkey') or (S = '$maxKey') then
-             begin
-               FCurrentValue := ParseExtendedJsonMaxKey;
-               Exit(TgoBsonType.MaxKey);
-             end
-             else if (S = '$minkey') or (S = '$minKey') then
-             begin
-               FCurrentValue := ParseExtendedJsonMinKey;
-               Exit(TgoBsonType.MinKey);
-             end;
-        'n': if (S = '$numberLong') then
-             begin
-               FCurrentValue := ParseExtendedJsonNumberLong;
-               Exit(TgoBsonType.Int64);
-             end;
-        'o': if (S = '$oid') then
-             begin
-               FCurrentValue := ParseExtendedJsonObjectId;
-               Exit(TgoBsonType.ObjectId);
-             end;
-        'r': if (S = '$regex') then
-             begin
-               FCurrentValue := ParseExtendedJsonRegularExpression;
-               Exit(TgoBsonType.RegularExpression);
-             end;
-        's': if (S = '$symbol') then
-             begin
-               FCurrentValue := ParseExtendedJsonSymbol;
-               Exit(TgoBsonType.Symbol);
-             end;
-        't': if (S = '$timestamp') then
-             begin
-               FCurrentValue := ParseExtendedJsonTimestamp;
-               Exit(TgoBsonType.Timestamp);
-             end;
-        'u': if (S = '$undefined') then
-             begin
-               FCurrentValue := ParseExtendedJsonUndefined;
-               Exit(TgoBsonType.Undefined);
-             end;
-      end;
+function TgoJsonReader.ParseExtendedJson(const ANameToken: TToken): TgoBsonType;
+var
+  S: String;
+begin
+  S := ANameToken.StringValue;
+  Assert(S <> '');
+  if (S.Chars[0] = '$') and (S.Length > 1) then
+  begin
+    case S.Chars[1] of
+      'b': if (S = '$binary') then
+           begin
+             ParseExtendedJsonBinaryData;
+             Exit(TgoBsonType.Binary);
+           end;
+      'c': if (S = '$code') then
+             Exit(ParseExtendedJsonJavaScript);
+      'd': if (S = '$date') then
+           begin
+             FCurrentValue.Int64Val := ParseExtendedJsonDateTime;
+             Exit(TgoBsonType.DateTime);
+           end;
+      'm': if (S = '$maxkey') or (S = '$maxKey') then
+           begin
+             ParseExtendedJsonMaxKey;
+             Exit(TgoBsonType.MaxKey);
+           end
+           else if (S = '$minkey') or (S = '$minKey') then
+           begin
+             ParseExtendedJsonMinKey;
+             Exit(TgoBsonType.MinKey);
+           end;
+      'n': if (S = '$numberLong') then
+           begin
+             FCurrentValue.Int64Val := ParseExtendedJsonNumberLong;
+             Exit(TgoBsonType.Int64);
+           end;
+      'o': if (S = '$oid') then
+           begin
+             FCurrentValue.ObjectIdVal := ParseExtendedJsonObjectId;
+             Exit(TgoBsonType.ObjectId);
+           end;
+      'r': if (S = '$regex') then
+           begin
+             ParseExtendedJsonRegularExpression;
+             Exit(TgoBsonType.RegularExpression);
+           end;
+      's': if (S = '$symbol') then
+           begin
+             ParseExtendedJsonSymbol;
+             Exit(TgoBsonType.Symbol);
+           end;
+      't': if (S = '$timestamp') then
+           begin
+             FCurrentValue.Int64Val := ParseExtendedJsonTimestamp;
+             Exit(TgoBsonType.Timestamp);
+           end;
+      'u': if (S = '$undefined') then
+           begin
+             ParseExtendedJsonUndefined;
+             Exit(TgoBsonType.Undefined);
+           end;
     end;
   end;
-  PushToken(NameToken);
+  PushToken(ANameToken);
   Result := TgoBsonType.Document;
 end;
 
-function TgoJsonReader.ParseExtendedJsonBinaryData: TgoBsonValue;
+procedure TgoJsonReader.ParseExtendedJsonBinaryData;
 (* { $binary : "AQ==", $type : 0 }
    { $binary : "AQ==", $type : "0" }
    { $binary : "AQ==", $type : "00" } *)
 var
   Token: TToken;
-  Base64, Bytes: TBytes;
-  SubType: TgoBsonBinarySubType;
+  Base64: TBytes;
 begin
   VerifyToken(':');
 
@@ -4745,7 +5184,7 @@ begin
     raise FBuffer.ParseError(@RS_BSON_STRING_EXPECTED);
 
   Base64 := TEncoding.ANSI.GetBytes(Token.StringValue);
-  Bytes := goBase64Decode(Base64);
+  FCurrentValue.Bytes := goBase64Decode(Base64);
 
   VerifyToken(',');
   VerifyString('$type');
@@ -4753,17 +5192,16 @@ begin
 
   PopToken(Token);
   if (Token.TokenType = TTokenType.String) then
-    SubType := TgoBsonBinarySubType(StrToInt('$' + Token.StringValue))
+    FCurrentValue.BinarySubType := TgoBsonBinarySubType(StrToInt('$' + Token.StringValue))
   else if (Token.TokenType in [TTokenType.Int32, TTokenType.Int64]) then
-    SubType := TgoBsonBinarySubType(Token.Int32Value)
+    FCurrentValue.BinarySubType := TgoBsonBinarySubType(Token.Int32Value)
   else
     raise FBuffer.ParseError(@RS_BSON_INT_OR_STRING_EXPECTED);
 
   VerifyToken('}');
-  Result := TgoBsonBinaryData.Create(Bytes, SubType);
 end;
 
-function TgoJsonReader.ParseExtendedJsonDateTime: TgoBsonValue;
+function TgoJsonReader.ParseExtendedJsonDateTime: Int64;
 (* { $date : -9223372036854775808 }
    { $date : { $numberLong : 9223372036854775807 } }
    { $date : { $numberLong : "-9223372036854775808" } }
@@ -4771,19 +5209,18 @@ function TgoJsonReader.ParseExtendedJsonDateTime: TgoBsonValue;
    { $date : "1970-01-01T00:00:00.000Z" } *)
 var
   Token: TToken;
-  MillisecondsSinceEpoch: Int64;
   DateTime: TDateTime;
 begin
   VerifyToken(':');
 
   PopToken(Token);
   if (Token.TokenType in [TTokenType.Int32, TTokenType.Int64]) then
-    MillisecondsSinceEpoch := Token.Int64Value
+    Result := Token.Int64Value
   else if (Token.TokenType = TTokenType.String) then
   begin
     if (not TryISO8601ToDate(Token.StringValue, DateTime, True)) then
       raise FBuffer.ParseError(@RS_BSON_INVALID_DATE);
-    MillisecondsSinceEpoch := goDateTimeToMillisecondsSinceEpoch(DateTime, True);
+    Result := goDateTimeToMillisecondsSinceEpoch(DateTime, True);
   end
   else if (Token.TokenType = TTokenType.BeginObject) then
   begin
@@ -4792,11 +5229,11 @@ begin
     PopToken(Token);
     if (Token.TokenType = TTokenType.String) then
     begin
-      if (not TryStrToInt64(Token.StringValue, MillisecondsSinceEpoch)) then
+      if (not TryStrToInt64(Token.StringValue, Result)) then
         raise FBuffer.ParseError(@RS_BSON_INT_EXPECTED);
     end
     else if (Token.TokenType in [TTokenType.Int32, TTokenType.Int64]) then
-      MillisecondsSinceEpoch := Token.Int64Value
+      Result := Token.Int64Value
     else
       raise FBuffer.ParseError(@RS_BSON_INT_OR_STRING_EXPECTED);
     VerifyToken('}');
@@ -4805,11 +5242,9 @@ begin
     raise FBuffer.ParseError(@RS_BSON_INVALID_DATE);
 
   VerifyToken('}');
-  Result := TgoBsonDateTime.Create(MillisecondsSinceEpoch);
 end;
 
-function TgoJsonReader.ParseExtendedJsonJavaScript(
-  out AValue: TgoBsonValue): TgoBsonType;
+function TgoJsonReader.ParseExtendedJsonJavaScript: TgoBsonType;
 (* { "$code" : "function f() { return 1; }" }
    { "$code" : "function f() { return 1; }" , "$scope" : {...} } *)
 var
@@ -4829,13 +5264,13 @@ begin
         VerifyString('$scope');
         VerifyToken(':');
         State := TgoBsonReaderState.Value;
-        AValue := Code;
+        FCurrentValue.StrVal := Code;
         Result := TgoBsonType.JavaScriptWithScope;
       end;
 
     TTokenType.EndObject:
       begin
-        AValue := Code;
+        FCurrentValue.StrVal := Code;
         Result := TgoBsonType.JavaScript;
       end;
   else
@@ -4843,27 +5278,25 @@ begin
   end;
 end;
 
-function TgoJsonReader.ParseExtendedJsonMaxKey: TgoBsonValue;
+procedure TgoJsonReader.ParseExtendedJsonMaxKey;
 (* { $maxKey : 1 }
    { $maxkey : 1 } *)
 begin
   VerifyToken(':');
   VerifyToken('1');
   VerifyToken('}');
-  Result := TgoBsonMaxKey.Value;
 end;
 
-function TgoJsonReader.ParseExtendedJsonMinKey: TgoBsonValue;
+procedure TgoJsonReader.ParseExtendedJsonMinKey;
 (* { $minKey : 1 }
    { $minkey : 1 } *)
 begin
   VerifyToken(':');
   VerifyToken('1');
   VerifyToken('}');
-  Result := TgoBsonMinKey.Value;
 end;
 
-function TgoJsonReader.ParseExtendedJsonNumberLong: TgoBsonValue;
+function TgoJsonReader.ParseExtendedJsonNumberLong: Int64;
 (* { $numberLong: 42 }
    { $numberLong: "42" } *)
 var
@@ -4880,7 +5313,7 @@ begin
   VerifyToken('}');
 end;
 
-function TgoJsonReader.ParseExtendedJsonObjectId: TgoBsonValue;
+function TgoJsonReader.ParseExtendedJsonObjectId: TgoObjectId;
 // { $oid : "0102030405060708090a0b0c" }
 var
   Token: TToken;
@@ -4893,7 +5326,7 @@ begin
   Result := TgoObjectId.Create(Token.StringValue);
 end;
 
-function TgoJsonReader.ParseExtendedJsonRegularExpression: TgoBsonValue;
+procedure TgoJsonReader.ParseExtendedJsonRegularExpression;
 (* { $regex : "abc" }
    { $regex : "abc", $options : "i" } *)
 var
@@ -4921,10 +5354,10 @@ begin
     PushToken(Token);
 
   VerifyToken('}');
-  Result := TgoBsonRegularExpression.Create(Pattern, Options);
+  FCurrentValue.StrVal := Pattern + #1 + Options;
 end;
 
-function TgoJsonReader.ParseExtendedJsonSymbol: TgoBsonValue;
+procedure TgoJsonReader.ParseExtendedJsonSymbol;
 (* { "$symbol" : "symbol" } *)
 var
   Token: TToken;
@@ -4934,10 +5367,10 @@ begin
   if (Token.TokenType <> TTokenType.String) then
     raise FBuffer.ParseError(@RS_BSON_STRING_EXPECTED);
   VerifyToken('}');
-  Result := Token.StringValue; // Will be converted to a TgoBsonSymbol later
+  FCurrentValue.StrVal := Token.StringValue; // Will be converted to a TgoBsonSymbol later
 end;
 
-function TgoJsonReader.ParseExtendedJsonTimestamp: TgoBsonValue;
+function TgoJsonReader.ParseExtendedJsonTimestamp: Int64;
 (* { $timestamp : { t : 1, i : 2 } } // New
    { $timestamp : 123 }              // Old
    { $timestamp : NumberLong(123) }  // Old *)
@@ -4952,7 +5385,7 @@ begin
     Result := ParseExtendedJsonTimestampOld(Token);
 end;
 
-function TgoJsonReader.ParseExtendedJsonTimestampNew: TgoBsonValue;
+function TgoJsonReader.ParseExtendedJsonTimestampNew: Int64;
 (* { $timestamp : { t : 1, i : 2 } } *)
 var
   Token: TToken;
@@ -4979,124 +5412,121 @@ begin
 
   VerifyToken('}');
   VerifyToken('}');
-  Result := TgoBsonTimestamp.Create(SecondsSinceEpoch, Increment);
+  Result := (UInt64(SecondsSinceEpoch) shl 32) or UInt32(Increment);
 end;
 
 function TgoJsonReader.ParseExtendedJsonTimestampOld(
-  const AValueToken: TToken): TgoBsonValue;
+  const AValueToken: TToken): Int64;
 (* { $timestamp : 123 }
    { $timestamp : NumberLong(123) } *)
-var
-  Value: Int64;
 begin
+
   if (AValueToken.TokenType in [TTokenType.Int32, TTokenType.Int64]) then
-    Value := AValueToken.Int64Value
+    Result := AValueToken.Int64Value
   else if (AValueToken.TokenType = TTokenType.UnquotedString)
-    and (AValueToken.Lexeme = 'NumberLong')
-  then
-    Value := ParseConstructorNumberLong.AsInt64
+    and (AValueToken.IsLexeme('NumberLong', 10)) then
+  begin
+    ParseConstructorNumberLong;
+    Result := FCurrentValue.Int64Val;
+  end
   else
     raise FBuffer.ParseError(@RS_BSON_INT_OR_STRING_EXPECTED);
 
   VerifyToken('}');
-  Result := TgoBsonTimestamp.Create(Value);
 end;
 
-function TgoJsonReader.ParseExtendedJsonUndefined: TgoBsonValue;
+procedure TgoJsonReader.ParseExtendedJsonUndefined;
 (* { $undefined : true } *)
 begin
   VerifyToken(':');
-  VerifyToken('true');
+  VerifyToken('true', 4);
   VerifyToken('}');
-  Result := TgoBsonUndefined.Value;
 end;
 
-function TgoJsonReader.ParseNew(out AValue: TgoBsonValue): TgoBsonType;
+function TgoJsonReader.ParseNew: TgoBsonType;
 var
   Token: TToken;
-  S: String;
 begin
   PopToken(Token);
   if (Token.TokenType <> TTokenType.UnquotedString) then
     raise FBuffer.ParseError(@RS_BSON_STRING_EXPECTED);
 
-  S := Token.Lexeme;
-  Assert(S <> '');
-  case S.Chars[0] of
-    'B': if (S = 'BinData') then
+  Assert(Token.LexemeLength > 0);
+  case Token.LexemeStart^ of
+    'B': if (Token.IsLexeme('BinData', 7)) then
          begin
-           AValue := ParseConstructorBinaryData;
+           ParseConstructorBinaryData;
            Exit(TgoBsonType.Binary);
          end;
 
-    'C': if (S = 'CSUUID') or (S = 'CSGUID') then
+    'C': if (Token.IsLexeme('CSUUID', 6)) or (Token.IsLexeme('CSGUID', 6)) then
          begin
-           AValue := ParseConstructorUUID(S);
+           ParseConstructorUUID(Token.LexemeStart^);
            Exit(TgoBsonType.DateTime);
          end;
 
-    'D': if (S = 'Date') then
+    'D': if (Token.IsLexeme('Date', 4)) then
          begin
-           AValue := ParseConstructorDateTime(True);
+           ParseConstructorDateTime(True);
            Exit(TgoBsonType.DateTime);
          end;
 
-    'G': if (S = 'GUID') then
+    'G': if (Token.IsLexeme('GUID', 4)) then
          begin
-           AValue := ParseConstructorUUID(S);
+           ParseConstructorUUID(Token.LexemeStart^);
            Exit(TgoBsonType.DateTime);
          end;
 
-    'H': if (S = 'HexData') then
+    'H': if (Token.IsLexeme('HexData', 7)) then
          begin
-           AValue := ParseConstructorHexData;
+           ParseConstructorHexData;
            Exit(TgoBsonType.Binary);
          end;
 
-    'I': if (S = 'ISODate') then
+    'I': if (Token.IsLexeme('ISODate', 7)) then
          begin
-           AValue := ParseConstructorISODateTime;
+           ParseConstructorISODateTime;
            Exit(TgoBsonType.DateTime);
          end;
 
-    'J': if (S = 'JUUID') or (S = 'JGUID') then
+    'J': if (Token.IsLexeme('JUUID', 5)) or (Token.IsLexeme('JGUID', 5)) then
          begin
-           AValue := ParseConstructorUUID(S);
+           ParseConstructorUUID(Token.LexemeStart^);
            Exit(TgoBsonType.DateTime);
          end;
 
-    'N': if (S = 'NumberInt') then
+    'N': if (Token.IsLexeme('NumberInt', 9)) then
          begin
-           AValue := ParseConstructorNumber;
+           ParseConstructorNumber;
            Exit(TgoBsonType.Int32);
          end
-         else if (S = 'NumberLong') then
+         else if (Token.IsLexeme('NumberLong', 10)) then
          begin
-           AValue := ParseConstructorNumberLong;
+           ParseConstructorNumberLong;
            Exit(TgoBsonType.Int64);
          end;
 
-    'O': if (S = 'ObjectId') then
+    'O': if (Token.IsLexeme('ObjectId', 8)) then
          begin
-           AValue := ParseConstructorObjectId;
+           ParseConstructorObjectId;
            Exit(TgoBsonType.ObjectId);
          end;
 
-    'P': if (S = 'PYUUID') or (S = 'PYGUID') then
+    'P': if (Token.IsLexeme('PYUUID', 6)) or (Token.IsLexeme('PYGUID', 6)) then
          begin
-           AValue := ParseConstructorUUID(S);
+           ParseConstructorUUID(Token.LexemeStart^);
            Exit(TgoBsonType.DateTime);
          end;
 
-    'T': if (S = 'Timestamp') then
+    'T': if (Token.IsLexeme('Timestamp', 9)) then
          begin
-           AValue := ParseConstructorTimestamp;
+           ParseConstructorTimestamp;
            Exit(TgoBsonType.Timestamp);
          end;
 
-    'U': if (S = 'UUID') then
+    'U': if (Token.IsLexeme('UUID', 4)) then
          begin
-           AValue := ParseConstructorUUID(S);
+           ParseConstructorUUID(Token.LexemeStart^);
            Exit(TgoBsonType.DateTime);
          end;
   end;
@@ -5118,13 +5548,17 @@ end;
 
 procedure TgoJsonReader.PopToken(out AToken: TToken);
 begin
-  if FHasPushedToken then
+  if (FPushedToken <> nil) then
   begin
+    Assert(FPushedToken = FTokenToPush);
     AToken := FPushedToken;
-    FHasPushedToken := False;
+    FPushedToken := nil;
   end
   else
+  begin
+    AToken := FTokenBase;
     TScanner.GetNextToken(FBuffer, AToken);
+  end;
 end;
 
 procedure TgoJsonReader.PushContext(const AContextType: TgoBsonContextType);
@@ -5138,32 +5572,31 @@ end;
 
 procedure TgoJsonReader.PushToken(const AToken: TToken);
 begin
-  if (FHasPushedToken) then
+  if (FPushedToken <> nil) then
     raise EInvalidOperation.CreateRes(@RS_BSON_INVALID_READER_STATE);
 
-  FPushedToken := AToken;
-  FHasPushedToken := True;
+  FTokenToPush.Assign(AToken);
+  FPushedToken := FTokenToPush;
 end;
 
 function TgoJsonReader.ReadBinaryData: TgoBsonBinaryData;
 begin
   VerifyBsonType(TgoBsonType.Binary);
   State := GetNextState;
-  Result := FCurrentValue.AsBsonBinaryData;
+  Result := TgoBsonBinaryData.Create(FCurrentValue.Bytes, FCurrentValue.BinarySubType);
 end;
 
 function TgoJsonReader.ReadBoolean: Boolean;
 begin
   VerifyBsonType(TgoBsonType.Boolean);
   State := GetNextState;
-  Result := FCurrentValue.AsBoolean;
+  Result := FCurrentValue.BoolVal;
 end;
 
 function TgoJsonReader.ReadBsonType: TgoBsonType;
 var
   Token: TToken;
   NoValueFound: Boolean;
-  S: String;
 begin
   Assert(Assigned(FContext));
 
@@ -5209,12 +5642,12 @@ begin
       CurrentBsonType := TgoBsonType.&Array;
 
     TTokenType.BeginObject:
-      CurrentBsonType := ParseExtendedJson;
+      CurrentBsonType := ParseDocumentOrExtendedJson;
 
     TTokenType.Double:
       begin
         CurrentBsonType := TgoBsonType.Double;
-        FCurrentValue := Token.DoubleValue;
+        FCurrentValue.DoubleVal := Token.DoubleValue;
       end;
 
     TTokenType.EndOfFile:
@@ -5223,198 +5656,191 @@ begin
     TTokenType.Int32:
       begin
         CurrentBsonType := TgoBsonType.Int32;
-        FCurrentValue := Token.Int32Value;
+        FCurrentValue.Int32Val := Token.Int32Value;
       end;
 
     TTokenType.Int64:
       begin
         CurrentBsonType := TgoBsonType.Int64;
-        FCurrentValue := Token.Int64Value;
+        FCurrentValue.Int64Val := Token.Int64Value;
       end;
 
     TTokenType.RegularExpression:
       begin
         CurrentBsonType := TgoBsonType.RegularExpression;
-        FCurrentValue := Token.RegExValue;
+        SetCurrentValueRegEx(Token);
       end;
 
     TTokenType.String:
       begin
         CurrentBsonType := TgoBsonType.String;
-        FCurrentValue := Token.StringValue;
+        FCurrentValue.StrVal := Token.StringValue;
       end;
 
     TTokenType.UnquotedString:
       begin
-        S := Token.Lexeme;
-        Assert(S <> '');
-        case S.Chars[0] of
-          'B': if (S = 'BinData') then
+        Assert(Token.LexemeLength > 0);
+        case Token.LexemeStart^ of
+          'B': if (Token.IsLexeme('BinData', 7)) then
                begin
                  CurrentBsonType := TgoBsonType.Binary;
-                 FCurrentValue := ParseConstructorBinaryData;
+                 ParseConstructorBinaryData;
                end
                else
                  NoValueFound := True;
 
-          'C': if (S = 'CSUUID') or (S = 'CSGUID') then
+          'C': if (Token.IsLexeme('CSUUID', 6)) or (Token.IsLexeme('CSGUID', 6)) then
                begin
                  CurrentBsonType := TgoBsonType.Binary;
-                 FCurrentValue := ParseConstructorUUID(S);
+                 ParseConstructorUUID(Token.LexemeStart^);
                end
                else
                  NoValueFound := True;
 
-          'D': if (S = 'Date') then
+          'D': if (Token.IsLexeme('Date', 4)) then
                begin
                  { This is the Date() function (without arguments).
                    It should return the current datetime (in UTC) as a
                    JavaScript formatted datetime string. }
                  CurrentBsonType := TgoBsonType.String;
-                 FCurrentValue := ParseConstructorDateTime(False);
+                 ParseConstructorDateTime(False);
                end
                else
                  NoValueFound := True;
 
-          'G': if (S = 'GUID') then
+          'G': if (Token.IsLexeme('GUID', 4)) then
                begin
                  CurrentBsonType := TgoBsonType.Binary;
-                 FCurrentValue := ParseConstructorUUID(Token.Lexeme);
+                 ParseConstructorUUID(Token.LexemeStart^);
                end
                else
                  NoValueFound := True;
 
-          'H': if (S = 'HexData') then
+          'H': if (Token.IsLexeme('HexData', 7)) then
                begin
                  CurrentBsonType := TgoBsonType.Binary;
-                 FCurrentValue := ParseConstructorHexData;
+                 ParseConstructorHexData;
                end
                else
                  NoValueFound := True;
 
-          'I': if (S = 'Infinity') then
+          'I': if (Token.IsLexeme('Infinity', 8)) then
                begin
                  CurrentBsonType := TgoBsonType.Double;
-                 FCurrentValue := Infinity;
+                 FCurrentValue.DoubleVal := Infinity;
                end
-               else if (S = 'ISODate') then
+               else if (Token.IsLexeme('ISODate', 7)) then
                begin
                  CurrentBsonType := TgoBsonType.DateTime;
-                 FCurrentValue := ParseConstructorISODateTime;
+                 ParseConstructorISODateTime;
                end
                else
                  NoValueFound := True;
 
-          'J': if (S = 'JUUID') or (S = 'JGUID') then
+          'J': if (Token.IsLexeme('JUUID', 5)) or (Token.IsLexeme('JGUID', 5)) then
                begin
                  CurrentBsonType := TgoBsonType.Binary;
-                 FCurrentValue := ParseConstructorUUID(Token.Lexeme);
+                 ParseConstructorUUID(Token.LexemeStart^);
                end
                else
                  NoValueFound := True;
 
-          'M': if (S = 'MaxKey') then
-               begin
-                 CurrentBsonType := TgoBsonType.MaxKey;
-                 FCurrentValue := TgoBsonMaxKey.Value;
-               end
-               else if (S = 'MinKey') then
-               begin
-                 CurrentBsonType := TgoBsonType.MinKey;
-                 FCurrentValue := TgoBsonMinKey.Value;
-               end
+          'M': if (Token.IsLexeme('MaxKey', 6)) then
+                 CurrentBsonType := TgoBsonType.MaxKey
+               else if (Token.IsLexeme('MinKey', 6)) then
+                 CurrentBsonType := TgoBsonType.MinKey
                else
                  NoValueFound := True;
 
-          'N': if (S = 'NaN') then
+          'N': if (Token.IsLexeme('NaN', 3)) then
                begin
                  CurrentBsonType := TgoBsonType.Double;
-                 FCurrentValue := NaN;
+                 FCurrentValue.DoubleVal := NaN;
                end
-               else if (S = 'Number') or (S = 'NumberInt') then
+               else if (Token.IsLexeme('Number', 6)) or (Token.IsLexeme('NumberInt', 9)) then
                begin
                  CurrentBsonType := TgoBsonType.Int32;
-                 FCurrentValue := ParseConstructorNumber;
+                 ParseConstructorNumber;
                end
-               else if (S = 'NumberLong') then
+               else if (Token.IsLexeme('NumberLong', 10)) then
                begin
                  CurrentBsonType := TgoBsonType.Int64;
-                 FCurrentValue := ParseConstructorNumberLong;
+                 ParseConstructorNumberLong;
                end
                else
                  NoValueFound := True;
 
-          'O': if (S = 'ObjectId') then
+          'O': if (Token.IsLexeme('ObjectId', 8)) then
                begin
                  CurrentBsonType := TgoBsonType.ObjectId;
-                 FCurrentValue := ParseConstructorObjectId;
+                 ParseConstructorObjectId;
                end
                else
                  NoValueFound := True;
 
-          'P': if (S = 'PYUUID') or (S = 'PYGUID') then
+          'P': if (Token.IsLexeme('PYUUID', 6)) or (Token.IsLexeme('PYGUID', 6)) then
                begin
                  CurrentBsonType := TgoBsonType.Binary;
-                 FCurrentValue := ParseConstructorUUID(Token.Lexeme);
+                 ParseConstructorUUID(Token.LexemeStart^);
                end
                else
                  NoValueFound := True;
 
-          'R': if (S = 'RegExp') then
+          'R': if (Token.IsLexeme('RegExp', 6)) then
                begin
                  CurrentBsonType := TgoBsonType.RegularExpression;
-                 FCurrentValue := ParseConstructorRegularExpression;
+                 ParseConstructorRegularExpression;
                end
                else
                  NoValueFound := True;
 
-          'T': if (S = 'Timestamp') then
+          'T': if (Token.IsLexeme('Timestamp', 9)) then
                begin
                  CurrentBsonType := TgoBsonType.Timestamp;
-                 FCurrentValue := ParseConstructorTimestamp;
+                 ParseConstructorTimestamp;
                end
                else
                  NoValueFound := True;
 
-          'U': if (S = 'UUID') then
+          'U': if (Token.IsLexeme('UUID', 4)) then
                begin
                  CurrentBsonType := TgoBsonType.Binary;
-                 FCurrentValue := ParseConstructorUUID(Token.Lexeme);
+                 ParseConstructorUUID(Token.LexemeStart^);
                end
                else
                  NoValueFound := True;
 
-          'f': if (S = 'false') then
+          'f': if (Token.IsLexeme('false', 5)) then
                begin
                  CurrentBsonType := TgoBsonType.Boolean;
-                 FCurrentValue := False;
+                 FCurrentValue.BoolVal := False;
                end
                else
                  NoValueFound := True;
 
-          'n': if (S = 'new') then
-                 CurrentBsonType := ParseNew(FCurrentValue)
-               else if (S = 'null') then
+          'n': if (Token.IsLexeme('new', 3)) then
+                 CurrentBsonType := ParseNew
+               else if (Token.IsLexeme('null', 4)) then
                  CurrentBsonType := TgoBsonType.Null
                else
                  NoValueFound := True;
 
-          't': if (S = 'true') then
+          't': if (Token.IsLexeme('true', 4)) then
                begin
                  CurrentBsonType := TgoBsonType.Boolean;
-                 FCurrentValue := True;
+                 FCurrentValue.BoolVal := True;
                end
                else
                  NoValueFound := True;
 
-          'u': if (S = 'undefined') then
+          'u': if (Token.IsLexeme('undefined', 9)) then
                  CurrentBsonType := TgoBsonType.Undefined
                else
                  NoValueFound := True;
         else
           NoValueFound := True;
         end;
-      end
+      end;
   else
     NoValueFound := True;
   end;
@@ -5446,31 +5872,28 @@ begin
 end;
 
 function TgoJsonReader.ReadBytes: TBytes;
-var
-  BinaryData: TgoBsonBinaryData;
 begin
   VerifyBsonType(TgoBsonType.Binary);
   State := GetNextState;
-  BinaryData := FCurrentValue.AsBsonBinaryData;
 
-  if (not (BinaryData.SubType in [TgoBsonBinarySubType.Binary, TgoBsonBinarySubType.OldBinary])) then
+  if (not (FCurrentValue.BinarySubType in [TgoBsonBinarySubType.Binary, TgoBsonBinarySubType.OldBinary])) then
     raise FBuffer.ParseError(@RS_BSON_INVALID_BINARY_TYPE);
 
-  Result := BinaryData.AsBytes;
+  Result := FCurrentValue.Bytes;
 end;
 
 function TgoJsonReader.ReadDateTime: Int64;
 begin
   VerifyBsonType(TgoBsonType.DateTime);
   State := GetNextState;
-  Result := FCurrentValue.AsBsonDateTime.MillisecondsSinceEpoch;
+  Result := FCurrentValue.Int64Val;
 end;
 
 function TgoJsonReader.ReadDouble: Double;
 begin
   VerifyBsonType(TgoBsonType.Double);
   State := GetNextState;
-  Result := FCurrentValue.AsDouble;
+  Result := FCurrentValue.DoubleVal;
 end;
 
 procedure TgoJsonReader.ReadEndArray;
@@ -5555,21 +5978,21 @@ function TgoJsonReader.ReadInt32: Integer;
 begin
   VerifyBsonType(TgoBsonType.Int32);
   State := GetNextState;
-  Result := FCurrentValue.AsInteger;
+  Result := FCurrentValue.Int32Val;
 end;
 
 function TgoJsonReader.ReadInt64: Int64;
 begin
   VerifyBsonType(TgoBsonType.Int64);
   State := GetNextState;
-  Result := FCurrentValue.AsInt64;
+  Result := FCurrentValue.Int64Val;
 end;
 
 function TgoJsonReader.ReadJavaScript: String;
 begin
   VerifyBsonType(TgoBsonType.JavaScript);
   State := GetNextState;
-  Result := FCurrentValue.AsString;
+  Result := FCurrentValue.StrVal;
 end;
 
 function TgoJsonReader.ReadJavaScriptWithScope: String;
@@ -5577,7 +6000,7 @@ begin
   VerifyBsonType(TgoBsonType.JavaScriptWithScope);
   PushContext(TgoBsonContextType.JavaScriptWithScope);
   State := TgoBsonReaderState.ScopeDocument;
-  Result := FCurrentValue.AsString;
+  Result := FCurrentValue.StrVal;
 end;
 
 procedure TgoJsonReader.ReadMaxKey;
@@ -5614,14 +6037,21 @@ function TgoJsonReader.ReadObjectId: TgoObjectId;
 begin
   VerifyBsonType(TgoBsonType.ObjectId);
   State := GetNextState;
-  Result := FCurrentValue.AsObjectId;
+  Result := FCurrentValue.ObjectIdVal;
 end;
 
 function TgoJsonReader.ReadRegularExpression: TgoBsonRegularExpression;
+var
+  I: Integer;
 begin
   VerifyBsonType(TgoBsonType.RegularExpression);
   State := GetNextState;
-  Result := FCurrentValue.AsBsonRegularExpression;
+  I := FCurrentValue.StrVal.IndexOf(#1);
+  if (I < 0) then
+    Result := TgoBsonRegularExpression.Create(FCurrentValue.StrVal)
+  else
+    Result := TgoBsonRegularExpression.Create(FCurrentValue.StrVal.Substring(0, I),
+      FCurrentValue.StrVal.Substring(I + 1));
 end;
 
 procedure TgoJsonReader.ReadStartArray;
@@ -5642,21 +6072,21 @@ function TgoJsonReader.ReadString: String;
 begin
   VerifyBsonType(TgoBsonType.String);
   State := GetNextState;
-  Result := FCurrentValue.AsString;
+  Result := FCurrentValue.StrVal;
 end;
 
 function TgoJsonReader.ReadSymbol: String;
 begin
   VerifyBsonType(TgoBsonType.Symbol);
   State := GetNextState;
-  Result := FCurrentValue.AsString;
+  Result := FCurrentValue.StrVal;
 end;
 
 function TgoJsonReader.ReadTimestamp: Int64;
 begin
   VerifyBsonType(TgoBsonType.Timestamp);
   State := GetNextState;
-  Result := FCurrentValue.AsBsonTimestamp.Value;
+  Result := FCurrentValue.Int64Val;
 end;
 
 procedure TgoJsonReader.ReadUndefined;
@@ -5679,11 +6109,29 @@ begin
   FContextIndex := BM.ContextIndex;
   Assert((FContextIndex >= 0) and (FContextIndex < Length(FContextStack)));
   FContext := @FContextStack[FContextIndex];
-  FCurrentToken := BM.CurrentToken;
+
+  if Assigned(BM.CurrentToken) then
+    FCurrentToken.Assign(BM.CurrentToken)
+  else
+    FCurrentToken := nil;
+
   FCurrentValue := BM.CurrentValue;
-  FPushedToken := BM.PushedToken;
+
+  if Assigned(BM.PushedToken) then
+  begin
+    FTokenToPush.Assign(BM.PushedToken);
+    FPushedToken := FTokenToPush;
+  end
+  else
+    FPushedToken := nil;
+
   FBuffer.Current := BM.Current;
-  FHasPushedToken := BM.HasPushedToken;
+end;
+
+procedure TgoJsonReader.SetCurrentValueRegEx(const AToken: TToken);
+begin
+  { Put in separate (non-inlined) method to avoid string finalization }
+  FCurrentValue.StrVal := AToken.LexemeToString;
 end;
 
 procedure TgoJsonReader.SkipName;
@@ -5765,13 +6213,23 @@ begin
     raise FBuffer.ParseError(@RS_BSON_STRING_WITH_VALUE_EXPECTED, [AExpectedString, Token.StringValue]);
 end;
 
-procedure TgoJsonReader.VerifyToken(const AExpectedLexeme: String);
+procedure TgoJsonReader.VerifyToken(const AExpectedLexeme: Char);
 var
   Token: TToken;
 begin
   PopToken(Token);
-  if (Token.Lexeme <> AExpectedLexeme) then
-    raise FBuffer.ParseError(@RS_BSON_TOKEN_EXPECTED, [AExpectedLexeme, Token.Lexeme]);
+  if (Token.LexemeLength <> 1) or (Token.LexemeStart^ <> AExpectedLexeme) then
+    raise FBuffer.ParseError(@RS_BSON_TOKEN_EXPECTED, [String(AExpectedLexeme), Token.LexemeToString]);
+end;
+
+procedure TgoJsonReader.VerifyToken(const AExpectedLexeme: PChar;
+  const AExpectedLexemeLength: Integer);
+var
+  Token: TToken;
+begin
+  PopToken(Token);
+  if (not Token.IsLexeme(AExpectedLexeme, AExpectedLexemeLength)) then
+    raise FBuffer.ParseError(@RS_BSON_TOKEN_EXPECTED, [String(AExpectedLexeme), Token.LexemeToString]);
 end;
 
 { TgoJsonReader.TContext }
@@ -5792,9 +6250,8 @@ end;
 class function TgoJsonReader.TBuffer.Create(const AJson: String): TBuffer;
 begin
   Result.FJson := AJson;
-  Result.FBuffer := @Result.FJson[Low(String)];
+  Result.FBuffer := PChar(AJson);
   Result.FCurrent := Result.FBuffer;
-  Result.FEof := (Result.FCurrent = nil);
   Result.FLineStart := Result.FBuffer;
   Result.FPrevLineStart := Result.FBuffer;
   Result.FLineNumber := 1;
@@ -5850,24 +6307,25 @@ end;
 
 function TgoJsonReader.TBuffer.Read: Char;
 begin
-  if (FEof) then
-    Exit(#0);
-
   Result := FCurrent^;
-  Inc(FCurrent);
-
-  if (Result = #10) then
-  begin
-    Inc(FLineNumber);
-    FPrevLineStart := FLineStart;
-    FLineStart := FCurrent;
+  case Result of
+     #0: ;
+    #10: begin
+           Inc(FCurrent);
+           Inc(FLineNumber);
+           FPrevLineStart := FLineStart;
+           FLineStart := FCurrent;
+         end;
+  else
+    Inc(FCurrent);
   end;
-
-  FEof := (Result = #0);
 end;
 
 procedure TgoJsonReader.TBuffer.Unread(const AChar: Char);
 begin
+  if (AChar = #0) then
+    Exit;
+
   if (FCurrent = FBuffer) then
     raise EInvalidOperation.CreateRes(@RS_BSON_INVALID_READER_STATE);
 
@@ -5881,240 +6339,286 @@ begin
     Dec(FLineNumber);
     FLineStart := FPrevLineStart;
   end;
-
-  FEof := False;
 end;
 
 { TgoJsonReader.TScanner }
 
-class procedure TgoJsonReader.TScanner.GetNextToken(const ABuffer: TBuffer;
-  out AToken: TToken);
 var
-  C: Char;
-  Error: EgoJsonParserError;
+  LEXEME_EOF         : array [0..4] of Char = '<eof>';
+  LEXEME_BEGIN_OBJECT: Char = '{';
+  LEXEME_END_OBJECT  : Char = '}';
+  LEXEME_BEGIN_ARRAY : Char = '[';
+  LEXEME_END_ARRAY   : Char = ']';
+  LEXEME_LEFT_PAREN  : Char = '(';
+  LEXEME_RIGHT_PAREN : Char = ')';
+  LEXEME_COLON       : Char = ':';
+  LEXEME_COMMA       : Char = ',';
+
+class procedure TgoJsonReader.TScanner.CharBeginArray(var ABuffer: TBuffer;
+  const AChar: Char; const AToken: TToken);
 begin
-  C := ABuffer.Read;
-  while (C <> #0) and (IsWhitespace(C)) do
-    C := ABuffer.Read;
-
   ABuffer.MarkErrorPos;
-
-  if (C = #0) then
-  begin
-    AToken.Initialize(TTokenType.EndOfFile, '<eof>');
-    Exit;
-  end;
-
-  case C of
-    '{': AToken.Initialize(TTokenType.BeginObject, '{');
-    '}': AToken.Initialize(TTokenType.EndObject, '}');
-    '[': AToken.Initialize(TTokenType.BeginArray, '[');
-    ']': AToken.Initialize(TTokenType.EndArray, ']');
-    '(': AToken.Initialize(TTokenType.LeftParen, '(');
-    ')': AToken.Initialize(TTokenType.RightParen, ')');
-    ':': AToken.Initialize(TTokenType.Colon, ':');
-    ',': AToken.Initialize(TTokenType.Comma, ',');
-    '''', '"': GetStringToken(ABuffer, C, AToken);
-    '/': GetRegularExpressionToken(ABuffer, AToken);
-    '0'..'9','-': GetNumberToken(ABuffer, C, AToken);
-    '$', '_': GetUnquotedStringToken(ABuffer, AToken);
-  else
-    if (C.IsLetter) then
-      GetUnquotedStringToken(ABuffer, AToken)
-    else
-    begin
-      ABuffer.ClearErrorPos;
-      Error := ABuffer.ParseError(@RS_BSON_UNEXPECTED_TOKEN);
-      ABuffer.Unread(C);
-      raise Error;
-    end;
-  end;
+  AToken.Initialize(TTokenType.BeginArray, @LEXEME_BEGIN_ARRAY, 1);
 end;
 
-class procedure TgoJsonReader.TScanner.GetNumberToken(const ABuffer: TBuffer;
-  const AFirstChar: Char; out AToken: TToken);
+class procedure TgoJsonReader.TScanner.CharBeginObject(var ABuffer: TBuffer;
+  const AChar: Char; const AToken: TToken);
+begin
+  ABuffer.MarkErrorPos;
+  AToken.Initialize(TTokenType.BeginObject, @LEXEME_BEGIN_OBJECT, 1);
+end;
+
+class procedure TgoJsonReader.TScanner.CharColon(var ABuffer: TBuffer;
+  const AChar: Char; const AToken: TToken);
+begin
+  ABuffer.MarkErrorPos;
+  AToken.Initialize(TTokenType.Colon, @LEXEME_COLON, 1);
+end;
+
+class procedure TgoJsonReader.TScanner.CharComma(var ABuffer: TBuffer;
+  const AChar: Char; const AToken: TToken);
+begin
+  ABuffer.MarkErrorPos;
+  AToken.Initialize(TTokenType.Comma, @LEXEME_COMMA, 1);
+end;
+
+class procedure TgoJsonReader.TScanner.CharEndArray(var ABuffer: TBuffer;
+  const AChar: Char; const AToken: TToken);
+begin
+  ABuffer.MarkErrorPos;
+  AToken.Initialize(TTokenType.EndArray, @LEXEME_END_ARRAY, 1);
+end;
+
+class procedure TgoJsonReader.TScanner.CharEndObject(var ABuffer: TBuffer;
+  const AChar: Char; const AToken: TToken);
+begin
+  ABuffer.MarkErrorPos;
+  AToken.Initialize(TTokenType.EndObject, @LEXEME_END_OBJECT, 1);
+end;
+
+class procedure TgoJsonReader.TScanner.CharEof(var ABuffer: TBuffer;
+  const AChar: Char; const AToken: TToken);
+begin
+  ABuffer.MarkErrorPos;
+  AToken.Initialize(TTokenType.EndOfFile, LEXEME_EOF, 5);
+end;
+
+class procedure TgoJsonReader.TScanner.CharError(var ABuffer: TBuffer;
+  const AChar: Char; const AToken: TToken);
+var
+  Error: EgoJsonParserError;
+begin
+  ABuffer.ClearErrorPos;
+  Error := ABuffer.ParseError(@RS_BSON_UNEXPECTED_TOKEN);
+  ABuffer.Unread(AChar);
+  raise Error;
+end;
+
+class procedure TgoJsonReader.TScanner.CharLeftParen(var ABuffer: TBuffer;
+  const AChar: Char; const AToken: TToken);
+begin
+  ABuffer.MarkErrorPos;
+  AToken.Initialize(TTokenType.LeftParen, @LEXEME_LEFT_PAREN, 1);
+end;
+
+class procedure TgoJsonReader.TScanner.CharNumberToken(var ABuffer: TBuffer;
+  const AChar: Char; const AToken: TToken);
+{ Lexical grammar:
+    NumberLiteral: ['-'] DecimalLiteral
+    DecimalLiteral: 'Inifinity'
+                  | ['.'] DecimalDigits [ExponentPart]
+                  | DecimalDigits '.' [DecimalDigits] [ExponentPart]
+    DecimalDigits: ('0'..'9')+
+    ExponentPart: ('e' | 'E') ['+' | '-'] DecimalDigits
+
+  There are 3 special values: Inifinity, -Infinity and NaN.
+  The values Infinity and NaN are handled elsewhere (in ReadBsonType), so here
+  we only need to handle -Infinity. }
 const
   NFINITY = 'nfinity';
 var
-  C: Char;
-  Start: PChar;
-  State: TNumberState;
-  TokenType: TTokenType;
-  SawMinusInfinity: Boolean;
-  Lexeme: String;
-  I: Integer;
-  ValueDouble: Double;
-  ValueInt32: Int32;
-  ValueInt64: Int64;
+  Current, Start: PChar;
+  C: Byte;
+  IsNegative, IsNegativeExponent: Boolean;
+  I, Power, Exponent: Integer;
+  IntegerPart: Int64;
+  Value: Double;
 begin
   ABuffer.ClearErrorPos;
-  Start := ABuffer.Current - 1;
-  case AFirstChar of
-    '-': State := TNumberState.SawLeadingMinus;
-    '0': State := TNumberState.SawLeadingZero;
+  Current := ABuffer.Current;
+  Start := Current - 1;
+  C := 0;
+
+  { NumberLiteral: ['-'] DecimalLiteral }
+  if (AChar = '-') then
+  begin
+    IsNegative := True;
+    IntegerPart := 0;
+    if (Current^ = 'I') then
+    begin
+      { DecimalLiteral: 'Inifinity' }
+      Inc(Current);
+      for I := 0 to Length(NFINITY) - 1 do
+      begin
+        if (Current^ <> NFINITY.Chars[I]) then
+        begin
+          ABuffer.Current := Current;
+          raise ABuffer.ParseError(@RS_BSON_INVALID_NUMBER);
+        end;
+        Inc(Current);
+      end;
+
+      ABuffer.Current := Current;
+      C := Byte(Current^);
+      if (C in [0..32, Ord(','), Ord('}'), Ord(']'), Ord(')')]) then
+        AToken.Initialize(Start, Current - Start, NegInfinity)
+      else
+        raise ABuffer.ParseError(@RS_BSON_INVALID_NUMBER);
+      Exit;
+    end;
+  end
   else
-    State := TNumberState.SawIntegerDigits;
+  begin
+    IsNegative := False;
+    IntegerPart := Ord(AChar) - Ord('0');
   end;
 
-  TokenType := TTokenType.Int64;
-
+  { Parse integer part (before optional '.') }
   while True do
   begin
-    C := ABuffer.Read;
-    case State of
-      TNumberState.SawLeadingMinus:
-        case C of
-          '0': State := TNumberState.SawLeadingZero;
-          'I': State := TNumberState.SawMinusI;
-          '1'..'9': State := TNumberState.SawIntegerDigits;
-        else
-          State := TNumberState.Invalid;
-        end;
+    C := Byte(Current^);
+    if (C in [Ord('0')..Ord('9')]) then
+    begin
+      IntegerPart := (IntegerPart * 10) + (C - Ord('0'));
+      Inc(Current);
+    end
+    else
+      Break;
+  end;
 
-      TNumberState.SawLeadingZero:
-        case C of
-          '.': State := TNumberState.SawDecimalPoint;
-          'e', 'E': State := TNumberState.SawExponentLetter;
-          ',', '}', ']', ')', #0: State := TNumberState.Done;
-        else
-          if IsWhiteSpace(C) then
-            State := TNumberState.Done
-          else
-            State := TNumberState.Invalid;
-        end;
+  if (C in [0..32, Ord(','), Ord('}'), Ord(']'), Ord(')')]) then
+  begin
+    { Integer value.
+      Cannot start with a leading 0 (unless entire number is 0) }
+    ABuffer.Current := Current;
+    if (IntegerPart <> 0) and (Start^ = '0') then
+      raise ABuffer.ParseError(@RS_BSON_INVALID_NUMBER);
 
-      TNumberState.SawIntegerDigits:
-        case C of
-          '.': State := TNumberState.SawDecimalPoint;
-          'e', 'E': State := TNumberState.SawExponentLetter;
-          ',', '}', ']', ')', #0: State := TNumberState.Done;
-          '0'..'9': State := TNumberState.SawIntegerDigits;
-        else
-          if IsWhiteSpace(C) then
-            State := TNumberState.Done
-          else
-            State := TNumberState.Invalid;
-        end;
+    if (IsNegative) then
+      IntegerPart := -IntegerPart;
 
-      TNumberState.SawDecimalPoint:
-        begin
-          TokenType := TTokenType.Double;
-          if (C >= '0') and (C <= '9') then
-            State := TNumberState.SawFractionDigits
-          else
-            State := TNumberState.Invalid;
-        end;
+    if (IntegerPart < Integer.MinValue) or (IntegerPart > Integer.MaxValue) then
+      AToken.Initialize(Start, Current - Start, IntegerPart)
+    else
+      AToken.Initialize(Start, Current - Start, Int32(IntegerPart));
+    Exit;
+  end;
 
-      TNumberState.SawFractionDigits:
-        case C of
-          'e', 'E': State := TNumberState.SawExponentLetter;
-          ',', '}', ']', ')', #0: State := TNumberState.Done;
-          '0'..'9': State := TNumberState.SawFractionDigits;
-        else
-          if IsWhiteSpace(C) then
-            State := TNumberState.Done
-          else
-            State := TNumberState.Invalid;
-        end;
+  { Floating-point value }
+  Value := IntegerPart;
+  Power := 0;
 
-      TNumberState.SawExponentLetter:
-        begin
-          TokenType := TTokenType.Double;
-          case C of
-            '+', '-': State := TNumberState.SawExponentSign;
-            '0'..'9': State := TNumberState.SawExponentDigits;
-          else
-            State := TNumberState.Invalid;
-          end;
-        end;
+  if (C = Ord('.')) then
+  begin
+    { Parse fractional part }
+    Inc(Current);
 
-      TNumberState.SawExponentSign:
-        if (C >= '0') and (C <= '9') then
-          State := TNumberState.SawExponentDigits
-        else
-          State := TNumberState.Invalid;
-
-      TNumberState.SawExponentDigits:
-        case C of
-          ',', '}', ']', ')', #0: State := TNumberState.Done;
-          '0'..'9': State := TNumberState.SawExponentDigits;
-        else
-          if IsWhiteSpace(C) then
-            State := TNumberState.Done
-          else
-            State := TNumberState.Invalid;
-        end;
-
-      TNumberState.SawMinusI:
-        begin
-          SawMinusInfinity := True;
-          for I := 0 to Length(NFINITY) - 1 do
-          begin
-            if (C <> NFINITY.Chars[I]) then
-            begin
-              SawMinusInfinity := False;
-              Break;
-            end;
-            C := ABuffer.Read;
-          end;
-
-          if (SawMinusInfinity) then
-          begin
-            TokenType := TTokenType.Double;
-            case C of
-              ',', '}', ']', ')', #0: State := TNumberState.Done;
-            else
-              if IsWhiteSpace(C) then
-                State := TNumberState.Done
-              else
-                State := TNumberState.Invalid;
-            end;
-          end
-          else
-            State := TNumberState.Invalid;
-        end;
+    { Fractional part must start with a digit... }
+    C := Byte(Current^);
+    if (C in [Ord('0')..Ord('9')]) then
+    begin
+      Value := (Value * 10.0) + (C - Ord('0'));
+      Inc(Current);
+      Dec(Power);
+    end
+    else
+    begin
+      ABuffer.Current := Current;
+      raise ABuffer.ParseError(@RS_BSON_INVALID_NUMBER);
     end;
 
-    case State of
-      TNumberState.Done:
-        begin
-          ABuffer.Unread(C);
-          SetString(Lexeme, Start, ABuffer.Current - Start);
-          if (TokenType = TTokenType.Double) then
-          begin
-            if (Lexeme = '-Infinity') then
-              ValueDouble := NegInfinity
-            else
-              ValueDouble := StrToFloat(Lexeme, goUSFormatSettings);
-            AToken.Initialize(Lexeme, ValueDouble);
-          end
-          else
-          begin
-            ValueInt64 := StrToInt64(Lexeme);
-            if (ValueInt64 < Integer.MinValue) or (ValueInt64 > Integer.MaxValue) then
-              AToken.Initialize(Lexeme, ValueInt64)
-            else
-            begin
-              ValueInt32 := ValueInt64;
-              AToken.Initialize(Lexeme, ValueInt32);
-            end;
-          end;
-          Exit;
-        end;
-
-      TNumberState.Invalid:
-        raise ABuffer.ParseError(@RS_BSON_INVALID_NUMBER);
+    { ...followed by some more optional digits }
+    while True do
+    begin
+      C := Byte(Current^);
+      if (C in [Ord('0')..Ord('9')]) then
+      begin
+        Value := (Value * 10.0) + (C - Ord('0'));
+        Inc(Current);
+        Dec(Power);
+      end
+      else
+        Break;
     end;
   end;
+
+  if (C in [Ord('e'), Ord('E')]) then
+  begin
+    { Parse exponent }
+    Exponent := 0;
+    Inc(Current);
+    C := Byte(Current^);
+    IsNegativeExponent := False;
+    if (C = Ord('-')) then
+    begin
+      IsNegativeExponent := True;
+      Inc(Current);
+      C := Byte(Current^);
+    end
+    else if (Current^ = '+') then
+    begin
+      Inc(Current);
+      C := Byte(Current^);
+    end;
+
+    { Exponent must start with a digit... }
+    if (C in [Ord('0')..Ord('9')]) then
+    begin
+      Exponent := (Exponent * 10) + (C - Ord('0'));
+      Inc(Current);
+    end
+    else
+    begin
+      ABuffer.Current := Current;
+      raise ABuffer.ParseError(@RS_BSON_INVALID_NUMBER);
+    end;
+
+    { ...followed by some more optional digits }
+    while True do
+    begin
+      C := Byte(Current^);
+      if (C in [Ord('0')..Ord('9')]) then
+      begin
+        Exponent := (Exponent * 10) + (C - Ord('0'));
+        Inc(Current);
+      end
+      else
+        Break;
+    end;
+
+    if (IsNegativeExponent) then
+      Exponent := -Exponent;
+
+    Inc(Power, Exponent);
+  end;
+
+  ABuffer.Current := Current;
+  if (C in [0..32, Ord(','), Ord('}'), Ord(']'), Ord(')')]) then
+  begin
+    Value := Power10(Value, Power);
+    if (IsNegative) then
+      Value := -Value;
+    AToken.Initialize(Start, Current - Start, Value);
+  end
+  else
+    raise ABuffer.ParseError(@RS_BSON_INVALID_NUMBER);
 end;
 
-class procedure TgoJsonReader.TScanner.GetRegularExpressionToken(
-  const ABuffer: TBuffer; out AToken: TToken);
+class procedure TgoJsonReader.TScanner.CharRegularExpressionToken(
+  var ABuffer: TBuffer; const AChar: Char; const AToken: TToken);
 var
   Start: PChar;
   State: TRegularExpressionState;
-  Lexeme: String;
-  Regex: TgoBsonRegularExpression;
   C: Char;
 begin
   ABuffer.ClearErrorPos;
@@ -6151,9 +6655,7 @@ begin
       TRegularExpressionState.Done:
         begin
           ABuffer.Unread(C);
-          SetString(Lexeme, Start, ABuffer.Current - Start);
-          Regex := TgoBsonRegularExpression.Create(Lexeme);
-          AToken.Initialize(Lexeme, Regex);
+          AToken.InitializeRegEx(Start, ABuffer.Current - Start);
           Exit;
         end;
 
@@ -6163,96 +6665,209 @@ begin
   end;
 end;
 
-class procedure TgoJsonReader.TScanner.GetStringToken(const ABuffer: TBuffer;
-  const AQuoteCharacter: Char; out AToken: TToken);
+class procedure TgoJsonReader.TScanner.CharRightParen(var ABuffer: TBuffer;
+  const AChar: Char; const AToken: TToken);
+begin
+  ABuffer.MarkErrorPos;
+  AToken.Initialize(TTokenType.RightParen, @LEXEME_RIGHT_PAREN, 1);
+end;
+
+class procedure TgoJsonReader.TScanner.CharStringToken(var ABuffer: TBuffer;
+  const AChar: Char; const AToken: TToken);
 var
-  Start: PChar;
-  Value: TArray<Char>;
-  Capacity, Len, I: Integer;
+  Current, Start: PChar;
   C: Char;
-  S, Lexeme: String;
-
-  procedure Append(const AChar: Char);
-  begin
-    if (Len >= Capacity) then
-    begin
-      Capacity := Capacity * 2;
-      SetLength(Value, Capacity);
-    end;
-    Value[Len] := AChar;
-    Inc(Len);
-  end;
-
+  S: String;
 begin
   ABuffer.ClearErrorPos;
-  Start := ABuffer.Current - 1;
-  Capacity := 16;
-  SetLength(Value, 16);
-  Len := 0;
+  Current := ABuffer.Current;
+  Start := Current - 1;
   while True do
   begin
-    C := ABuffer.Read;
-    if (C = '\') then
-    begin
-      C := ABuffer.Read;
-      case C of
-        '''', '"', '\', '/': Append(C);
-        'b': Append(#8);
-        't': Append(#9);
-        'n': Append(#10);
-        'f': Append(#12);
-        'r': Append(#13);
-        'u': begin
-               SetLength(S, 5);
-               S[Low(String) + 0] := '$';
-               S[Low(String) + 1] := ABuffer.Read;
-               S[Low(String) + 2] := ABuffer.Read;
-               S[Low(String) + 3] := ABuffer.Read;
-               C := ABuffer.Read;
-               S[Low(String) + 4] := C;
-               if (C <> #0) then
-               begin
-                 I := StrToIntDef(S, -1);
-                 if (I < 0) then
-                   raise ABuffer.ParseError(@RS_BSON_INVALID_UNICODE_CODEPOINT);
-                 Append(Char(I));
-               end;
-             end;
-      else
-        if (C <> #0) then
+    C := Current^;
+    Inc(Current);
+    case C of
+      #0:
+        begin
+          ABuffer.Current := Current;
           raise ABuffer.ParseError(@RS_BSON_INVALID_STRING);
-      end;
-    end
-    else if (C = AQuoteCharacter) then
-    begin
-      SetString(Lexeme, Start, ABuffer.Current - Start);
-      Start := @Value[0];
-      SetString(S, Start, Len);
-      AToken.Initialize(TTokenType.String, Lexeme, S);
-      Exit;
-    end
-    else if (C <> #0) then
-      Append(C);
+        end;
 
-    if (C = #0) then
-      raise ABuffer.ParseError(@RS_BSON_INVALID_STRING);
+      '\':
+        begin
+          SetString(S, Start + 1, Current - Start - 2);
+          ABuffer.Current := Current - 1;
+          CharStringTokenUnscape(ABuffer, AChar, AToken, Start, S);
+          Exit;
+        end;
+
+      '''', '"':
+        if (C = AChar) then
+        begin
+          SetString(S, Start + 1, Current - Start - 2);
+          AToken.Initialize(TTokenType.String, Start, Current - Start, S);
+          ABuffer.Current := Current;
+          Exit;
+        end;
+    end;
   end;
 end;
 
-class procedure TgoJsonReader.TScanner.GetUnquotedStringToken(
-  const ABuffer: TBuffer; out AToken: TToken);
+class procedure TgoJsonReader.TScanner.CharStringTokenUnscape(
+  var ABuffer: TBuffer; const AQuoteChar: Char; const AToken: TToken;
+  const AStart: PChar; const APrefix: String);
+var
+  CharBuffer: TgoCharBuffer;
+  Current: PChar;
+  I: Integer;
+  C: Char;
+  S: String;
+begin
+  Current := ABuffer.Current;
+  CharBuffer.Initialize;
+  try
+    while True do
+    begin
+      C := Current^;
+      Inc(Current);
+      case C of
+        #0:
+          begin
+            ABuffer.Current := Current;
+            raise ABuffer.ParseError(@RS_BSON_INVALID_STRING);
+          end;
+
+        '\':
+          begin
+            C := Current^;
+            Inc(Current);
+            case C of
+              '''', '"', '\', '/': CharBuffer.Append(C);
+              'b': CharBuffer.Append(#8);
+              't': CharBuffer.Append(#9);
+              'n': CharBuffer.Append(#10);
+              'f': CharBuffer.Append(#12);
+              'r': CharBuffer.Append(#13);
+              'u': begin
+                     ABuffer.Current := Current;
+                     SetLength(S, 5);
+                     S[Low(String) + 0] := '$';
+                     S[Low(String) + 1] := ABuffer.Read;
+                     S[Low(String) + 2] := ABuffer.Read;
+                     S[Low(String) + 3] := ABuffer.Read;
+                     C := ABuffer.Read;
+                     S[Low(String) + 4] := C;
+                     if (C <> #0) then
+                     begin
+                       I := StrToIntDef(S, -1);
+                       if (I < 0) then
+                         raise ABuffer.ParseError(@RS_BSON_INVALID_UNICODE_CODEPOINT);
+                       CharBuffer.Append(Char(I));
+                     end
+                     else
+                       raise ABuffer.ParseError(@RS_BSON_INVALID_STRING);
+                     Current := ABuffer.Current;
+                   end;
+            else
+              ABuffer.Current := Current;
+              raise ABuffer.ParseError(@RS_BSON_INVALID_STRING);
+            end;
+          end;
+
+        '''', '"':
+          if (C = AQuoteChar) then
+          begin
+            AToken.Initialize(TTokenType.String, AStart, Current - AStart,
+              APrefix + CharBuffer.ToString);
+            Exit;
+          end
+          else
+            CharBuffer.Append(C);
+      else
+        CharBuffer.Append(C);
+      end;
+    end;
+  finally
+    CharBuffer.Release;
+    ABuffer.Current := Current;
+  end;
+end;
+
+class procedure TgoJsonReader.TScanner.CharUnquotedStringToken(
+  var ABuffer: TBuffer; const AChar: Char; const AToken: TToken);
 var
   Start: PChar;
   C: Char;
   Lexeme: String;
 begin
+  ABuffer.MarkErrorPos;
   Start := ABuffer.Current - 1;
   C := ABuffer.Read;
   while (C = '$') or (C = '_') or (C.IsLetterOrDigit) do
     C := ABuffer.Read;
   ABuffer.Unread(C);
   SetString(Lexeme, Start, ABuffer.Current - Start);
-  AToken.Initialize(TTokenType.UnquotedString, Lexeme, Lexeme);
+  AToken.Initialize(TTokenType.UnquotedString, Start, ABuffer.Current - Start, Lexeme);
+end;
+
+class procedure TgoJsonReader.TScanner.CharWhitespace(var ABuffer: TBuffer;
+  const AChar: Char; const AToken: TToken);
+var
+  C: Char;
+begin
+  C := ABuffer.Read;
+  if (C >= #$80) then
+    CharError(ABuffer, C, AToken)
+  else
+    FCharHandlers[C](ABuffer, C, AToken);
+end;
+
+class procedure TgoJsonReader.TScanner.GetNextToken(var ABuffer: TBuffer;
+  const AToken: TToken);
+var
+  C: Char;
+begin
+  C := ABuffer.Read;
+  while (C <> #0) and (C <= ' ') do
+    C := ABuffer.Read;
+
+  if (C >= #$80) then
+    CharError(ABuffer, C, AToken)
+  else
+    FCharHandlers[C](ABuffer, C, AToken);
+end;
+
+class procedure TgoJsonReader.TScanner.Initialize;
+var
+  C: Char;
+begin
+  for C := #0 to #127 do
+    FCharHandlers[C] := CharError;
+
+  FCharHandlers[#0] := CharEof;
+  for C := #1 to #32 do
+    FCharHandlers[C] := CharWhitespace;
+  for C := '0' to '9' do
+    FCharHandlers[C] := CharNumberToken;
+  for C := 'a' to 'z' do
+    FCharHandlers[C] := CharUnquotedStringToken;
+  for C := 'A' to 'Z' do
+    FCharHandlers[C] := CharUnquotedStringToken;
+
+  FCharHandlers['{'] := CharBeginObject;
+  FCharHandlers['}'] := CharEndObject;
+  FCharHandlers['['] := CharBeginArray;
+  FCharHandlers[']'] := CharEndArray;
+  FCharHandlers['('] := CharLeftParen;
+  FCharHandlers[')'] := CharRightParen;
+  FCharHandlers[':'] := CharColon;
+  FCharHandlers[','] := CharComma;
+  FCharHandlers[''''] := CharStringToken;
+  FCharHandlers['"'] := CharStringToken;
+  FCharHandlers['/'] := CharRegularExpressionToken;
+  FCharHandlers['-'] := CharNumberToken;
+  FCharHandlers['$'] := CharUnquotedStringToken;
+  FCharHandlers['_'] := CharUnquotedStringToken;
 end;
 
 class function TgoJsonReader.TScanner.IsWhitespace(const AChar: Char): Boolean;
@@ -6263,51 +6878,81 @@ end;
 
 { TgoJsonReader.TToken }
 
-procedure TgoJsonReader.TToken.Initialize(const ATokenType: TTokenType;
-  const ALexeme: String);
+procedure TgoJsonReader.TToken.Assign(const AOther: TToken);
 begin
-  FTokenType := ATokenType;
-  FLexeme := ALexeme;
+  if (AOther = Self) then
+    Exit;
+
+  FTokenType := AOther.FTokenType;
+  FLexemeStart := AOther.FLexemeStart;
+  FLexemeLength := AOther.FLexemeLength;
+  FStringValue := AOther.FStringValue;
+  FValue := AOther.FValue;
 end;
 
 procedure TgoJsonReader.TToken.Initialize(const ATokenType: TTokenType;
-  const ALexeme, AStringValue: String);
+  const ALexemeStart: PChar; const ALexemeLength: Integer);
 begin
   FTokenType := ATokenType;
-  FLexeme := ALexeme;
+  FLexemeStart := ALexemeStart;
+  FLexemeLength := ALexemeLength;
+end;
+
+procedure TgoJsonReader.TToken.Initialize(const ATokenType: TTokenType;
+  const ALexemeStart: PChar; const ALexemeLength: Integer;
+  const AStringValue: String);
+begin
+  FTokenType := ATokenType;
+  FLexemeStart := ALexemeStart;
+  FLexemeLength := ALexemeLength;
   FStringValue := AStringValue;
 end;
 
-procedure TgoJsonReader.TToken.Initialize(const ALexeme: String;
-  const ADoubleValue: Double);
+procedure TgoJsonReader.TToken.Initialize(const ALexemeStart: PChar;
+  const ALexemeLength: Integer; const ADoubleValue: Double);
 begin
   FTokenType := TTokenType.Double;
-  FLexeme := ALexeme;
+  FLexemeStart := ALexemeStart;
+  FLexemeLength := ALexemeLength;
   FValue.DoubleValue := ADoubleValue;
 end;
 
-procedure TgoJsonReader.TToken.Initialize(const ALexeme: String;
-  const AInt32Value: Int32);
+procedure TgoJsonReader.TToken.Initialize(const ALexemeStart: PChar;
+  const ALexemeLength: Integer; const AInt32Value: Int32);
 begin
   FTokenType := TTokenType.Int32;
-  FLexeme := ALexeme;
+  FLexemeStart := ALexemeStart;
+  FLexemeLength := ALexemeLength;
   FValue.Int64Value := AInt32Value; // Clear upper 32 bits
 end;
 
-procedure TgoJsonReader.TToken.Initialize(const ALexeme: String;
-  const AInt64Value: Int64);
+procedure TgoJsonReader.TToken.Initialize(const ALexemeStart: PChar;
+  const ALexemeLength: Integer; const AInt64Value: Int64);
 begin
   FTokenType := TTokenType.Int64;
-  FLexeme := ALexeme;
+  FLexemeStart := ALexemeStart;
+  FLexemeLength := ALexemeLength;
   FValue.Int64Value := AInt64Value;
 end;
 
-procedure TgoJsonReader.TToken.Initialize(const ALexeme: String;
-  const ARegExValue: TgoBsonRegularExpression);
+procedure TgoJsonReader.TToken.InitializeRegEx(const ALexemeStart: PChar;
+  const ALexemeLength: Integer);
 begin
-   FTokenType := TTokenType.RegularExpression;
-   FLexeme := ALexeme;
-   FRegExValue := ARegExValue;
+  FTokenType := TTokenType.RegularExpression;
+  FLexemeStart := ALexemeStart;
+  FLexemeLength := ALexemeLength;
+end;
+
+function TgoJsonReader.TToken.IsLexeme(const AValue: PChar;
+  const AValueLength: Integer): Boolean;
+begin
+  Result := (FLexemeLength = AValueLength)
+    and CompareMem(AValue, FLexemeStart, AValueLength * SizeOf(Char));
+end;
+
+function TgoJsonReader.TToken.LexemeToString: String;
+begin
+  SetString(Result, FLexemeStart, FLexemeLength);
 end;
 
 { TgoJsonReader.TJsonBookmark }
@@ -6315,16 +6960,30 @@ end;
 constructor TgoJsonReader.TJsonBookmark.Create(const AState: TgoBsonReaderState;
   const ACurrentBsonType: TgoBsonType; const ACurrentName: String;
   const AContextIndex: Integer; const ACurrentToken: TToken;
-  const ACurrentValue: TgoBsonValue; const APushedToken: TToken;
-  const AHasPushedToken: Boolean; const ACurrent: PChar);
+  const ACurrentValue: TValue; const APushedToken: TToken;
+  const ACurrent: PChar);
 begin
   inherited Create(AState, ACurrentBsonType, ACurrentName);
   FContextIndex := AContextIndex;
-  FCurrentToken := ACurrentToken;
+  if Assigned(ACurrentToken) then
+  begin
+    FCurrentToken := TToken.Create;
+    FCurrentToken.Assign(ACurrentToken);
+  end;
   FCurrentValue := ACurrentValue;
-  FPushedToken := APushedToken;
+  if Assigned(APushedToken) then
+  begin
+    FPushedToken := TToken.Create;
+    FPushedToken.Assign(APushedToken);
+  end;
   FCurrent := ACurrent;
-  FHasPushedToken := AHasPushedToken;
+end;
+
+destructor TgoJsonReader.TJsonBookmark.Destroy;
+begin
+  FCurrentToken.Free;
+  FPushedToken.Free;
+  inherited;
 end;
 
 { TgoBsonDocumentReader }
