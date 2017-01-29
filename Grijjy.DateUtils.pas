@@ -41,12 +41,45 @@ function goDateTimeToMillisecondsSinceEpoch(const AValue: TDateTime;
 function goToDateTimeFromMillisecondsSinceEpoch(const AValue: Int64;
   const AReturnUTC: Boolean): TDateTime;
 
+{ Converts a date/time value to a number of ticks that has passed since
+  midnight, January 1, 0001 UTC.
+
+  Parameters:
+    AValue: the date/time value to convert.
+    AInputIsUTC: whether AValue is in UTC format.
+
+  Returns:
+    The number of ticks.
+
+  There are 10,000 ticks in a milliseconds (or 10 million ticks in a second). }
+function goDateTimeToTicks(const AValue: TDateTime;
+  const AInputIsUTC: Boolean): Int64;
+
+{ Converts a number of ticks that has passed since midnight, January 1, 0001 UTC
+  to a date/time value.
+
+  Parameters:
+    AValue: the number of ticks.
+    AReturnUTC: whether to return the corresponding date/time value in
+      local time (False) or universal time (True).
+
+  Returns:
+    The date/time value.
+
+  There are 10,000 ticks in a milliseconds (or 10 million ticks in a second). }
+function goDateTimeFromTicks(const AValue: Int64;
+  const AReturnUTC: Boolean): TDateTime;
+
 implementation
 
 uses
   System.SysUtils,
   System.DateUtils,
-  System.RTLConsts;
+  System.RTLConsts,
+  System.TimeSpan;
+
+const
+  UTC_MIDNIGHT_JAN_0001: TDateTime = -693593;
 
 function goDateTimeToMillisecondsSinceEpoch(const AValue: TDateTime;
   const AInputIsUTC: Boolean): Int64;
@@ -73,6 +106,29 @@ begin
     Result := IncMilliSecond(UnixDateDelta, AValue)
   else
     Result := TTimeZone.Local.ToLocalTime(IncMilliSecond(UnixDateDelta, AValue));
+end;
+
+function goDateTimeToTicks(const AValue: TDateTime;
+  const AInputIsUTC: Boolean): Int64;
+var
+  Timespan: TTimeSpan;
+begin
+  if (AInputIsUTC) then
+    Timespan := TTimespan.Subtract(AValue, UTC_MIDNIGHT_JAN_0001)
+  else
+    Timespan := TTimespan.Subtract(TTimeZone.Local.ToUniversalTime(AValue), UTC_MIDNIGHT_JAN_0001);
+  Result := Timespan.Ticks;
+end;
+
+function goDateTimeFromTicks(const AValue: Int64;
+  const AReturnUTC: Boolean): TDateTime;
+var
+  Timespan: TTimeSpan;
+begin
+  Timespan := TTimeSpan.FromTicks(AValue);
+  Result := UTC_MIDNIGHT_JAN_0001 + Timespan;
+  if (not AReturnUTC) then
+    Result := TTimeZone.Local.ToLocalTime(Result);
 end;
 
 end.
