@@ -2,6 +2,8 @@ unit Tests.Grijjy.Bson.IO;
 
 interface
 
+{$R 'JsonTestData.res'}
+
 uses
   System.SysUtils,
   DUnitX.TestFramework,
@@ -2403,20 +2405,16 @@ procedure TestJsonData.TestJsonFile(const BaseFilename: String);
 { These tests originate from JsonCpp:
   https://github.com/open-source-parsers/jsoncpp }
 var
-  Directory, JsonFilename, ExpectedFilename: String;
+  JsonFilename, ExpectedFilename: String;
   Reader: IgoJsonReader;
   Actual, Expected: UnicodeString;
   Value: TgoBsonValue;
   Builder: TStringBuilder;
-  StreamReader: TStreamReader;
 begin
-  Directory := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)) + 'Data');
-  JsonFilename := Directory + BaseFilename + '.json';
-  ExpectedFilename := Directory + BaseFilename + '.expected';
-  Assert.IsTrue(FileExists(JsonFilename));
-  Assert.IsTrue(FileExists(ExpectedFilename));
+  JsonFilename := 'data/' + BaseFilename + '.json';
+  ExpectedFilename := 'data/' + BaseFilename + '.expected';
 
-  Reader := TgoJsonReader.Load(JsonFilename);
+  Reader := TgoJsonReader.Create(LoadTestString(JsonFilename));
   Value := Reader.ReadValue;
   Assert.IsFalse(Value.IsNil);
   Builder := TStringBuilder.Create;
@@ -2427,13 +2425,7 @@ begin
     Builder.Free;
   end;
 
-  StreamReader := TStreamReader.Create(ExpectedFilename, TEncoding.UTF8);
-  try
-    Expected := StreamReader.ReadToEnd;
-  finally
-    StreamReader.Free;
-  end;
-
+  Expected := LoadTestString(ExpectedFilename);
   Actual := Actual.Replace(#13#10, #10, [rfReplaceAll]).Trim;
   Expected := Expected.Replace(#13#10, #10, [rfReplaceAll]).Trim;
   Assert.AreEqual(Expected, Actual);
@@ -2719,15 +2711,13 @@ end;
 procedure TestJsonChecker.TestFail(const Filename: String; const ErrorLine,
   ErrorColumn: Integer);
 var
-  Directory, JsonFilename: String;
+  JsonFilename: String;
   Reader: IgoJsonReader;
   Value: TgoBsonValue;
 begin
-  Directory := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)) + 'jsonchecker');
-  JsonFilename := Directory + Filename;
-  Assert.IsTrue(FileExists(JsonFilename));
+  JsonFilename := 'jsonchecker/' + Filename;
 
-  Reader := TgoJsonReader.Load(JsonFilename);
+  Reader := TgoJsonReader.Create(LoadTestString(JsonFilename));
   try
     Value := Reader.ReadValue;
   except
@@ -2745,15 +2735,12 @@ end;
 
 procedure TestJsonChecker.TestPass(const Filename: String);
 var
-  Directory, JsonFilename: String;
+  JsonFilename: String;
   Reader: IgoJsonReader;
   Value: TgoBsonValue;
 begin
-  Directory := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)) + 'jsonchecker');
-  JsonFilename := Directory + Filename;
-  Assert.IsTrue(FileExists(JsonFilename));
-
-  Reader := TgoJsonReader.Load(JsonFilename);
+  JsonFilename := 'jsonchecker/' + Filename;
+  Reader := TgoJsonReader.Create(LoadTestString(JsonFilename));
   Value := Reader.ReadValue;
   Assert.IsFalse(Value.IsNil);
 end;
@@ -2782,12 +2769,12 @@ end;
 
 procedure TestJsonChecker.test_fail13;
 begin
-  TestFail('fail13.json', 1, 41);
+  TestFail('fail13.json', 1, 42);
 end;
 
 procedure TestJsonChecker.test_fail14;
 begin
-  TestFail('fail14.json', 1, 28);
+  TestFail('fail14.json', 1, 27);
 end;
 
 procedure TestJsonChecker.test_fail15;
@@ -2818,7 +2805,7 @@ end;
 
 procedure TestJsonChecker.test_fail2;
 begin
-  TestFail('fail2.json', 1, 18);
+  TestFail('fail2.json', 1, 17);
 end;
 
 procedure TestJsonChecker.test_fail20;
@@ -2871,7 +2858,7 @@ end;
 
 procedure TestJsonChecker.test_fail29;
 begin
-  TestFail('fail29.json', 1, 4);
+  TestFail('fail29.json', 1, 3);
 end;
 
 {procedure TestJsonChecker.test_fail3;
@@ -2882,17 +2869,17 @@ end;}
 
 procedure TestJsonChecker.test_fail30;
 begin
-  TestFail('fail30.json', 1, 5);
+  TestFail('fail30.json', 1, 4);
 end;
 
 procedure TestJsonChecker.test_fail31;
 begin
-  TestFail('fail31.json', 1, 5);
+  TestFail('fail31.json', 1, 4);
 end;
 
 procedure TestJsonChecker.test_fail32;
 begin
-  TestFail('fail32.json', 1, 41);
+  TestFail('fail32.json', 1, 40);
 end;
 
 procedure TestJsonChecker.test_fail33;
@@ -2953,13 +2940,10 @@ end;
 
 procedure TestJsonToBson.TestAllTypes;
 var
-  Directory: String;
   JsonDoc, BsonDoc: TgoBsonDocument;
   Bson: TBytes;
 begin
-  Directory := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)) + 'documents');
-
-  JsonDoc := TgoBsonDocument.LoadFromJsonFile(Directory + 'document1.json');
+  JsonDoc := TgoBsonDocument.Parse(LoadTestString('documents/document1.json'));
 
   Bson := JsonDoc.ToBson;
   BsonDoc := TgoBsonDocument.Load(Bson);
@@ -2970,17 +2954,16 @@ end;
 procedure TestJsonToBson.TestSingleTypes;
 var
   I: Integer;
-  Directory, BaseFilename: String;
+  BaseFilename: String;
   JsonDoc, BsonDoc: TgoBsonDocument;
   Bson: TBytes;
 begin
-  Directory := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)) + 'documents');
   for I := $01 to $12 do
   begin
-    BaseFilename := Directory + 'Data' + IntToHex(I, 2);
+    BaseFilename := 'documents/Data' + IntToHex(I, 2);
 
-    JsonDoc := TgoBsonDocument.LoadFromJsonFile(BaseFilename + '.json');
-    BsonDoc := TgoBsonDocument.LoadFromBsonFile(BaseFilename + '.bson');
+    JsonDoc := TgoBsonDocument.Parse(LoadTestString(BaseFilename + '.json'));
+    BsonDoc := TgoBsonDocument.Load(LoadTestData(BaseFilename + '.bson'));
     Assert.IsTrue(JsonDoc = BsonDoc);
 
     Bson := JsonDoc.ToBson;

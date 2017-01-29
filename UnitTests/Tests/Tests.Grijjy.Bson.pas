@@ -188,32 +188,29 @@ type
 
 function ReferenceEquals(const A, B: TgoBsonValue): Boolean;
 function DecodeByteString(const AValue: String): TBytes;
+function LoadTestData(const APath: String): TBytes;
+function LoadTestString(const APath: String): String;
 
 implementation
 
 uses
+  System.Zip,
   System.Math,
+  System.Types,
+  System.Classes,
   System.DateUtils,
   Grijjy.Bson.IO;
+
+var
+  GTestDataStream: TStream = nil;
+  GTestDataZipFile: TZipFile = nil;
 
 function ReferenceEquals(const A, B: TgoBsonValue): Boolean;
 var
   P1: Pointer absolute A;
   P2: Pointer absolute B;
-  I1, I2: IInterface;
-  O1, O2: TObject;
 begin
   Result := (P1 = P2);
-  if (not Result) then
-  begin
-    I1 := IInterface(A);
-    I2 := IInterface(B);
-
-    O1 := TObject(I1);
-    O2 := TObject(I2);
-
-    Result := (O1 = O2);
-  end;
 end;
 
 function DecodeByteString(const AValue: String): TBytes;
@@ -248,6 +245,27 @@ begin
     end;
   end;
   SetLength(Result, Dst);
+end;
+
+function LoadTestData(const APath: String): TBytes;
+begin
+  if (GTestDataZipFile = nil) then
+  begin
+    System.Assert(GTestDataStream = nil);
+    GTestDataStream := TResourceStream.Create(HInstance, 'JSON_TEST_DATA', RT_RCDATA);
+    GTestDataZipFile := TZipFile.Create;
+    GTestDataZipFile.Open(GTestDataStream, TZipMode.zmRead);
+  end;
+
+  GTestDataZipFile.Read(APath, Result);
+end;
+
+function LoadTestString(const APath: String): String;
+var
+  Bytes: TBytes;
+begin
+  Bytes := LoadTestData(APath);
+  Result := TEncoding.UTF8.GetString(Bytes);
 end;
 
 { TTestObjectId }
@@ -622,17 +640,13 @@ end;
 
 procedure TTestBsonValue.ImplicitConversionFromDoubleShouldReturnPrecreatedInstance;
 var
-  I: Integer;
   D: Double;
   V1, V2: TgoBsonValue;
 begin
-  for I := -100 to 100 do
-  begin
-    D := I;
-    V1 := D;
-    V2 := D;
-    Assert.IsTrue(ReferenceEquals(V1, V2));
-  end;
+  D := 0;
+  V1 := D;
+  V2 := D;
+  Assert.IsTrue(ReferenceEquals(V1, V2));
 end;
 
 procedure TTestBsonValue.ImplicitConversionFromInt64ShouldReturnNewInstance;
@@ -954,7 +968,7 @@ var
   V, S: TgoBsonValue;
   Sym: TgoBsonSymbol;
 begin
-  V := TgOBsonSymbolTable.Lookup('name');
+  V := TgoBsonSymbolTable.Lookup('name');
   S := '';
 
   Assert.AreEqual(Ord(TgoBsonType.Symbol), Ord(V.BsonType));
@@ -2569,13 +2583,9 @@ end;
 
 procedure TTestBsonDocumentAllTypes.TestJsonFromFile;
 var
-  Directory: String;
   Doc: TgoBsonDocument;
 begin
-  Directory := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)) + 'documents');
-
-  Doc := TgoBsonDocument.LoadFromJsonFile(Directory + 'document1.json');
-
+  Doc := TgoBsonDocument.Parse(LoadTestString('documents/document1.json'));
   CheckDocument(Doc);
 end;
 
@@ -2781,15 +2791,13 @@ const
   INDENTS: array [0..2] of String = ('', '  ', #9);
   LINE_BREAKS: array [0..2] of String = ('', #10, #13#10);
 var
-  Directory, Json: String;
+  Json: String;
   SourceDoc, TargetDoc: TgoBsonDocument;
   Settings: TgoJsonWriterSettings;
   OutputMode: TgoJsonOutputMode;
   IndentIndex, LineBreakIndex: Integer;
 begin
-  Directory := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)) + 'documents');
-
-  SourceDoc := TgoBsonDocument.LoadFromJsonFile(Directory + 'document1.json');
+  SourceDoc := TgoBsonDocument.Parse(LoadTestString('documents/document1.json'));
 
   // No pretty printing
   for OutputMode := Low(TgoJsonOutputMode) to High(TgoJsonOutputMode) do
@@ -2827,5 +2835,9 @@ initialization
   TDUnitX.RegisterTestFixture(TTestBsonDocumentAllTypes);
   TDUnitX.RegisterTestFixture(TTestBsonEquals);
   TDUnitX.RegisterTestFixture(TTestBsonValueEquals);
+
+finalization
+  FreeAndNil(GTestDataZipFile);
+  FreeAndNil(GTestDataStream);
 
 end.
