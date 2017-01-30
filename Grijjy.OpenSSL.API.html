@@ -205,7 +205,7 @@
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PASN1_OBJECT">PASN1_OBJECT</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.TASN1_OBJECT.html">TASN1_OBJECT</a>;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TStatLockLockCallback">TStatLockLockCallback</a></b> = procedure(Mode: Integer; N: Integer; const _File: PAnsiChar; Line: Integer); cdecl;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TStatLockLockCallback">TStatLockLockCallback</a></b> = procedure(Mode: Integer; N: Integer; const _File: MarshaledAString; Line: Integer); cdecl;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TStatLockIDCallback">TStatLockIDCallback</a></b> = function: Longword; cdecl;</code></td>
@@ -214,13 +214,13 @@
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TCryptoThreadIDCallback">TCryptoThreadIDCallback</a></b> = procedure(ID: <a  href="Grijjy.OpenSSL.API.html#PCRYPTO_THREADID">PCRYPTO_THREADID</a>) cdecl;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TDynLockCreateCallback">TDynLockCreateCallback</a></b> = function(const _file: PAnsiChar; Line: Integer): <a  href="Grijjy.OpenSSL.API.html#PCRYPTO_dynlock_value">PCRYPTO_dynlock_value</a>; cdecl;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TDynLockCreateCallback">TDynLockCreateCallback</a></b> = function(const _file: MarshaledAString; Line: Integer): <a  href="Grijjy.OpenSSL.API.html#PCRYPTO_dynlock_value">PCRYPTO_dynlock_value</a>; cdecl;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TDynLockLockCallback">TDynLockLockCallback</a></b> = procedure(Mode: Integer; L: <a  href="Grijjy.OpenSSL.API.html#PCRYPTO_dynlock_value">PCRYPTO_dynlock_value</a>; _File: PAnsiChar; Line: Integer); cdecl;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TDynLockLockCallback">TDynLockLockCallback</a></b> = procedure(Mode: Integer; L: <a  href="Grijjy.OpenSSL.API.html#PCRYPTO_dynlock_value">PCRYPTO_dynlock_value</a>; _File: MarshaledAString; Line: Integer); cdecl;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TDynLockDestroyCallback">TDynLockDestroyCallback</a></b> = procedure(L: <a  href="Grijjy.OpenSSL.API.html#PCRYPTO_dynlock_value">PCRYPTO_dynlock_value</a>; _File: PAnsiChar; Line: Integer); cdecl;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TDynLockDestroyCallback">TDynLockDestroyCallback</a></b> = procedure(L: <a  href="Grijjy.OpenSSL.API.html#PCRYPTO_dynlock_value">PCRYPTO_dynlock_value</a>; _File: MarshaledAString; Line: Integer); cdecl;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#pem_password_cb">pem_password_cb</a></b> = function(buf: Pointer; size: Integer; rwflag: Integer; userdata: Pointer): Integer; cdecl;</code></td>
@@ -382,10 +382,10 @@
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_CTX_check_private_key">SSL_CTX_check_private_key</a></b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>): Integer; cdecl = nil;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_CTX_use_certificate_file">SSL_CTX_use_certificate_file</a></b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; f: PAnsiChar; t: Integer): Integer; cdecl = nil;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_CTX_use_certificate_file">SSL_CTX_use_certificate_file</a></b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; f: MarshaledAString; t: Integer): Integer; cdecl = nil;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_CTX_use_RSAPrivateKey_file">SSL_CTX_use_RSAPrivateKey_file</a></b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; f: PAnsiChar; t: Integer): Integer; cdecl = nil;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_CTX_use_RSAPrivateKey_file">SSL_CTX_use_RSAPrivateKey_file</a></b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; f: MarshaledAString; t: Integer): Integer; cdecl = nil;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_CTX_get_cert_store">SSL_CTX_get_cert_store</a></b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>): <a  href="Grijjy.OpenSSL.API.html#PX509_STORE">PX509_STORE</a>; cdecl = nil;</code></td>
@@ -394,13 +394,13 @@
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_CTX_ctrl">SSL_CTX_ctrl</a></b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; cmd, i: integer; p: pointer): Integer; cdecl = nil;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_CTX_load_verify_locations">SSL_CTX_load_verify_locations</a></b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; CAFile: PAnsiChar; CAPath: PAnsiChar): Integer; cdecl = nil;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_CTX_load_verify_locations">SSL_CTX_load_verify_locations</a></b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; CAFile: MarshaledAString; CAPath: MarshaledAString): Integer; cdecl = nil;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_CTX_use_certificate_chain_file">SSL_CTX_use_certificate_chain_file</a></b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; CAFile: PAnsiChar): Integer; cdecl = nil;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_CTX_use_certificate_chain_file">SSL_CTX_use_certificate_chain_file</a></b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; CAFile: MarshaledAString): Integer; cdecl = nil;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_CTX_set_alpn_protos">SSL_CTX_set_alpn_protos</a></b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; protos: PAnsiChar; protos_len: Integer): Integer; cdecl = nil;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_CTX_set_alpn_protos">SSL_CTX_set_alpn_protos</a></b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; protos: MarshaledAString; protos_len: Integer): Integer; cdecl = nil;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_new">SSL_new</a></b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>): <a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a>; cdecl = nil;</code></td>
@@ -442,10 +442,10 @@
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_pending">SSL_pending</a></b>: function(s: <a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a>): Integer; cdecl = nil;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_set_cipher_list">SSL_set_cipher_list</a></b>: function(s: <a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a>; ciphers: PAnsiChar): Integer; cdecl = nil;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_set_cipher_list">SSL_set_cipher_list</a></b>: function(s: <a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a>; ciphers: MarshaledAString): Integer; cdecl = nil;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_get0_alpn_selected">SSL_get0_alpn_selected</a></b>: procedure(s: <a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a>; out data: PAnsiChar; out len: Integer); cdecl = nil;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_get0_alpn_selected">SSL_get0_alpn_selected</a></b>: procedure(s: <a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a>; out data: MarshaledAString; out len: Integer); cdecl = nil;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_clear">SSL_clear</a></b>: function(s: <a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a>): Integer; cdecl = nil;</code></td>
@@ -475,7 +475,7 @@
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#ERR_free_strings">ERR_free_strings</a></b>: procedure; cdecl = nil;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#ERR_error_string_n">ERR_error_string_n</a></b>: procedure(err: Cardinal; buf: PAnsiChar; len: <a  href="Grijjy.OpenSSL.API.html#size_t">size_t</a>); cdecl = nil;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#ERR_error_string_n">ERR_error_string_n</a></b>: procedure(err: Cardinal; buf: MarshaledAString; len: <a  href="Grijjy.OpenSSL.API.html#size_t">size_t</a>); cdecl = nil;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#ERR_get_error">ERR_get_error</a></b>: function: Cardinal; cdecl = nil;</code></td>
@@ -541,7 +541,7 @@
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#OBJ_obj2nid">OBJ_obj2nid</a></b>: function(o: <a  href="Grijjy.OpenSSL.API.html#PASN1_OBJECT">PASN1_OBJECT</a>): Integer; cdecl = nil;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#OBJ_nid2sn">OBJ_nid2sn</a></b>: function(n: Integer): PAnsiChar; cdecl = nil;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#OBJ_nid2sn">OBJ_nid2sn</a></b>: function(n: Integer): MarshaledAString; cdecl = nil;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#ASN1_STRING_data">ASN1_STRING_data</a></b>: function(x: <a  href="Grijjy.OpenSSL.API.html#PASN1_STRING">PASN1_STRING</a>): Pointer; cdecl = nil;</code></td>
@@ -583,7 +583,7 @@
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#EVP_DigestVerifyFinal">EVP_DigestVerifyFinal</a></b>: function(ctx : <a  href="Grijjy.OpenSSL.API.html#PEVP_MD_CTX">pEVP_MD_CTX</a>; const d: PByte; cnt: Cardinal) : Integer; cdecl = nil;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#CRYPTO_malloc">CRYPTO_malloc</a></b>: function(aLength : LongInt; const f : PAnsiChar; aLine : Integer): Pointer; cdecl = nil;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#CRYPTO_malloc">CRYPTO_malloc</a></b>: function(aLength : LongInt; const f : MarshaledAString; aLine : Integer): Pointer; cdecl = nil;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#CRYPTO_free">CRYPTO_free</a></b>: procedure(str: Pointer); cdecl = nil;</code></td>
@@ -867,7 +867,7 @@
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="TStatLockLockCallback"></a><code><b>TStatLockLockCallback</b> = procedure(Mode: Integer; N: Integer; const _File: PAnsiChar; Line: Integer); cdecl;</code></td>
+<td class="itemcode"><a name="TStatLockLockCallback"></a><code><b>TStatLockLockCallback</b> = procedure(Mode: Integer; N: Integer; const _File: MarshaledAString; Line: Integer); cdecl;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -888,21 +888,21 @@
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="TDynLockCreateCallback"></a><code><b>TDynLockCreateCallback</b> = function(const _file: PAnsiChar; Line: Integer): <a  href="Grijjy.OpenSSL.API.html#PCRYPTO_dynlock_value">PCRYPTO_dynlock_value</a>; cdecl;</code></td>
+<td class="itemcode"><a name="TDynLockCreateCallback"></a><code><b>TDynLockCreateCallback</b> = function(const _file: MarshaledAString; Line: Integer): <a  href="Grijjy.OpenSSL.API.html#PCRYPTO_dynlock_value">PCRYPTO_dynlock_value</a>; cdecl;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="TDynLockLockCallback"></a><code><b>TDynLockLockCallback</b> = procedure(Mode: Integer; L: <a  href="Grijjy.OpenSSL.API.html#PCRYPTO_dynlock_value">PCRYPTO_dynlock_value</a>; _File: PAnsiChar; Line: Integer); cdecl;</code></td>
+<td class="itemcode"><a name="TDynLockLockCallback"></a><code><b>TDynLockLockCallback</b> = procedure(Mode: Integer; L: <a  href="Grijjy.OpenSSL.API.html#PCRYPTO_dynlock_value">PCRYPTO_dynlock_value</a>; _File: MarshaledAString; Line: Integer); cdecl;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="TDynLockDestroyCallback"></a><code><b>TDynLockDestroyCallback</b> = procedure(L: <a  href="Grijjy.OpenSSL.API.html#PCRYPTO_dynlock_value">PCRYPTO_dynlock_value</a>; _File: PAnsiChar; Line: Integer); cdecl;</code></td>
+<td class="itemcode"><a name="TDynLockDestroyCallback"></a><code><b>TDynLockDestroyCallback</b> = procedure(L: <a  href="Grijjy.OpenSSL.API.html#PCRYPTO_dynlock_value">PCRYPTO_dynlock_value</a>; _File: MarshaledAString; Line: Integer); cdecl;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -1268,14 +1268,14 @@
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="SSL_CTX_use_certificate_file"></a><code><b>SSL_CTX_use_certificate_file</b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; f: PAnsiChar; t: Integer): Integer; cdecl = nil;</code></td>
+<td class="itemcode"><a name="SSL_CTX_use_certificate_file"></a><code><b>SSL_CTX_use_certificate_file</b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; f: MarshaledAString; t: Integer): Integer; cdecl = nil;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="SSL_CTX_use_RSAPrivateKey_file"></a><code><b>SSL_CTX_use_RSAPrivateKey_file</b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; f: PAnsiChar; t: Integer): Integer; cdecl = nil;</code></td>
+<td class="itemcode"><a name="SSL_CTX_use_RSAPrivateKey_file"></a><code><b>SSL_CTX_use_RSAPrivateKey_file</b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; f: MarshaledAString; t: Integer): Integer; cdecl = nil;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -1296,21 +1296,21 @@
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="SSL_CTX_load_verify_locations"></a><code><b>SSL_CTX_load_verify_locations</b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; CAFile: PAnsiChar; CAPath: PAnsiChar): Integer; cdecl = nil;</code></td>
+<td class="itemcode"><a name="SSL_CTX_load_verify_locations"></a><code><b>SSL_CTX_load_verify_locations</b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; CAFile: MarshaledAString; CAPath: MarshaledAString): Integer; cdecl = nil;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="SSL_CTX_use_certificate_chain_file"></a><code><b>SSL_CTX_use_certificate_chain_file</b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; CAFile: PAnsiChar): Integer; cdecl = nil;</code></td>
+<td class="itemcode"><a name="SSL_CTX_use_certificate_chain_file"></a><code><b>SSL_CTX_use_certificate_chain_file</b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; CAFile: MarshaledAString): Integer; cdecl = nil;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="SSL_CTX_set_alpn_protos"></a><code><b>SSL_CTX_set_alpn_protos</b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; protos: PAnsiChar; protos_len: Integer): Integer; cdecl = nil;</code></td>
+<td class="itemcode"><a name="SSL_CTX_set_alpn_protos"></a><code><b>SSL_CTX_set_alpn_protos</b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a>; protos: MarshaledAString; protos_len: Integer): Integer; cdecl = nil;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -1408,14 +1408,14 @@
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="SSL_set_cipher_list"></a><code><b>SSL_set_cipher_list</b>: function(s: <a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a>; ciphers: PAnsiChar): Integer; cdecl = nil;</code></td>
+<td class="itemcode"><a name="SSL_set_cipher_list"></a><code><b>SSL_set_cipher_list</b>: function(s: <a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a>; ciphers: MarshaledAString): Integer; cdecl = nil;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="SSL_get0_alpn_selected"></a><code><b>SSL_get0_alpn_selected</b>: procedure(s: <a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a>; out data: PAnsiChar; out len: Integer); cdecl = nil;</code></td>
+<td class="itemcode"><a name="SSL_get0_alpn_selected"></a><code><b>SSL_get0_alpn_selected</b>: procedure(s: <a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a>; out data: MarshaledAString; out len: Integer); cdecl = nil;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -1485,7 +1485,7 @@
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="ERR_error_string_n"></a><code><b>ERR_error_string_n</b>: procedure(err: Cardinal; buf: PAnsiChar; len: <a  href="Grijjy.OpenSSL.API.html#size_t">size_t</a>); cdecl = nil;</code></td>
+<td class="itemcode"><a name="ERR_error_string_n"></a><code><b>ERR_error_string_n</b>: procedure(err: Cardinal; buf: MarshaledAString; len: <a  href="Grijjy.OpenSSL.API.html#size_t">size_t</a>); cdecl = nil;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -1641,7 +1641,7 @@ thread-unsafe, Application-global cleanup functions</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="OBJ_nid2sn"></a><code><b>OBJ_nid2sn</b>: function(n: Integer): PAnsiChar; cdecl = nil;</code></td>
+<td class="itemcode"><a name="OBJ_nid2sn"></a><code><b>OBJ_nid2sn</b>: function(n: Integer): MarshaledAString; cdecl = nil;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -1739,7 +1739,7 @@ thread-unsafe, Application-global cleanup functions</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="CRYPTO_malloc"></a><code><b>CRYPTO_malloc</b>: function(aLength : LongInt; const f : PAnsiChar; aLine : Integer): Pointer; cdecl = nil;</code></td>
+<td class="itemcode"><a name="CRYPTO_malloc"></a><code><b>CRYPTO_malloc</b>: function(aLength : LongInt; const f : MarshaledAString; aLine : Integer): Pointer; cdecl = nil;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -1751,6 +1751,6 @@ thread-unsafe, Application-global cleanup functions</p>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
-<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:53</em>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-30 08:24:21</em>
 </span>
 </td></tr></table></body></html>

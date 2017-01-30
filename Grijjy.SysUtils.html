@@ -38,6 +38,24 @@ System level utilities</p>
 <td class="itemcode"><code>function <b><a  href="Grijjy.SysUtils.html#goCharToHex">goCharToHex</a></b>(const AChar: Char): Byte;</code></td>
 </tr>
 <tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.SysUtils.html#goUtf16ToUtf8">goUtf16ToUtf8</a></b>(const ASource: String): TBytes; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.SysUtils.html#goUtf16ToUtf8">goUtf16ToUtf8</a></b>(const ASource: String; const ASourceLength: Integer; const ABuffer: Pointer): Integer; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.SysUtils.html#goUtf8ToUtf16">goUtf8ToUtf16</a></b>(const ASource: TBytes): String; overload; inline;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.SysUtils.html#goUtf8ToUtf16">goUtf8ToUtf16</a></b>(const ASource: Pointer; const ASourceLength: Integer): String; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Grijjy.SysUtils.html#goUtf8ToUtf16">goUtf8ToUtf16</a></b>(const ASource: Pointer; const ASourceLength: Integer; const ABuffer: Pointer): Integer; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Grijjy.SysUtils.html#goMurmurHash2">goMurmurHash2</a></b>(const AData; ALen: Integer): Integer;</code></td>
+</tr>
+<tr class="list">
 <td class="itemcode"><code>procedure <b><a  href="Grijjy.SysUtils.html#goReverseBytes">goReverseBytes</a></b>(const ABytes: TBytes; const AIndex, ALength: Integer);</code></td>
 </tr>
 </table>
@@ -166,6 +184,132 @@ Converts a digit to a byte.
 </table>
 <table class="detail wide_list">
 <tr class="list">
+<td class="itemcode"><a name="goUtf16ToUtf8"></a><code>function <b>goUtf16ToUtf8</b>(const ASource: String): TBytes; overload;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Fast Unicode to UTF-8 conversion.
+
+<p>
+
+<p> <b>Note</b>: This function is optimized for speed and doesn't perform any error checking. If ASource contains invalid characters, then the result will be invalid as well. As a result, this version is 2-10 times faster than TEncoding.UTF8.GetBytes.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ASource</dt>
+<dd>Unicode string.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">A byte array with the UTF-8 data.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="goUtf16ToUtf8"></a><code>function <b>goUtf16ToUtf8</b>(const ASource: String; const ASourceLength: Integer; const ABuffer: Pointer): Integer; overload;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Fast Unicode to UTF-8 conversion using a provided buffer.
+
+<p>  
+
+<p> <b>Note</b>: This function is optimized for speed and doesn't perform any error checking. If ASource contains invalid characters, then the result will be invalid as well. As a result, this version is 2-10 times faster than TEncoding.UTF8.GetBytes.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ASource</dt>
+<dd>Unicode string.</dd>
+<dt>ASourceLength</dt>
+<dd>the number of characters in ASource to use.</dd>
+<dt>ABuffer</dt>
+<dd>pointer to the buffer to store the UTF-8 data into. The buffer must be at least large enough to store ((ASourceLength + 1) * 3) bytes.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The number of UTF-8 bytes stored in the buffer.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="goUtf8ToUtf16"></a><code>function <b>goUtf8ToUtf16</b>(const ASource: TBytes): String; overload; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Fast UTF-8 to Unicode conversion.
+
+<p>
+
+<p> <b>Note</b>: This function is optimized for speed and doesn't perform any error checking. If ASource contains invalid bytes, then the result will be invalid as well. As a result, this version is 2-35 times faster than TEncoding.UTF8.GetString.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ASource</dt>
+<dd>the UTF-8 data.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The Unicode string.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="goUtf8ToUtf16"></a><code>function <b>goUtf8ToUtf16</b>(const ASource: Pointer; const ASourceLength: Integer): String; overload;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Fast UTF-8 to Unicode conversion.
+
+<p> 
+
+<p> <b>Note</b>: This function is optimized for speed and doesn't perform any error checking. If ASource contains invalid bytes, then the result will be invalid as well. As a result, this version is 2-35 times faster than TEncoding.UTF8.GetString.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ASource</dt>
+<dd>pointer to the UTF-8 data.</dd>
+<dt>ASourceLength</dt>
+<dd>the number of bytes in ASource to use.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The Unicode string.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="goUtf8ToUtf16"></a><code>function <b>goUtf8ToUtf16</b>(const ASource: Pointer; const ASourceLength: Integer; const ABuffer: Pointer): Integer; overload;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Fast UTF-8 to Unicode conversion using a provided buffer.
+
+<p>  
+
+<p> <b>Note</b>: This function is optimized for speed and doesn't perform any error checking. If ASource contains invalid bytes, then the result will be invalid as well. As a result, this version is 2-35 times faster than TEncoding.UTF8.GetString.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ASource</dt>
+<dd>pointer to the UTF-8 data.</dd>
+<dt>ASourceLength</dt>
+<dd>the number of bytes in ASource to use.</dd>
+<dt>ABuffer</dt>
+<dd>pointer to the buffer to store the UTF-16 characters into. The buffer must be at least large enough to store (ASourceLength + 1) WideChar's.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The number of WideChar's (NOT bytes) stored in the buffer.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="goMurmurHash2"></a><code>function <b>goMurmurHash2</b>(const AData; ALen: Integer): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Calculates a Murmur hash (v2) of a block of data. See <a  href="https://sites.google.com/site/murmurhash/">https://sites.google.com/site/murmurhash/</a>
+
+<p> 
+
+<p> This hash function is *much* faster than Delphi's built-in BobJenkinsHash and is also better in avoiding hash collisions.</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AData</dt>
+<dd>the data to calulate the hash for</dd>
+<dt>ALen</dt>
+<dd>the size of the data (in bytes).</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The hash value for the data.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
 <td class="itemcode"><a name="goReverseBytes"></a><code>procedure <b>goReverseBytes</b>(const ABytes: TBytes; const AIndex, ALength: Integer);</code></td>
 </tr>
 <tr><td colspan="1">
@@ -201,6 +345,6 @@ Reverses the bytes in (part of) a byte array.
 Format settings that always use a period ('.') as a decimal separator</p>
 </td></tr>
 </table>
-<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:53</em>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-30 08:24:21</em>
 </span>
 </td></tr></table></body></html>

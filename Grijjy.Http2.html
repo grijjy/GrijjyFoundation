@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Http2</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<h1 class="unit">Unit Grijjy.Http2</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Uses</td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></td><td>Functions and Procedures</td><td><a class="section" href="#PasDoc-Types">Types</a></td><td><a class="section" href="#PasDoc-Constants">Constants</a></td><td>Variables</td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="description">Description</h2>
+&nbsp;<a name="PasDoc-Uses"></a><h2 class="overview">Overview</h2>
+<a name="PasDoc-Classes"></a><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Http2.THTTPHeader.html"><code>THTTPHeader</code></a></td>
+<td class="itemdesc">Http header</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Http2.THTTPHeaders.html"><code>THTTPHeaders</code></a></td>
+<td class="itemdesc">Http <a class="normal" href="Grijjy.Http2.THTTPHeaders.html#Headers">headers</a> class</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Http2.TgoHTTP2Client.html"><code>TgoHTTP2Client</code></a></td>
+<td class="itemdesc">HTTP client</td>
+</tr>
+</table>
+<a name="PasDoc-Types"></a><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Http2.html#TOnRedirect">TOnRedirect</a></b> = procedure(Sender: TObject; var ALocation: UnicodeString; const AFollow: Boolean) of object;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Http2.html#TOnPassword">TOnPassword</a></b> = procedure(Sender: TObject; var AAgain: Boolean) of object;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Http2.html#TSocketState">TSocketState</a></b> = (...);</code></td>
+</tr>
+</table>
+<a name="PasDoc-Constants"></a><h3 class="summary">Constants</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Http2.html#TIMEOUT_CONNECT">TIMEOUT_CONNECT</a></b> = 5000;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Http2.html#TIMEOUT_SEND">TIMEOUT_SEND</a></b> = 5000;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Http2.html#DEFAULT_TIMEOUT_RECV">DEFAULT_TIMEOUT_RECV</a></b> = 5000;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Http2.html#DEFAULT_HTTP_PORT">DEFAULT_HTTP_PORT</a></b> = 80;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Http2.html#DEFAULT_HTTPS_PORT">DEFAULT_HTTPS_PORT</a></b> = 443;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TOnRedirect"></a><code><b>TOnRedirect</b> = procedure(Sender: TObject; var ALocation: UnicodeString; const AFollow: Boolean) of object;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+HTTP events</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TOnPassword"></a><code><b>TOnPassword</b> = procedure(Sender: TObject; var AAgain: Boolean) of object;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TSocketState"></a><code><b>TSocketState</b> = (...);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Socket activity state</p>
+<h6 class="description_section">Values</h6>
+<ul>
+<li>
+None: &nbsp;</li>
+<li>
+Sending: &nbsp;</li>
+<li>
+Receiving: &nbsp;</li>
+<li>
+Success: &nbsp;</li>
+<li>
+Failure: &nbsp;</li>
+</ul>
+</td></tr>
+</table>
+<h3 class="detail">Constants</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TIMEOUT_CONNECT"></a><code><b>TIMEOUT_CONNECT</b> = 5000;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Timeout for operations</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TIMEOUT_SEND"></a><code><b>TIMEOUT_SEND</b> = 5000;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="DEFAULT_TIMEOUT_RECV"></a><code><b>DEFAULT_TIMEOUT_RECV</b> = 5000;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="DEFAULT_HTTP_PORT"></a><code><b>DEFAULT_HTTP_PORT</b> = 80;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Ports</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="DEFAULT_HTTPS_PORT"></a><code><b>DEFAULT_HTTPS_PORT</b> = 443;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-30 08:24:21</em>
+</span>
+</td></tr></table></body></html>

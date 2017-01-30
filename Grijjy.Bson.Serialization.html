@@ -1,0 +1,682 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Bson.Serialization</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<h1 class="unit">Unit Grijjy.Bson.Serialization</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Uses</td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></td><td>Functions and Procedures</td><td><a class="section" href="#PasDoc-Types">Types</a></td><td>Constants</td><td>Variables</td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="description">Description</h2>
+<p>
+Serializing Delphi records and objects to JSON and BSON format (or to <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a> values).
+
+<p><b>Quick Start</b>
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">type</span>
+    TOrderDetail = <span class="pascal_keyword">record</span>
+    <span class="pascal_keyword">public</span>
+      Product: <span class="pascal_keyword">String</span>;
+      Quantity: Integer;
+    <span class="pascal_keyword">end</span>;
+
+    TOrder = <span class="pascal_keyword">record</span>
+    <span class="pascal_keyword">public</span>
+      Customer: <span class="pascal_keyword">String</span>;
+      OrderDetails: TArray&lt;&lt;TOrderDetail&gt;;
+    <span class="pascal_keyword">end</span>;
+
+  <span class="pascal_keyword">procedure</span> TestSerialization;
+  <span class="pascal_keyword">var</span>
+    Order, Rehydrated: TOrder;
+    Json: <span class="pascal_keyword">String</span>;
+  <span class="pascal_keyword">begin</span>
+    Order.Customer := <span class="pascal_string">'John'</span>;
+
+    SetLength(Order.OrderDetails, <span class="pascal_numeric">2</span>);
+    Order.OrderDetails[<span class="pascal_numeric">0</span>].Product := <span class="pascal_string">'Pen'</span>;
+    Order.OrderDetails[<span class="pascal_numeric">0</span>].Quantity := <span class="pascal_numeric">1</span>;
+    Order.OrderDetails[<span class="pascal_numeric">1</span>].Product := <span class="pascal_string">'Ruler'</span>;
+    Order.OrderDetails[<span class="pascal_numeric">1</span>].Quantity := <span class="pascal_numeric">2</span>;
+
+    <span class="pascal_comment">{ Serialize Order record to JSON: }</span>
+    TgoBsonSerializer.Serialize(Order, Json);
+    WriteLn(Json); <span class="pascal_comment">// Outputs:</span>
+    <span class="pascal_comment">// { &quot;Customer&quot; : &quot;John&quot;,</span>
+    <span class="pascal_comment">//   &quot;OrderDetails&quot; : [</span>
+    <span class="pascal_comment">//     { &quot;Product&quot; : &quot;Pen&quot;, &quot;Quantity&quot; : 1 },</span>
+    <span class="pascal_comment">//     { &quot;Product&quot; : &quot;Ruler&quot;, &quot;Quantity&quot; : 2 }</span>
+    <span class="pascal_comment">//   ]</span>
+    <span class="pascal_comment">// }</span>
+
+    <span class="pascal_comment">{ Deserialize JSON to Order record: }</span>
+    TgoBsonSerializer.Deserialize(Json, Rehydrated);
+    <span class="pascal_comment">{ Rehydrated will have the same values as Order }</span>
+  <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p><b>Features</b>
+
+<p>The serialization <a class="normal" href="Grijjy.OpenSSL.API.html#ENGINE">engine</a> supports the following features: </p>
+
+<ul class="compact_spacing">
+  <li><p>You can serialize records and classes to JSON, BSON and <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>.</p></li>
+  <li><p>You can also serialize dynamic arrays to JSON (but not to BSON and <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>).</p></li>
+  <li><p>By default, all public fields and public and published read/write properties are serialized. Private and protected fields and properties are never serialized.</p></li>
+  <li><p>Fields can be of type boolean, integer (all sizes and flavors), floating-point (Single and Double), WideChar, UnicodeString, TDateTime, TGUID, <a class="normal" href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a> and TBytes (for binary data).</p></li>
+  <li><p>Fields can also be of an enumerated type, as long as that type does not have any explicitly declared values (since Delphi provides no RTTI for those).</p></li>
+  <li><p>Likewise, a set of an enumerated type is also supported.</p></li>
+  <li><p>Furthermore, a field can also be of a serializable record or class type, or a dynamic array of a serializable type.</p></li>
+  <li><p>You can customize some behavior and output using attributes.</p></li>
+</ul>
+
+<p> <b>Representations</b>
+
+<p>By default, the serialization <a class="normal" href="Grijjy.OpenSSL.API.html#ENGINE">engine</a> serializes fields and properties (collecively called &quot;members&quot; from here onward) as their native types. That is, integers are serialized as integers and strings are serialized as strings. However, you can use the <code>BsonRepresentation</code> attribute to change the way a member is serialized to JSON:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">type</span>
+    TColor = (Red, Green, Blue);
+
+  <span class="pascal_keyword">type</span>
+    TOrderDetail = <span class="pascal_keyword">record</span>
+    <span class="pascal_keyword">public</span>
+      Color: TColor;
+
+      [BsonRepresentation(TgoBsonRepresentation.<span class="pascal_keyword">String</span>)]
+      ColorAsString: TColor;
+    <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>This serializes the Color member as a integer (which is the default serialization type for enums), but serializes the ColorAsString member as a string (using the name of the enum, eg &quot;Red&quot;, &quot;Green&quot; or &quot;Blue&quot;). Not all types can be serialized as other types. Below is a list of the types that can be serialized as another type, and the conversion that will take place.
+
+<p>Boolean, can be serialized as: </p>
+
+<ul class="compact_spacing">
+  <li><p>Boolean (default)</p></li>
+  <li><p>Int32, Int64, Double (False=0, True=1)</p></li>
+  <li><p>String (False=&quot;false&quot;, True=&quot;true&quot;)</p></li>
+</ul>
+
+<p> Integer types: </p>
+
+<ul class="compact_spacing">
+  <li><p>Int32, Int64 (default)</p></li>
+  <li><p>Double</p></li>
+  <li><p>String (IntToStr-conversion)</p></li>
+</ul>
+
+<p> Enumerated types: </p>
+
+<ul class="compact_spacing">
+  <li><p>Int32 (default, ordinal value)</p></li>
+  <li><p>Int64 (ordinal value)</p></li>
+  <li><p>String (name of the enum value)</p></li>
+</ul>
+
+<p> Set types: </p>
+
+<ul class="compact_spacing">
+  <li><p>Int32, Int64 (default, stored as a bitmask)</p></li>
+  <li><p>String (comma-separated list of elements, without any (square) brackets)</p></li>
+</ul>
+
+<p> Floating point types: </p>
+
+<ul class="compact_spacing">
+  <li><p>Double (default)</p></li>
+  <li><p>Int32, Int64 (truncated version)</p></li>
+  <li><p>String (FloatToStr-conversion, in US format)</p></li>
+</ul>
+
+<p> TDateTime: </p>
+
+<ul class="compact_spacing">
+  <li><p>DateTime (default)</p></li>
+  <li><p>Int64 (number of UTC ticks since midnight 1/1/0001, using 10,000 ticks per millisecond)</p></li>
+  <li><p>String (DateToISO8601-conversion)</p></li>
+  <li><p>Document (a document with two elements: TimeStamp serialized as a DateTime value, and Ticks serialized as the number of ticks since midnight 1/1/0001). For example: <code>{ &quot;DateTime&quot; : ISODate(&quot;2016-05-01T15:28:57.784Z&quot;), &quot;Ticks&quot; : NumberLong(&quot;635977133377840000&quot;) }</code></p></li>
+</ul>
+
+<p> String: </p>
+
+<ul class="compact_spacing">
+  <li><p>String (default)</p></li>
+  <li><p>Symbol</p></li>
+  <li><p>ObjectId (if the string is a valid <a class="normal" href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>)</p></li>
+</ul>
+
+<p> WideChar: </p>
+
+<ul class="compact_spacing">
+  <li><p>Int32 (default, ordinal value)</p></li>
+  <li><p>Int64 (ordinal value)</p></li>
+  <li><p>String (single-character string)</p></li>
+</ul>
+
+<p> TGUID: </p>
+
+<ul class="compact_spacing">
+  <li><p>Binary (default)</p></li>
+  <li><p>String (without curly braces)</p></li>
+</ul>
+
+<p> <a class="normal" href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a>: </p>
+
+<ul class="compact_spacing">
+  <li><p><a class="normal" href="Grijjy.Bson.TgoObjectId.html">TgoObjectId</a> (default)</p></li>
+  <li><p>String (string value of ObjectId)</p></li>
+</ul>
+
+<p> TBytes: </p>
+
+<ul class="compact_spacing">
+  <li><p>Binary (default)</p></li>
+  <li><p>String (hex string, using 2 hex digits per byte)</p></li>
+</ul>
+
+<p> Note that for array members, the BsonRepresentation attribute applies to the element types, not to the array itself:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">type</span>
+    TColor = (Red, Green, Blue);
+
+  <span class="pascal_keyword">type</span>
+    TMyColors = <span class="pascal_keyword">record</span>
+    <span class="pascal_keyword">public</span>
+      [BsonRepresentation(TgoBsonRepresentation.<span class="pascal_keyword">String</span>)]
+      Colors: TArray&lt;&lt;TColor&gt;;
+    <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>This will serialize each color as a string (not the entire array as a string).
+
+<p><b>Handling Extra Elements</b>
+
+<p>When a JSON/BSON stream is deserialized, the name of each element is used to look up a matching member in the record or class. Normally, if no matching member is found, the element is ignored. This also means that when the record or class is rendered back to JSON/BSON, those extra exlements will not exist and may be lost forever.
+
+<p>You can also treat extra members in the JSON/BSON stream as an error condition. In that case, an exception will be raised when extra elements are found. To enable this error, use the <code>BsonErrorOnExtraElements</code> attribute at the record or class level:
+
+<p></p>
+
+<pre class="longcode">
+    [BsonErrorOnExtraElements]
+    TOrderDetail = <span class="pascal_keyword">record</span>
+    <span class="pascal_keyword">public</span>
+      <span class="pascal_numeric"></span>...
+    <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p><b>Member Customization</b>
+
+<p>Normally, read-only properties are not serialized (unless the property is of a class type, and the object property has already been created). If you want to serialize read-only properties, you can mark them with a <code>BsonElement</code> attribute:
+
+<p></p>
+
+<pre class="longcode">
+    TOrder = <span class="pascal_keyword">class</span>
+    <span class="pascal_keyword">public</span>
+      [BsonElement]
+      <span class="pascal_keyword">property</span> TotalAmount: Double <span class="pascal_keyword">read</span> GetTotalAmount;
+    <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>Of course, read-only properties are never deserialized.
+
+<p>Also, you may wish to serialize a member using a different name than the member name. A common use for this is if you want to serialize using a C-style name (lower case with underscores) but you would like the member to have a Pascal-style name (with camel caps). Another situation where you may want to use this is if the serialization name includes a character that is invalid in a Delphi identifier. You can use the <code>BsonElement</code> attribute to provide the serialization name:
+
+<p></p>
+
+<pre class="longcode">
+    TOrder = <span class="pascal_keyword">record</span>
+    <span class="pascal_keyword">public</span>
+      [BsonElement(<span class="pascal_string">'customer_name'</span>)]
+      CustomerName: <span class="pascal_keyword">String</span>;
+
+      [BsonElement(<span class="pascal_string">'$id'</span>)]
+      Id: TgoObjectId;
+    <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>You may also choose to ignore a public member when serializing using the <code>BsonIgnore</code> attribute:
+
+<p></p>
+
+<pre class="longcode">
+    TOrder = <span class="pascal_keyword">record</span>
+    <span class="pascal_keyword">public</span>
+      CustomerName: <span class="pascal_keyword">String</span>;
+
+      [BsonIgnore]
+      CustomerAge: Integer;
+    <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>This will only serialize the CustomerName member. This would be the same as making the CustomerAge field private or protected, with the difference that the CustomAge field is still accessible in code outside of the TOrder class.
+
+<p>You can also ignore a field only when it has a default value, using the <code>BsonIgnoreIfDefault</code> attribute:
+
+<p></p>
+
+<pre class="longcode">
+    TOrder = <span class="pascal_keyword">record</span>
+    <span class="pascal_keyword">public</span>
+      [BsonIgnoreIfDefault]
+      CustomerName: <span class="pascal_keyword">String</span>;
+    <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>This will only serialize the customer name if it is not an empty string. For other types the default value will be 0, False, [] etc. For Boolean, integral and String types, you can specify the default value using the <code>BsonDefaultValue</code> attribute:
+
+<p></p>
+
+<pre class="longcode">
+    TOrder = <span class="pascal_keyword">record</span>
+    <span class="pascal_keyword">public</span>
+      [BsonIgnoreIfDefault]
+      [BsonDefaultValue(<span class="pascal_string">'John Smith'</span>)]
+      CustomerName: <span class="pascal_keyword">String</span>;
+    <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>This will only serialize the customer name if it isn't 'John Smith'.
+
+<p><b>Note</b>: an exception will be raised if you apply the <code>BsonDefaultValue</code> attribute to a member that is not of a Boolean, integral or String type.
+
+<p><b>Note</b>: the <code>BsonIgnoreIfDefault</code> attribute can be used on all types except record types.
+
+<p><b>Using Records</b>
+
+<p>The easiest way to serialize to/from JSON/BSON is by declaring record types as shown above.
+
+<p>When a record is deserialized, all its values will be cleared first. This assures that no values will be left uninitialized if certain members are not deserialized.
+
+<p>If you want to customize the initialization behavior, then you can add a method called <code>Initialize</code> without parameters. If such a method exists, then it is called instead of clearing all fields:
+
+<p></p>
+
+<pre class="longcode">
+    TOrder = <span class="pascal_keyword">record</span>
+    <span class="pascal_keyword">public</span>
+      <span class="pascal_comment">// This method gets called before deserializing a TOrder</span>
+      <span class="pascal_keyword">procedure</span> Initialize;
+    <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p><b>Using Classes</b>
+
+<p>Serialization is easiest and most efficient when used with record types. You can also serialize objects (class instances), but need to be aware of a different behavior.
+
+<p>When you deserialize the object, and the object you pass has a value of nil, then a new instance will be created. You are responsible for releasing the instance at some later point:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">type</span>
+    TOrder = <span class="pascal_keyword">class</span>
+    <span class="pascal_keyword">public</span>
+      Customer: <span class="pascal_keyword">String</span>;
+    <span class="pascal_keyword">end</span>;
+
+  <span class="pascal_keyword">procedure</span> TestDeserialization;
+  <span class="pascal_keyword">var</span>
+    Order: TOrder;
+  <span class="pascal_keyword">begin</span>
+    Order := <span class="pascal_keyword">nil</span>;
+    TgoBsonSerializer.Deserialize(<span class="pascal_string">'{ &quot;Customer&quot; : &quot;John&quot; }'</span>, Order);
+  <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>This will create a new TOrder instance and return it in the Order parameter. The TOrder instance is created by calling a parameterless constructor. If the TOrder class has constructor without parameters, then that constructor will be called. Otherwise, a parameterless constructor of the ancestor class will be used. If the ancestor class also doesn't have a parameterless constructor, then we keep going up one ancestor in the chain, until TObject is reached, which always has a parameterless constructor.
+
+<p>If you pass a non-nil value to Deserialize, then the existing object will be updated and no new instance will be created.
+
+<p>When deserializing a field or property of a class type, the behavior depends on whether the member is already assigned.
+
+<p><b>Deserializing Assigned object-properties</b>
+
+<p>Usually, it is best to make sure that the member is always assigned, by creating it in the constructor and destroying it in the destructor:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">type</span>
+    TOrderDetail = <span class="pascal_keyword">class</span>
+    <span class="pascal_numeric"></span>...
+    <span class="pascal_keyword">end</span>;
+
+    TOrder = <span class="pascal_keyword">class</span>
+    <span class="pascal_keyword">private</span>
+      FCustomer: <span class="pascal_keyword">String</span>;
+      FDetail: TOrderDetail;
+    <span class="pascal_keyword">public</span>
+      <span class="pascal_keyword">constructor</span> Create;
+      <span class="pascal_keyword">destructor</span> Destroy; <span class="pascal_keyword">override</span>;
+
+      <span class="pascal_keyword">property</span> Customer: <span class="pascal_keyword">String</span> <span class="pascal_keyword">read</span> FCustomer <span class="pascal_keyword">write</span> FCustomer;
+      <span class="pascal_keyword">property</span> Detail: TOrderDetail <span class="pascal_keyword">read</span> FDetail; <span class="pascal_comment">// Read-only</span>
+    <span class="pascal_keyword">end</span>;
+
+    <span class="pascal_keyword">constructor</span> TOrder.Create;
+    <span class="pascal_keyword">begin</span>
+      <span class="pascal_keyword">inherited</span>;
+      FDetail := TOrderDetail.Create;
+    <span class="pascal_keyword">end</span>;
+
+    <span class="pascal_keyword">destructor</span> TOrder.Destroy;
+    <span class="pascal_keyword">begin</span>
+      FDetail.Free;
+      <span class="pascal_keyword">inherited</span>;
+    <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>This is a very common design pattern when using composition. Properties that are of a class type (like Detail in this example) are usually read-only.
+
+<p>When deserializing the TOrder.Detail property in this example, its members are deserialized as usual. Even though the Detail property is read-only, it will still be deserialized (other read-only properties are usually ignored).
+
+<p><b>Deserializing Non-Assigned object-properties</b>
+
+<p>If the member is not assigned, it is only created and assigned if it is a read/write property (or field):
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">type</span>
+    TOrderDetail = <span class="pascal_keyword">class</span>
+    <span class="pascal_numeric"></span>...
+    <span class="pascal_keyword">end</span>;
+
+    TOrder = <span class="pascal_keyword">class</span>
+    <span class="pascal_keyword">private</span>
+      FCustomer: <span class="pascal_keyword">String</span>;
+      FDetail: TOrderDetail;
+    <span class="pascal_keyword">public</span>
+      <span class="pascal_keyword">property</span> Customer: <span class="pascal_keyword">String</span> <span class="pascal_keyword">read</span> FCustomer <span class="pascal_keyword">write</span> FCustomer;
+      <span class="pascal_keyword">property</span> Detail: TOrderDetail <span class="pascal_keyword">read</span> FDetail <span class="pascal_keyword">write</span> FDetail; <span class="pascal_comment">// Read/write</span>
+    <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>In this case, when deserializing the Detail property, it will be created (using a parameterless constructor) and assigned to Detail. You need to make sure though that the Detail property will be destroyed at some point. You could make the Order class the owner and have it destroy the property in the destructor.
+
+<p>This design pattern is less common and not recommended. The recommended approach is to always make sure the Detail property is assigned (and read-only), as mentioned previously.
+
+<p><b>Polymorphism</b>
+
+<p>A complication that arises when serializing classes (instead of records) it that they may be part of a class hierarchy:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">type</span>
+    TAnimal = <span class="pascal_keyword">class</span>
+    <span class="pascal_keyword">public</span>
+      Weight: Double;
+    <span class="pascal_keyword">end</span>;
+
+    TDog = <span class="pascal_keyword">class</span>(TAnimal)
+    <span class="pascal_keyword">public</span>
+      FurColor: <span class="pascal_keyword">String</span>;
+    <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>All animals have a weight, but only dogs have fur. When serializing a TDog, the output is as expected:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">var</span>
+    Dog: TDog;
+    Json: <span class="pascal_keyword">String</span>;
+  <span class="pascal_keyword">begin</span>
+    Dog.Weight := <span class="pascal_numeric">30</span>;
+    Dog.FurColor := <span class="pascal_string">'Blond'</span>;
+    TgoBsonSerializer.Serialize(Dog, Json); <span class="pascal_comment">// Result:</span>
+    <span class="pascal_comment">// { &quot;Weight&quot; : 30.0, &quot;FurColor&quot; : &quot;Blond&quot; }</span>
+  <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>However, output is different when a TDog is serialized as a TAnimal:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">var</span>
+    Dog: TDog;
+    Animal, Rehydrated: TAnimal;
+    Json: <span class="pascal_keyword">String</span>;
+  <span class="pascal_keyword">begin</span>
+    Dog.Weight := <span class="pascal_numeric">30</span>;
+    Dog.FurColor := <span class="pascal_string">'Blond'</span>;
+    Animal := Dog;
+    TgoBsonSerializer.Serialize(Animal, Json); <span class="pascal_comment">// Result:</span>
+    <span class="pascal_comment">// { &quot;_t&quot; : &quot;TDog&quot;, &quot;Weight&quot; : 30.0, &quot;FurColor&quot; : &quot;Blond&quot; }</span>
+
+    TgoBsonSerializer.Deserialize(Json, Rehydrated);
+    <span class="pascal_comment">// This will actually create a TDog instance (instead of TAnimal)</span>
+  <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>In this case, an extra &quot;_t&quot; element is added (called a Discriminator) that specifies the actual type that is serialized. This way, when you deserialize a TAnimal, and the JSON/BSON contains a discriminator, it knows what actual type of class to instantiate.
+
+<p>However, this only works if the serialization <a class="normal" href="Grijjy.OpenSSL.API.html#ENGINE">engine</a> &quot;knows&quot; about the TDog type. You have to let the <a class="normal" href="Grijjy.OpenSSL.API.html#ENGINE">engine</a> know what kind of sub classes can be expected when deserializing. You do this by calling <code>RegisterSubClass(es)</code>:
+
+<p></p>
+
+<pre class="longcode">
+  TgoBsonSerializer.RegisterSubClass(TDog);</pre>
+
+<p>
+
+<p>Note that this is only needed if you plan to deserialize dogs using type TAnimal. If you always serialize and deserialize dogs as TDog, then you don't need to do this.
+
+<p>You can choose to always serialize a descriminator, even if not strictly necessary, by adding a <code>BsonDiscriminator</code> attribute to the class:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">type</span>
+    [BsonDiscriminator(True)]
+    TAnimal = <span class="pascal_keyword">class</span>
+    <span class="pascal_keyword">public</span>
+      Weight: Double;
+    <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>The True argument indicates that the descriminator is required. You can also specify a custom discriminator name using the same attribute:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">type</span>
+    [BsonDiscriminator(<span class="pascal_string">'animal'</span>, True)]
+    TAnimal = <span class="pascal_keyword">class</span>
+    <span class="pascal_keyword">public</span>
+      Weight: Double;
+    <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>This will serialize the descriminator as <code>{ &quot;_t&quot; : &quot;animal&quot; }</code> instead of using the Delphi type name <code>{ &quot;_t&quot; : &quot;TAnimal&quot; }</code>. In this case, the second parameter (True) is optional. If not specified, the descriminator is not required.
+
+<p><b>Custom Serialization</b>
+
+<p>Is some situations, you may want to customize the way a certain type is (de)serialized entirely. For example, the TgoAlias type in Grijjy.Protocol.Types is a record consisting of a prefix and a value. But when serializing records of this type, you always want to serialize them as a single string containing both the prefix and value.
+
+<p>To do this, you have to create and register a custom serializer for this type. You can find an example of a custom serializer for TgoAlias in the Grijjy.Protocol.Types unit.
+
+<p>First, you create a class derived from <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.TCustomSerializer.html">TgoBsonSerializer.TCustomSerializer</a>. You only need to override its Serialize and Deserialize methods. In those methods you perform the type-specific (de)serialization. Both methods have an untyped AValue parameter that you must cast to the actual type (TgoAlias in this example):
+
+<p></p>
+
+<pre class="longcode">
+<span class="pascal_keyword">type</span>
+  TgoAliasSerializer = <span class="pascal_keyword">class</span>(TgoBsonSerializer.TCustomSerializer)
+  <span class="pascal_keyword">public</span>
+    <span class="pascal_keyword">procedure</span> Serialize(<span class="pascal_keyword">const</span> AValue; <span class="pascal_keyword">const</span> AWriter: IgoBsonBaseWriter); <span class="pascal_keyword">override</span>;
+    <span class="pascal_keyword">procedure</span> Deserialize(<span class="pascal_keyword">const</span> AReader: IgoBsonBaseReader; <span class="pascal_keyword">out</span> AValue); <span class="pascal_keyword">override</span>;
+  <span class="pascal_keyword">end</span>;
+
+<span class="pascal_keyword">procedure</span> TgoAliasSerializer.Deserialize(<span class="pascal_keyword">const</span> AReader: IgoBsonBaseReader;
+  <span class="pascal_keyword">out</span> AValue);
+<span class="pascal_keyword">var</span>
+  Value: TgoAlias <span class="pascal_keyword">absolute</span> AValue;
+<span class="pascal_keyword">begin</span>
+  <span class="pascal_comment">// TgoAlias has in implicit conversion operator to convert from a String</span>
+  Value := AReader.ReadString;
+<span class="pascal_keyword">end</span>;
+
+<span class="pascal_keyword">procedure</span> TgoAliasSerializer.Serialize(<span class="pascal_keyword">const</span> AValue;
+  <span class="pascal_keyword">const</span> AWriter: IgoBsonBaseWriter);
+<span class="pascal_keyword">var</span>
+  Value: TgoAlias <span class="pascal_keyword">absolute</span> AValue;
+<span class="pascal_keyword">begin</span>
+  <span class="pascal_comment">// TgoAlias has in implicit conversion operator to convert to a String</span>
+  AWriter.WriteString(Value);
+<span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>Next, you need to register the custom serializer for the type. For our example:
+
+<p></p>
+
+<pre class="longcode">
+TgoBsonSerializer.RegisterCustomSerializer&lt;TgoAlias&gt;(TgoAliasSerializer);</pre>
+
+<p>
+
+<p><b>Note</b> that custom serializers currently only work for record types.
+
+<p><b>Notes</b>
+
+<p></p>
+
+<ul class="compact_spacing">
+  <li><p>The Serialize and Deserialize methods will raise an exception if the type is not serializable, or if the JSON/BSON to deserialize is invalid. To prevent exceptions, you can use the TrySerialize and TryDeserialize methods instead. These return False if (de)serialization failed.</p></li>
+  <li><p>Members of type TDateTime are expected to be un UTC format. No attempt is made to convert from local time to UTC and vice versa.</p></li>
+</ul>
+
+<p></p>
+<a name="PasDoc-Uses"></a><h2 class="overview">Overview</h2>
+<a name="PasDoc-Classes"></a><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Bson.Serialization.EgoBsonSerializerError.html"><code>EgoBsonSerializerError</code></a></td>
+<td class="itemdesc">Type of exception that is raised on serialization errors</td>
+</tr>
+<tr class="list2">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.Serialization.TgoBsonDefaultValue.html"><code>TgoBsonDefaultValue</code></a></td>
+<td class="itemdesc">Used internally by <a class="normal" href="Grijjy.Bson.Serialization.BsonDefaultValueAttribute.html">BsonDefaultValueAttribute</a> to specify a default value</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Bson.Serialization.BsonElementAttribute.html"><code>BsonElementAttribute</code></a></td>
+<td class="itemdesc">Attribute used to force serializing read-only properties and to modify the <a class="normal" href="Grijjy.Bson.Serialization.BsonElementAttribute.html#Name">name</a> of an element for serialization</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Bson.Serialization.BsonIgnoreAttribute.html"><code>BsonIgnoreAttribute</code></a></td>
+<td class="itemdesc">Apply this attribute to elements you want to ignore for serialization</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Bson.Serialization.BsonIgnoreIfDefaultAttribute.html"><code>BsonIgnoreIfDefaultAttribute</code></a></td>
+<td class="itemdesc">Apply this attribute to elements you want to ignore if they have the default value.</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Bson.Serialization.BsonDefaultValueAttribute.html"><code>BsonDefaultValueAttribute</code></a></td>
+<td class="itemdesc">Specifies the default value for an element.</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Bson.Serialization.BsonRepresentationAttribute.html"><code>BsonRepresentationAttribute</code></a></td>
+<td class="itemdesc">Changes the <a class="normal" href="Grijjy.Bson.Serialization.BsonRepresentationAttribute.html#Representation">representation</a> type of an element when serializing.</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Bson.Serialization.BsonDiscriminatorAttribute.html"><code>BsonDiscriminatorAttribute</code></a></td>
+<td class="itemdesc">Applies a <a class="normal" href="Grijjy.Bson.Serialization.BsonDiscriminatorAttribute.html#Discriminator">discriminator</a> to a class.</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Bson.Serialization.BsonErrorOnExtraElementsAttribute.html"><code>BsonErrorOnExtraElementsAttribute</code></a></td>
+<td class="itemdesc">Apply this attribute to a record or class if you want to raise an exception when deserializing elements that are not part of the record or class.</td>
+</tr>
+<tr class="list2">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html"><code>TgoBsonSerializer</code></a></td>
+<td class="itemdesc">Static class for serializing and deserializing to JSON and BSON format</td>
+</tr>
+</table>
+<a name="PasDoc-Types"></a><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.Serialization.html#TgoBsonRepresentation">TgoBsonRepresentation</a></b> = (...);</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TgoBsonRepresentation"></a><code><b>TgoBsonRepresentation</b> = (...);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Possible representation types for use with <a class="normal" href="Grijjy.Bson.Serialization.BsonRepresentationAttribute.html">BsonRepresentationAttribute</a></p>
+<h6 class="description_section">Values</h6>
+<ul>
+<li>
+Default: &nbsp;</li>
+<li>
+Boolean: &nbsp;</li>
+<li>
+Int32: &nbsp;</li>
+<li>
+Int64: &nbsp;</li>
+<li>
+Double: &nbsp;</li>
+<li>
+String: &nbsp;</li>
+<li>
+DateTime: &nbsp;</li>
+<li>
+Document: &nbsp;</li>
+<li>
+Binary: &nbsp;</li>
+<li>
+ObjectId: &nbsp;</li>
+<li>
+Symbol: &nbsp;</li>
+</ul>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-30 08:24:21</em>
+</span>
+</td></tr></table></body></html>

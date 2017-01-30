@@ -12,7 +12,7 @@
 <a name="TgoBsonDocument"></a><h1 class="cio">record TgoBsonDocument</h1>
 <table class="sections wide_list">
 <tr>
-<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Hierarchy</td><td>Fields</td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Hierarchy</td><td><a class="section" href="#PasDoc-InternalCRs">Internal Classes and Records</a></td><td>Fields</td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
 <a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
 <p class="unitlink">
 <a  href="Grijjy.Bson.html">Grijjy.Bson</a></p>
@@ -23,6 +23,12 @@
 <p>
 A BSON document. A BSON document <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Contains">contains</a> key/value pairs, where the key is a String and the value can be any BSON value. It is similar to a Delphi dictionary or a JSON object. However, unlike Delphi dictionaries, a documents maintains insertion order and you can access <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Values">values</a> both by name and by index.</p>
 <h2 class="overview">Overview</h2>
+<a name="PasDoc-InternalCRs"></a><h3 class="summary">Internal Classes and Records</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.TgoBsonDocument._IDocument.html">_IDocument</a></b> = interface(<a  href="Grijjy.Bson.TgoBsonValue._IValue.html">TgoBsonValue._IValue</a>)</code></td>
+</tr>
+</table>
 <a name="PasDoc-Methods"></a><h3 class="summary">Methods</h3>
 <table class="summary wide_list">
 <tr class="list">
@@ -155,19 +161,19 @@ A BSON document. A BSON document <a class="normal" href="Grijjy.Bson.TgoBsonDocu
 <a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonDocument.html#AllowDuplicateNames">AllowDuplicateNames</a></b>: Boolean read GetAllowDuplicateNames write SetAllowDuplicateNames;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonDocument.html#AllowDuplicateNames">AllowDuplicateNames</a></b>: Boolean read <a  href="Grijjy.Bson.TgoBsonDocument._IDocument.html#GetAllowDuplicateNames">GetAllowDuplicateNames</a> write <a  href="Grijjy.Bson.TgoBsonDocument._IDocument.html#SetAllowDuplicateNames">SetAllowDuplicateNames</a>;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Count">Count</a></b>: Integer read GetCount;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Count">Count</a></b>: Integer read <a  href="Grijjy.Bson.TgoBsonDocument._IDocument.html#GetCount">GetCount</a>;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Elements">Elements</a></b>[constAIndex:Integer]: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a> read GetElement;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Elements">Elements</a></b>[constAIndex:Integer]: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a> read <a  href="Grijjy.Bson.TgoBsonDocument._IDocument.html#GetElement">GetElement</a>;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Values">Values</a></b>[constAIndex:Integer]: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a> read GetValue write SetValue;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonDocument.html#Values">Values</a></b>[constAIndex:Integer]: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a> read <a  href="Grijjy.Bson.TgoBsonDocument._IDocument.html#GetValue">GetValue</a> write <a  href="Grijjy.Bson.TgoBsonDocument._IDocument.html#SetValue">SetValue</a>;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonDocument.html#ValuesByName">ValuesByName</a></b>[constAName:String]: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a> read GetValueByName write SetValueByName;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Bson.TgoBsonDocument.html#ValuesByName">ValuesByName</a></b>[constAName:String]: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a> read <a  href="Grijjy.Bson.TgoBsonDocument._IDocument.html#GetValueByName">GetValueByName</a> write <a  href="Grijjy.Bson.TgoBsonDocument._IDocument.html#SetValueByName">SetValueByName</a>;</code></td>
 </tr>
 </table>
 <h2 class="description">Description</h2>
@@ -739,7 +745,7 @@ Allow <code>for..in</code> enumeration of the <a class="normal" href="Grijjy.Bso
 <h3 class="detail">Properties</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="AllowDuplicateNames"></a><code>property <b>AllowDuplicateNames</b>: Boolean read GetAllowDuplicateNames write SetAllowDuplicateNames;</code></td>
+<td class="itemcode"><a name="AllowDuplicateNames"></a><code>property <b>AllowDuplicateNames</b>: Boolean read <a  href="Grijjy.Bson.TgoBsonDocument._IDocument.html#GetAllowDuplicateNames">GetAllowDuplicateNames</a> write <a  href="Grijjy.Bson.TgoBsonDocument._IDocument.html#SetAllowDuplicateNames">SetAllowDuplicateNames</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -748,7 +754,7 @@ Whether duplicate element names are allowed. Should generally be False (the defa
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="Count"></a><code>property <b>Count</b>: Integer read GetCount;</code></td>
+<td class="itemcode"><a name="Count"></a><code>property <b>Count</b>: Integer read <a  href="Grijjy.Bson.TgoBsonDocument._IDocument.html#GetCount">GetCount</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -757,7 +763,7 @@ Number of <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Elements">ele
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="Elements"></a><code>property <b>Elements</b>[constAIndex:Integer]: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a> read GetElement;</code></td>
+<td class="itemcode"><a name="Elements"></a><code>property <b>Elements</b>[constAIndex:Integer]: <a  href="Grijjy.Bson.TgoBsonElement.html">TgoBsonElement</a> read <a  href="Grijjy.Bson.TgoBsonDocument._IDocument.html#GetElement">GetElement</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -780,7 +786,7 @@ The <code>elements</code> in the document by index.
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="Values"></a><code>property <b>Values</b>[constAIndex:Integer]: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a> read GetValue write SetValue;</code></td>
+<td class="itemcode"><a name="Values"></a><code>property <b>Values</b>[constAIndex:Integer]: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a> read <a  href="Grijjy.Bson.TgoBsonDocument._IDocument.html#GetValue">GetValue</a> write <a  href="Grijjy.Bson.TgoBsonDocument._IDocument.html#SetValue">SetValue</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -803,7 +809,7 @@ The <code>values</code> in the document by index.
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="ValuesByName"></a><code>property <b>ValuesByName</b>[constAName:String]: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a> read GetValueByName write SetValueByName;</code></td>
+<td class="itemcode"><a name="ValuesByName"></a><code>property <b>ValuesByName</b>[constAName:String]: <a  href="Grijjy.Bson.TgoBsonValue.html">TgoBsonValue</a> read <a  href="Grijjy.Bson.TgoBsonDocument._IDocument.html#GetValueByName">GetValueByName</a> write <a  href="Grijjy.Bson.TgoBsonDocument._IDocument.html#SetValueByName">SetValueByName</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -826,6 +832,6 @@ The <a class="normal" href="Grijjy.Bson.TgoBsonDocument.html#Values">values</a> 
 </dl>
 </td></tr>
 </table>
-<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-12 11:36:52</em>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-30 08:24:21</em>
 </span>
 </td></tr></table></body></html>

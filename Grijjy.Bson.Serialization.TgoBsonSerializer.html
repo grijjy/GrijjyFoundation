@@ -1,0 +1,681 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Bson.Serialization: record TgoBsonSerializer</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<a name="TgoBsonSerializer"></a><h1 class="cio">record TgoBsonSerializer</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Hierarchy</td><td><a class="section" href="#PasDoc-InternalCRs">Internal Classes and Records</a></td><td><a class="section" href="#PasDoc-InternalTypes">Internal Types</a></td><td>Fields</td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td>Properties</td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="Grijjy.Bson.Serialization.html">Grijjy.Bson.Serialization</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TgoBsonSerializer = record</code></p>
+<h2 class="description">Description</h2>
+<p>
+Static class for serializing and deserializing to JSON and BSON format</p>
+<h2 class="overview">Overview</h2>
+<a name="PasDoc-InternalCRs"></a><h3 class="summary">Internal Classes and Records</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.TCustomSerializer.html">TCustomSerializer</a></b> = class abstract(TSerializer)</code></td>
+</tr>
+</table>
+<a name="PasDoc-InternalTypes"></a><h3 class="summary">Internal Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TConstructorProc">TConstructorProc</a></b> = function(const AClass: TClass; const AAlloc: Shortint): TObject;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TCustomSerializerClass">TCustomSerializerClass</a></b> = class of <a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.TCustomSerializer.html">TCustomSerializer</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TDeserializePropertyProc">TDeserializePropertyProc</a></b> = procedure(const AProp: TPropertyInfo; const AInstance: TObject; const AReader: <a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html">IgoBsonBaseReader</a>);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TDeserializeVarProc">TDeserializeVarProc</a></b> = procedure(const AVar: TVarInfo; const AAddress: Pointer; const AReader: <a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html">IgoBsonBaseReader</a>);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TInitializeRecordProc">TInitializeRecordProc</a></b> = procedure(const ASelf: Pointer);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TSerializePropertyProc">TSerializePropertyProc</a></b> = procedure(const AProp: TPropertyInfo; const AInstance: TObject; const AWriter: <a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html">IgoBsonBaseWriter</a>);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TSerializeVarProc">TSerializeVarProc</a></b> = procedure(const AVar: TVarInfo; const AAddress: Pointer; const AWriter: <a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html">IgoBsonBaseWriter</a>);</code></td>
+</tr>
+</table>
+<a name="PasDoc-Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>class procedure <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">Serialize</a></b>&lt;T&gt;(const AValue: T; out AJson: String); overload; inline; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class procedure <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">Serialize</a></b>&lt;T&gt;(const AValue: T; const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>; out AJson: String); overload; inline; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class procedure <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">Serialize</a></b>&lt;T&gt;(const AValue: T; out ABson: TBytes); overload; inline; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class procedure <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">Serialize</a></b>&lt;T&gt;(const AValue: T; out ADocument: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>); overload; inline; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class procedure <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">Serialize</a></b>&lt;T&gt;(const AValue: T; const AWriter: <a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html">IgoBsonBaseWriter</a>); overload; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TrySerialize">TrySerialize</a></b>&lt;T&gt;(const AValue: T; out AJson: String): Boolean; overload; inline; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TrySerialize">TrySerialize</a></b>&lt;T&gt;(const AValue: T; const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>; out AJson: String): Boolean; overload; inline; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TrySerialize">TrySerialize</a></b>&lt;T&gt;(const AValue: T; out ABson: TBytes): Boolean; overload; inline; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TrySerialize">TrySerialize</a></b>&lt;T&gt;(const AValue: T; out ADocument: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>): Boolean; overload; inline; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TrySerialize">TrySerialize</a></b>&lt;T&gt;(const AValue: T; const AWriter: <a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html">IgoBsonBaseWriter</a>): Boolean; overload; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class procedure <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Deserialize">Deserialize</a></b>&lt;T&gt;(const AJson: String; var AValue: T); overload; inline; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class procedure <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Deserialize">Deserialize</a></b>&lt;T&gt;(const ABson: TBytes; var AValue: T); overload; inline; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class procedure <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Deserialize">Deserialize</a></b>&lt;T&gt;(const ADocument: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; var AValue: T); overload; inline; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class procedure <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Deserialize">Deserialize</a></b>&lt;T&gt;(const AReader: <a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html">IgoBsonBaseReader</a>; var AValue: T); overload; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TryDeserialize">TryDeserialize</a></b>&lt;T&gt;(const AJson: String; var AValue: T): Boolean; overload; inline; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TryDeserialize">TryDeserialize</a></b>&lt;T&gt;(const ABson: TBytes; var AValue: T): Boolean; overload; inline; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TryDeserialize">TryDeserialize</a></b>&lt;T&gt;(const ADocument: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; var AValue: T): Boolean; overload; inline; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TryDeserialize">TryDeserialize</a></b>&lt;T&gt;(const AReader: <a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html">IgoBsonBaseReader</a>; var AValue: T): Boolean; overload; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class procedure <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#RegisterSubClass">RegisterSubClass</a></b>(const ASubClass: TClass); static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class procedure <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#RegisterSubClasses">RegisterSubClasses</a></b>(const ASubClasses: array of TClass); static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class procedure <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#RegisterCustomSerializer">RegisterCustomSerializer</a></b>&lt;T: record&gt;(const ASerializerClass: <a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TCustomSerializerClass">TCustomSerializerClass</a>); overload; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class procedure <b><a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#RegisterCustomSerializer">RegisterCustomSerializer</a></b>(const AForType: PTypeInfo; const ASerializerClass: <a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TCustomSerializerClass">TCustomSerializerClass</a>); overload; static;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Internal Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TConstructorProc"></a><code><b>TConstructorProc</b> = function(const AClass: TClass; const AAlloc: Shortint): TObject;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TCustomSerializerClass"></a><code><b>TCustomSerializerClass</b> = class of <a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.TCustomSerializer.html">TCustomSerializer</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TDeserializePropertyProc"></a><code><b>TDeserializePropertyProc</b> = procedure(const AProp: TPropertyInfo; const AInstance: TObject; const AReader: <a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html">IgoBsonBaseReader</a>);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TDeserializeVarProc"></a><code><b>TDeserializeVarProc</b> = procedure(const AVar: TVarInfo; const AAddress: Pointer; const AReader: <a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html">IgoBsonBaseReader</a>);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TInitializeRecordProc"></a><code><b>TInitializeRecordProc</b> = procedure(const ASelf: Pointer);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TSerializePropertyProc"></a><code><b>TSerializePropertyProc</b> = procedure(const AProp: TPropertyInfo; const AInstance: TObject; const AWriter: <a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html">IgoBsonBaseWriter</a>);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TSerializeVarProc"></a><code><b>TSerializeVarProc</b> = procedure(const AVar: TVarInfo; const AAddress: Pointer; const AWriter: <a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html">IgoBsonBaseWriter</a>);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Serialize"></a><code>class procedure <b>Serialize</b>&lt;T&gt;(const AValue: T; out AJson: String); overload; inline; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Serializes a value to JSON format.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the value to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">serialize</a>. Must be a record, class or dynamic array.</dd>
+<dt>AJson</dt>
+<dd>is set to the serialized JSON output.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><a class="normal" href="Grijjy.Bson.Serialization.EgoBsonSerializerError.html">EgoBsonSerializerError</a></dt>
+<dd>if type T is not serializable</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Serialize"></a><code>class procedure <b>Serialize</b>&lt;T&gt;(const AValue: T; const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>; out AJson: String); overload; inline; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Serializes a value to JSON format using custom output settings.
+
+<p>  
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the value to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">serialize</a>. Must be a record, class or dynamic array.</dd>
+<dt>ASettings</dt>
+<dd>settings to use to customize the JSON output.</dd>
+<dt>AJson</dt>
+<dd>is set to the serialized JSON output.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><a class="normal" href="Grijjy.Bson.Serialization.EgoBsonSerializerError.html">EgoBsonSerializerError</a></dt>
+<dd>if type T is not serializable</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Serialize"></a><code>class procedure <b>Serialize</b>&lt;T&gt;(const AValue: T; out ABson: TBytes); overload; inline; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Serializes a value to BSON format.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the value to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">serialize</a>. Must be a record or class.</dd>
+<dt>ABson</dt>
+<dd>is set to the serialized BSON output.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><a class="normal" href="Grijjy.Bson.Serialization.EgoBsonSerializerError.html">EgoBsonSerializerError</a></dt>
+<dd>if type T is not serializable</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Serialize"></a><code>class procedure <b>Serialize</b>&lt;T&gt;(const AValue: T; out ADocument: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>); overload; inline; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Serializes a value to a BSON document.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the value to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">serialize</a>. Must be a record or class.</dd>
+<dt>ADocument</dt>
+<dd>is set to the serialized document.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><a class="normal" href="Grijjy.Bson.Serialization.EgoBsonSerializerError.html">EgoBsonSerializerError</a></dt>
+<dd>if type T is not serializable</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Serialize"></a><code>class procedure <b>Serialize</b>&lt;T&gt;(const AValue: T; const AWriter: <a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html">IgoBsonBaseWriter</a>); overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Serializes a value using a writer interface.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the value to <code>serialize</code>. Must be a record or class.</dd>
+<dt>AWriter</dt>
+<dd>the writer to <code>serialize</code> to.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><a class="normal" href="Grijjy.Bson.Serialization.EgoBsonSerializerError.html">EgoBsonSerializerError</a></dt>
+<dd>if type T is not serializable</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TrySerialize"></a><code>class function <b>TrySerialize</b>&lt;T&gt;(const AValue: T; out AJson: String): Boolean; overload; inline; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">serialize</a> a value to JSON format.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the value to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">serialize</a>. Must be a record, class or dynamic array.</dd>
+<dt>AJson</dt>
+<dd>is set to the serialized JSON output, or an empty string if serialization failed.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True on success, or False when type T is not serializable</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TrySerialize"></a><code>class function <b>TrySerialize</b>&lt;T&gt;(const AValue: T; const ASettings: <a  href="Grijjy.Bson.TgoJsonWriterSettings.html">TgoJsonWriterSettings</a>; out AJson: String): Boolean; overload; inline; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">serialize</a> a value to JSON format using custom output settings.
+
+<p>  
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the value to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">serialize</a>. Must be a record, class or dynamic array.</dd>
+<dt>ASettings</dt>
+<dd>settings to use to customize the JSON output.</dd>
+<dt>AJson</dt>
+<dd>is set to the serialized JSON output, or an empty string if serialization failed.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True on success, or False when type T is not serializable</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TrySerialize"></a><code>class function <b>TrySerialize</b>&lt;T&gt;(const AValue: T; out ABson: TBytes): Boolean; overload; inline; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">serialize</a> a value to BSON format.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the value to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">serialize</a>. Must be a record or class.</dd>
+<dt>ABson</dt>
+<dd>is set to the serialized BSON output, or nil if serialization failed.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True on success, or False when type T is not serializable</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TrySerialize"></a><code>class function <b>TrySerialize</b>&lt;T&gt;(const AValue: T; out ADocument: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>): Boolean; overload; inline; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">serialize</a> a value to a BSON document.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the value to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">serialize</a>. Must be a record or class.</dd>
+<dt>ADocument</dt>
+<dd>is set to the serialized document, or an empty document if serialization failed.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True on success, or False when type T is not serializable</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TrySerialize"></a><code>class function <b>TrySerialize</b>&lt;T&gt;(const AValue: T; const AWriter: <a  href="Grijjy.Bson.IO.IgoBsonBaseWriter.html">IgoBsonBaseWriter</a>): Boolean; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">serialize</a> a value using a writer interface.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AValue</dt>
+<dd>the value to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">serialize</a>. Must be a record or class.</dd>
+<dt>AWriter</dt>
+<dd>the writer to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">serialize</a> to.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True on success, or False when type T is not serializable</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Deserialize"></a><code>class procedure <b>Deserialize</b>&lt;T&gt;(const AJson: String; var AValue: T); overload; inline; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Deserializes data in JSON format.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AJson</dt>
+<dd>the JSON string to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Deserialize">deserialize</a>.</dd>
+<dt>AValue</dt>
+<dd>is set to the deserialized value. Must be a record, class or dynamic array. In case of a class, an instance of type T will be created if it is not already assigned.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><a class="normal" href="Grijjy.Bson.Serialization.EgoBsonSerializerError.html">EgoBsonSerializerError</a></dt>
+<dd>if type T is not serializable or the JSON string is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Deserialize"></a><code>class procedure <b>Deserialize</b>&lt;T&gt;(const ABson: TBytes; var AValue: T); overload; inline; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Deserializes data in BSON format.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ABson</dt>
+<dd>the BSON data to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Deserialize">deserialize</a>.</dd>
+<dt>AValue</dt>
+<dd>is set to the deserialized value. Must be a record, class or dynamic array. In case of a class, an instance of type T will be created if it is not already assigned.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><a class="normal" href="Grijjy.Bson.Serialization.EgoBsonSerializerError.html">EgoBsonSerializerError</a></dt>
+<dd>if type T is not serializable or the BSON data is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Deserialize"></a><code>class procedure <b>Deserialize</b>&lt;T&gt;(const ADocument: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; var AValue: T); overload; inline; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Deserializes data in a BSON document.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ADocument</dt>
+<dd>the document containing the data to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Deserialize">deserialize</a>.</dd>
+<dt>AValue</dt>
+<dd>is set to the deserialized value. Must be a record, class or dynamic array. In case of a class, an instance of type T will be created if it is not already assigned.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><a class="normal" href="Grijjy.Bson.Serialization.EgoBsonSerializerError.html">EgoBsonSerializerError</a></dt>
+<dd>if type T is not serializable.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Deserialize"></a><code>class procedure <b>Deserialize</b>&lt;T&gt;(const AReader: <a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html">IgoBsonBaseReader</a>; var AValue: T); overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Deserializes data using a reader interface.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AReader</dt>
+<dd>the reader to <code>deserialize</code> from</dd>
+<dt>AValue</dt>
+<dd>is set to the deserialized value. Must be a record, class or dynamic array. In case of a class, an instance of type T will be created if it is not already assigned.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><a class="normal" href="Grijjy.Bson.Serialization.EgoBsonSerializerError.html">EgoBsonSerializerError</a></dt>
+<dd>if type T is not serializable or the reader contains invalid data..</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TryDeserialize"></a><code>class function <b>TryDeserialize</b>&lt;T&gt;(const AJson: String; var AValue: T): Boolean; overload; inline; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Deserialize">deserialize</a> data in JSON format.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AJson</dt>
+<dd>the JSON string to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Deserialize">deserialize</a>.</dd>
+<dt>AValue</dt>
+<dd>is set to the deserialized value. Must be a record, class or dynamic array. In case of a class, an instance of type T will be created if it is not already assigned.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>True</code></dt>
+<dd>on success, or False when type T is not serializable or the JSON string is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TryDeserialize"></a><code>class function <b>TryDeserialize</b>&lt;T&gt;(const ABson: TBytes; var AValue: T): Boolean; overload; inline; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Deserialize">deserialize</a> data in BSON format.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ABson</dt>
+<dd>the BSON data to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Deserialize">deserialize</a>.</dd>
+<dt>AValue</dt>
+<dd>is set to the deserialized value. Must be a record, class or dynamic array. In case of a class, an instance of type T will be created if it is not already assigned.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>True</code></dt>
+<dd>on success, or False when type T is not serializable or the BSON data is invalid.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TryDeserialize"></a><code>class function <b>TryDeserialize</b>&lt;T&gt;(const ADocument: <a  href="Grijjy.Bson.TgoBsonDocument.html">TgoBsonDocument</a>; var AValue: T): Boolean; overload; inline; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Deserialize">deserialize</a> data in a BSON document.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ADocument</dt>
+<dd>the document containing the data to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Deserialize">deserialize</a>.</dd>
+<dt>AValue</dt>
+<dd>is set to the deserialized value. Must be a record, class or dynamic array. In case of a class, an instance of type T will be created if it is not already assigned.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>True</code></dt>
+<dd>on success, or False when type T is not serializable.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TryDeserialize"></a><code>class function <b>TryDeserialize</b>&lt;T&gt;(const AReader: <a  href="Grijjy.Bson.IO.IgoBsonBaseReader.html">IgoBsonBaseReader</a>; var AValue: T): Boolean; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tries to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Deserialize">deserialize</a> data using a reader interface.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AReader</dt>
+<dd>the reader to <a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Deserialize">deserialize</a> from</dd>
+<dt>AValue</dt>
+<dd>is set to the deserialized value. Must be a record, class or dynamic array. In case of a class, an instance of type T will be created if it is not already assigned.</dd>
+</dl>
+<h6 class="description_section">Exceptions raised</h6>
+<dl class="exceptions_raised">
+<dt><code>True</code></dt>
+<dd>on success, or False when type T is not serializable or the reader contains invalid data.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RegisterSubClass"></a><code>class procedure <b>RegisterSubClass</b>(const ASubClass: TClass); static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Registers a known sub-class. See unit documentation for details.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ASubClass</dt>
+<dd>the sub-class to register</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RegisterSubClasses"></a><code>class procedure <b>RegisterSubClasses</b>(const ASubClasses: array of TClass); static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Registers an array known sub-classes. See unit documentation for details.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ASubClasses</dt>
+<dd>the sub-classes to register</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RegisterCustomSerializer"></a><code>class procedure <b>RegisterCustomSerializer</b>&lt;T: record&gt;(const ASerializerClass: <a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TCustomSerializerClass">TCustomSerializerClass</a>); overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Registers a custom serializer for a specific type. See unit documentation for details.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>T</dt>
+<dd>the type for which to use the custom serializer.</dd>
+<dt>ASerializerClass</dt>
+<dd>the serializer class to use to (de)<a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">serialize</a> values of type T.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RegisterCustomSerializer"></a><code>class procedure <b>RegisterCustomSerializer</b>(const AForType: PTypeInfo; const ASerializerClass: <a  href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#TCustomSerializerClass">TCustomSerializerClass</a>); overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Registers a custom serializer for a specific type. See unit documentation for details.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AForType</dt>
+<dd>the type for which to use the custom serializer.</dd>
+<dt>ASerializerClass</dt>
+<dd>the serializer class to use to (de)<a class="normal" href="Grijjy.Bson.Serialization.TgoBsonSerializer.html#Serialize">serialize</a> values of type AForType.</dd>
+</dl>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-30 08:24:21</em>
+</span>
+</td></tr></table></body></html>
