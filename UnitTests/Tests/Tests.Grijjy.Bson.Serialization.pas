@@ -919,6 +919,20 @@ type
   end;
 
 type
+  TestBsonCircularClass = class
+  public type
+    TFoo = class
+    public
+      Value: Integer;
+      Child: TFoo;
+    public
+      destructor Destroy; override;
+    end;
+  public
+    [Test] procedure TestCircularClass;
+  end;
+
+type
   TestBsonAttributes = class
   public type
     TColor = (Red, Green, Blue);
@@ -4100,6 +4114,48 @@ begin
   inherited;
 end;
 
+{ TestBsonCircularClass }
+
+procedure TestBsonCircularClass.TestCircularClass;
+var
+  Foo, Rehydrated: TFoo;
+  Json: String;
+  Bson, Actual: TBytes;
+begin
+  Foo := TFoo.Create;
+  Foo.Value := 1;
+  Foo.Child := TFoo.Create;
+  Foo.Child.Value := 2;
+
+  Assert.IsTrue(TgoBsonSerializer.TrySerialize(Foo, TgoJsonWriterSettings.Shell, Json));
+  Assert.AreEqual('{ "Value" : 1, "Child" : { "Value" : 2, "Child" : null } }', Json);
+
+  Assert.IsTrue(TgoBsonSerializer.TrySerialize(Foo, Bson));
+
+  Rehydrated := nil;
+  Assert.IsTrue(TgoBsonSerializer.TryDeserialize(Bson, Rehydrated));
+
+  Assert.IsNotNull(Rehydrated);
+  Assert.AreEqual(1, Rehydrated.Value);
+  Assert.IsNotNull(Rehydrated.Child);
+  Assert.AreEqual(2, Rehydrated.Child.Value);
+  Assert.IsNull(Rehydrated.Child.Child);
+
+  Assert.IsTrue(TgoBsonSerializer.TrySerialize(Rehydrated, Actual));
+  Assert.AreEqual(Bson, Actual);
+
+  Foo.Free;
+  Rehydrated.Free;
+end;
+
+{ TestBsonCircularClass.TFoo }
+
+destructor TestBsonCircularClass.TFoo.Destroy;
+begin
+  Child.Free;
+  inherited;
+end;
+
 { TestBsonAttributes }
 
 procedure TestBsonAttributes.TestElementName;
@@ -4509,6 +4565,7 @@ initialization
   TDUnitX.RegisterTestFixture(TestBsonSerializePrimitiveTypesInClass);
   TDUnitX.RegisterTestFixture(TestBsonSerializer);
   TDUnitX.RegisterTestFixture(TestBsonPolymorphicClasses);
+  TDUnitX.RegisterTestFixture(TestBsonCircularClass);
   TDUnitX.RegisterTestFixture(TestBsonAttributes);
   TDUnitX.RegisterTestFixture(TestCustomSerialization);
 

@@ -709,6 +709,7 @@ type
       function GetTypeKind: TTypeKind; inline;
     public
       constructor Create(const ATypeInfo: PTypeInfo);
+      procedure Setup; virtual;
 
       property TypeInfo: PTypeInfo read FTypeInfo;
       property TypeKind: TTypeKind read GetTypeKind;
@@ -976,8 +977,9 @@ type
     protected
       procedure Initialize(const AStructType: TRttiType); virtual;
     public
-      constructor Create(const ATypeInfo: PTypeInfo);
       destructor Destroy; override;
+
+      procedure Setup; override;
     end;
   private type
     TInitializeRecordProc = procedure(const ASelf: Pointer);
@@ -2239,6 +2241,12 @@ begin
     end
     else
       FRegisteredSerializers.Add(ATypeInfo, Result);
+
+    { Setup serializer AFTER saving it to FRegisteredSerializers. This prevents
+      an eternal loop in case type ATypeInfo has a field of the same type,
+      which would call GetOrAddSerializer until the stack overflows.
+      Thanks to Ludwig Behm for pointing this out! }
+    Result.Setup;
   finally
     FLock.Leave;
   end;
@@ -2928,30 +2936,12 @@ begin
   Result := FTypeInfo.Kind;
 end;
 
-{ TgoBsonSerializer.TStructSerializer }
-
-constructor TgoBsonSerializer.TStructSerializer.Create(
-  const ATypeInfo: PTypeInfo);
-var
-  Context: TRttiContext;
-  Typ: TRttiType;
+procedure TgoBsonSerializer.TSerializer.Setup;
 begin
-  inherited Create(ATypeInfo);
-  Context := TRttiContext.Create;
-  Context.KeepContext;
-  try
-    Typ := Context.GetType(ATypeInfo);
-    if (Typ = nil) then
-      raise EgoBsonSerializerError.CreateFmt('Unable to get type information for type "%s"',
-        [ATypeInfo.NameFld.ToString]);
-
-    FInfoByName := TObjectDictionary<String, TInfo>.Create([doOwnsValues]);
-    MapFields(Typ);
-    Initialize(Typ);
-  finally
-    Context.DropContext;
-  end;
+  { No default implementation }
 end;
+
+{ TgoBsonSerializer.TStructSerializer }
 
 destructor TgoBsonSerializer.TStructSerializer.Destroy;
 begin
@@ -3028,6 +3018,27 @@ begin
   begin
     Info := FFields[I];
     Info.SerializeProc(Info, ABaseAddress + Info.Offset, AWriter);
+  end;
+end;
+
+procedure TgoBsonSerializer.TStructSerializer.Setup;
+var
+  Context: TRttiContext;
+  Typ: TRttiType;
+begin
+  Context := TRttiContext.Create;
+  Context.KeepContext;
+  try
+    Typ := Context.GetType(FTypeInfo);
+    if (Typ = nil) then
+      raise EgoBsonSerializerError.CreateFmt('Unable to get type information for type "%s"',
+        [FTypeInfo.NameFld.ToString]);
+
+    FInfoByName := TObjectDictionary<String, TInfo>.Create([doOwnsValues]);
+    MapFields(Typ);
+    Initialize(Typ);
+  finally
+    Context.DropContext;
   end;
 end;
 
@@ -3416,7 +3427,6 @@ var
 begin
   inherited Create(ATypeInfo);
   TypeData := ATypeInfo.TypeData;
-//  ElementTypePtr := TypeData.elType2;
   ElementTypePtr := TypeData.DynArrElType;
   if (ElementTypePtr = nil) or (ElementTypePtr^ = nil) then
     raise EgoBsonSerializerError.CreateFmt('Unsupported element type for array type %s', [ATypeInfo.NameFld.ToString]);
