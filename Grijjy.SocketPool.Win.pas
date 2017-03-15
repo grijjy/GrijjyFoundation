@@ -186,9 +186,6 @@ type
 
     { Write data to the socket }
     function Write(const ABuffer: Pointer; const ASize: Integer): Boolean; inline;
-
-    { Disconnects the socket }
-    procedure Disconnect;
   public
     constructor Create(const AOwner: TgoClientSocketManager; const AHostname: String; const APort: Word);
     destructor Destroy; override;
@@ -196,8 +193,12 @@ type
     { Connects the socket }
     function Connect(const AUseNagle: Boolean = True): Boolean;
 
+    { Disconnects the socket }
+    procedure Disconnect;
+
     { Sends the bytes to the socket }
-    function Send(const ABytes: TBytes): Boolean;
+    function Send(const ABuffer: Pointer; const ASize: Integer): Boolean; overload;
+    function Send(const ABytes: TBytes): Boolean; overload;
 
     { Returns the pending operations as a string }
     function PendingToString: String;
@@ -804,6 +805,7 @@ var
 begin
   Result := False;
   if not AddRef(TgoSocketOperation.Disconnect) then Exit;
+  if FSocket.Handle = 0 then Exit;
   PerIoData := _PerIoDataPool.RequestMem('_TgoSocketConnection.PostDisconnect.PerIoData');
   PerIoData.Socket := FSocket.Handle;
   PerIoData.Operation := TgoSocketOperation.Disconnect;
@@ -872,24 +874,27 @@ begin
   end;
 end;
 
-function TgoSocketConnection.Send(const ABytes: TBytes): Boolean;
+function TgoSocketConnection.Send(const ABuffer: Pointer;
+  const ASize: Integer): Boolean;
 var
   Index: Integer;
   BlockSize: Integer;
+  Bytes: PByte;
 begin
   Result := True;
   Index := 0;
+  Bytes := ABuffer;
   { we chunk the buffer to match the memory pool block size to
     avoid memory reallocations }
-  if Length(ABytes) < DEFAULT_BLOCK_SIZE then
-    BlockSize := Length(ABytes)
+  if ASize < DEFAULT_BLOCK_SIZE then
+    BlockSize := ASize
   else
     BlockSize := DEFAULT_BLOCK_SIZE;
-  while Index < Length(ABytes) do
+  while Index < ASize do
   begin
-    if Length(ABytes) - Index < BlockSize then
-      BlockSize := Length(ABytes) - Index;
-    if Write(@ABytes[Index], BlockSize) then
+    if ASize - Index < BlockSize then
+      BlockSize := ASize - Index;
+    if Write(@Bytes[Index], BlockSize) then
       Inc(Index, BlockSize)
     else
     begin
@@ -898,6 +903,11 @@ begin
       Break; { write failed }
     end;
   end;
+end;
+
+function TgoSocketConnection.Send(const ABytes: TBytes): Boolean;
+begin
+  Result := Send(@ABytes[0], Length(ABytes));
 end;
 
 procedure TgoSocketConnection.Read(const ABuffer: Pointer;
@@ -1189,6 +1199,7 @@ var
   Timeout: LongWord;
   P: Pointer;
   Connection: TgoSocketConnection;
+  Start: TDateTime;
 begin
   inherited Destroy;
 
@@ -1215,8 +1226,15 @@ begin
     begin
       Connection := TgoSocketConnection(P);
       if not Connection.Closed then
+      begin
         closesocket(Connection.Socket.Handle);
-      Connection.Free;
+        Start := Now;
+        while (MillisecondsBetween(Now, Start) < TIMEOUT_CLOSE) and
+          (not Connection.Closed) do
+          Sleep(5);
+      end;
+      if Connection.Closed then
+        Connection.Free;
     end;
     Connections.Free;
   finally

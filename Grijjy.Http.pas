@@ -1,10 +1,14 @@
 unit Grijjy.Http;
 
-{ Windows and Linux Cross-platform HTTP/S client class using scalable sockets }
+{ Windows and Linux Cross-platform HTTP, HTTPS and HTTP/2 protocol
+  support class using scalable client sockets }
+
+interface
 
 {$I Grijjy.inc}
 
-interface
+{$DEFINE HTTP2}
+//{$DEFINE LOGGING}
 
 uses
   System.Classes,
@@ -12,29 +16,32 @@ uses
   System.StrUtils,
   System.SyncObjs,
   System.DateUtils,
+  System.Messaging,
+  System.Generics.Collections,
   Grijjy.Uri,
-  {$IF Defined(MSWINDOWS)}
-  Grijjy.SocketPool.Win,
-  {$ELSEIF Defined(LINUX)}
-  Grijjy.SocketPool.Linux,
-  {$ELSE}
-    {$MESSAGE Error 'Unsupported Platform'}
+  {$IFDEF MSWINDOWS}
+  Windows,
   {$ENDIF}
+  {$IFDEF HTTP2}
+  Nghttp2,
+  {$ENDIF}
+  Grijjy.SocketPool.Win,
   Grijjy.BinaryCoding;
 
 const
-  { Socket recv buffer size }
-  RECV_BUFFER_SIZE = 32768;
+  { Socket buffer size }
+  BUFFER_SIZE = 32768;
 
   { Timeout for operations }
   TIMEOUT_CONNECT = 5000;
-  TIMEOUT_SEND = 5000;
-  DEFAULT_TIMEOUT_RECV = 5000;
+  TIMEOUT_RECV = 5000;
 
   { Strings }
-  S_CONTENT_LENGTH = 'content-length:';
-  S_TRANSFER_ENCODING = 'transfer-encoding:';
+  S_CONTENT_LENGTH = 'content-length';
+  S_CONTENT_TYPE = 'content-type';
+  S_TRANSFER_ENCODING = 'transfer-encoding';
   S_CHUNKED = 'chunked';
+  S_CHARSET = 'charset';
 
   { End of line }
   CRLF = #13#10;
@@ -43,113 +50,275 @@ const
   DEFAULT_HTTP_PORT = 80;
   DEFAULT_HTTPS_PORT = 443;
 
+  { Cleanup }
+  INTERVAL_CLEANUP = 5000;
+
 type
-  { HTTP events }
-  TOnRedirect = procedure(Sender: TObject; var ALocation: UnicodeString; const AFollow: Boolean) of object;
+  { Http events }
+  TOnRedirect = procedure(Sender: TObject; var ALocation: String; const AFollow: Boolean) of object;
   TOnPassword = procedure(Sender: TObject; var AAgain: Boolean) of object;
+  TOnRecv = procedure(Sender: TObject; const ABuffer: Pointer; const ASize: Integer; var ACreateResponse: Boolean) of object;
 
-  { Socket activity state }
-  TSocketState = (None, Sending, Receiving, Success, Failure);
+  { ISO-8859-1 ASCII compatible string }
+  ISO8859String = type AnsiString(28591);
 
-  { HTTP client }
-  TgoHTTPClient = class(TObject)
+type
+  { Thread safe buffer }
+  TThreadSafeBuffer = class(TObject)
   private
+    FLock: TCriticalSection;
+    FBuffer: TBytes;
+    FSize: Integer;
+  public
+    constructor Create(const ACapacity: Integer = BUFFER_SIZE);
+    destructor Destroy; override;
+  protected
+    function GetSize: Integer;
+  public
+    { Write buffer }
+    procedure Write(const ABuffer: Pointer; const ASize: Integer);
+
+    { Read entire buffer }
+    function Read(out ABytes: TBytes): Boolean; overload;
+
+    { Read count number of bytes from the buffer }
+    function Read(out ABytes: TBytes; const ACount: Integer): Boolean; overload;
+
+    { Read up to length number of bytes from the buffer, for nghttp2 }
+    function Read(const ABuffer: Pointer; var ALength: NativeInt): Boolean; overload;
+
+    { Read all bytes up to and including substring match }
+    function ReadTo(const ASubStr: RawByteString; out ABytes: TBytes): Boolean;
+
+    { Clear the buffer }
+    procedure Clear;
+
+    {$IFDEF LOGGING}
+    { Outputs the buffer to log }
+    procedure Log(const AText: String);
+    {$ENDIF}
+  public
+    { Current actual size of the buffer }
+    property Size: Integer read GetSize;
+  end;
+
+type
+  { Client activity state }
+  TgoHttpClientState = (None, Error, Sending, Receiving, Finished);
+
+  { Http header }
+  TgoHttpHeader = record
+    Name: String;
+    Value: String;
+    {$IFDEF HTTP2}
+    NameAsISO8859: ISO8859String; { nghttp2 requires a pointer to a memory object we maintain }
+    ValueAsISO8859: ISO8859String;
+    {$ENDIF}
+  end;
+
+  { Http headers class }
+  TgoHttpHeaders = class(TObject)
+  private
+    FHeaders: TArray<TgoHttpHeader>;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  public
+    { Add or set a header and value to a list of headers }
+    procedure AddOrSet(const AName, AValue: String); overload;
+    procedure AddOrSet(const AHeader: String); overload;
+
+    { Get the value associated with the header }
+    function Value(const AName: String): String;
+
+    { Returns the index of the associated header }
+    function IndexOf(const AName: String): Integer;
+
+    { Reads headers as http compatible header string }
+    function AsString: String;
+
+    { Reads headers as ngHttp2 compatible header array }
+    {$IFDEF HTTP2}
+    procedure AsNgHttp2Array(var AHeaders: TArray<nghttp2_nv>);
+    {$ENDIF}
+  public
+    property Headers: TArray<TgoHttpHeader> read FHeaders write FHeaders;
+  end;
+
+  { Http client }
+  TgoHttpClient = class(TObject)
+  private
+    {$IFDEF HTTP2}
+    FHttp2: Boolean;
+    {$ENDIF}
+    FBlocking: Boolean;
     FConnection: TgoSocketConnection;
     FConnectionLock: TCriticalSection;
+    FState: TgoHttpClientState;
+    FRecvTimeout: Integer;
+
+    { SSL }
+    FCertificate: TBytes;
+    FPrivateKey: TBytes;
 
     { Recv }
-    FRecvBuffer: TBytes;
-    FRecvSize: Integer;
+    FRecvBuffer: TThreadSafeBuffer;
+    FRecvBuffer2: TThreadSafeBuffer;
     FLastRecv: TDateTime;
+    FRecvAbort: Boolean;
+    FRecv: TEvent;
 
     { Send }
+    FSendBuffer: TThreadSafeBuffer;
     FLastSent: TDateTime;
 
     { Http request }
-    FURL: UnicodeString;
-    FMethod: UnicodeString;
+    FURL: String;
+    FMethod: String;
     FURI: TgoURI;
     FLastURI: TgoURI;
     FContentLength: Int64;
-    FTransferEncoding: UnicodeString;
-    FHTTPVersion: UnicodeString;
+    FTransferEncoding: String;
+    FHttpVersion: String;
     FFollowRedirects: Boolean;
     FSentCookies: TStrings;
     FCookies: TStrings;
-    FAuthorization: UnicodeString;
-    FUserName: UnicodeString;
-    FPassword: UnicodeString;
-    FContentType: UnicodeString;
+    FAuthorization: String;
+    FUserName: String;
+    FPassword: String;
+    FContentType: String;
     FConnected: TEvent;
-    FRequestHeader: UnicodeString;
-    FRequestHeaders: TStrings;
-    FRequestBody: UnicodeString;
+    FInternalHeaders: TgoHttpHeaders;
+    FRequestStatusLine: String;
+    FRequestHeaders: TgoHttpHeaders;
+    FRequestBody: String;
     FRequestData: TBytes;
-    FRequestSent: TSocketState;
-    FUserAgent: UnicodeString;
+    FUserAgent: String;
+    FRange: String;
 
     { Http response }
-    FResponseHeaders: TStrings;
+    FResponseHeader: Boolean;
+    FResponseHeaders: TgoHttpHeaders;
     FResponseStatusCode: Integer;
-    FResponseIndexEndOfHeader: Integer;
-    FResponseRecv: TSocketState;
+    FResponseContentType: String;
+    FResponseContentCharset: String;
+    FResponse: TBytes;
+    FResponseBytes: Integer;
+    FChunkSize: Integer;
+
+    { ngHttp2 }
+    {$IFDEF HTTP2}
+    FStreamId2: Integer;
+    FResponseHeader2: Boolean;
+    FResponseContent2: Boolean;
+    FCallbacks_http2: nghttp2_session_callbacks;
+    FSession_http2: nghttp2_session;
+    {$ENDIF}
+  private
+    { ngHttp2 callbacks }
+    {$IFDEF HTTP2}
+    function nghttp2_data_source_read_callback(session: nghttp2_session;
+      stream_id: int32; buf: puint8; len: size_t; data_flags: puint32;
+      source: pnghttp2_data_source; user_data: Pointer): ssize_t; cdecl;
+    function nghttp2_on_data_chunk_recv_callback(session: nghttp2_session;
+      flags: uint8; stream_id: int32; const data: puint8; len: size_t;
+      user_data: Pointer): Integer; cdecl;
+    function nghttp2_on_frame_recv_callback(session: nghttp2_session;
+      const frame: pnghttp2_frame; user_data: Pointer): Integer; cdecl;
+    function nghttp2_on_header_callback(session: nghttp2_session;
+      const frame: pnghttp2_frame; const name: puint8; namelen: size_t;
+      const value: puint8; valuelen: size_t; flags: uint8;
+      user_data: Pointer): Integer; cdecl;
+    function nghttp2_on_stream_close_callback(session: nghttp2_session;
+      stream_id: int32; error_code: uint32; user_data: Pointer): Integer; cdecl;
+    function nghttp2_Send: Boolean;
+    function nghttp2_Recv: Boolean;
+    {$ENDIF}
   protected
     FOnPassword: TOnPassword;
     FOnRedirect: TOnRedirect;
+    FOnRecv: TOnRecv;
     procedure SetCookies(const AValue: TStrings);
+    function GetIdleTime: Integer;
   private
     function GetCookies: TStrings;
   private
-    function BytePos(const ASubStr: AnsiString; AOffset: Integer = 0): Integer;
     procedure Reset;
     procedure CreateRequest;
-    procedure SendRequest;
-    function ResponseHeaderReady: Boolean;
-    function ResponseContentReady: Boolean;
-    function ReadResponse: UnicodeString;
-    function WaitForSendSuccess: Boolean;
-    function WaitForRecvSuccess(const ARecvTimeout: Integer): Boolean;
-    function DoResponse(var AAgain: Boolean): UnicodeString;
-    function DoRequest(const AMethod, AURL: UnicodeString;
-      const ARecvTimeout: Integer): UnicodeString;
+    function SendRequest: Boolean;
+    function ResponseHeader: Boolean;
+    function ResponseContent: Boolean;
+    function WaitForRecv: Boolean;
+    function DoResponse(var AAgain: Boolean): TBytes;
+    function DoRequest(const AMethod, AURL: String;
+      out AResponse: TBytes; const ARecvTimeout: Integer): Boolean;
   protected
     { Socket routines }
     procedure OnSocketConnected;
     procedure OnSocketDisconnected;
     procedure OnSocketSent(const ABuffer: Pointer; const ASize: Integer);
     procedure OnSocketRecv(const ABuffer: Pointer; const ASize: Integer);
+  protected
+    procedure DoRecv(const ABuffer: Pointer; const ASize: Integer);
   public
-    constructor Create;
+    constructor Create(const AHttp2: Boolean = False; const ABlocking: Boolean = True);
     destructor Destroy; override;
   public
-    { Add a header and value to a list of headers }
-    procedure AddHeader(AHTTPHeaders: TStrings; const AHeader, AValue: UnicodeString);
-
-    { Find the index of a header from a list of headers }
-    function IndexOfHeader(AHTTPHeaders: TStrings; const AHeader: UnicodeString): Integer;
-
-    { Get the value associated with a header from a list of headers }
-    function GetHeaderValue(AHTTPHeaders: TStrings; const AHeader: UnicodeString): UnicodeString;
-
     { Get method }
-    function Get(const AURL: UnicodeString;
-      const ARecvTimeout: Integer = DEFAULT_TIMEOUT_RECV): UnicodeString;
+    function Get(const AURL: String; out AResponse: TBytes;
+      const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
+    function Get(const AURL: String; out AResponse: String;
+      const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
+    function Get(const AURL: String;
+      const ARecvTimeout: Integer = TIMEOUT_RECV): String; overload;
+
+    { Head method }
+    function Head(const AURL: String;
+      const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean;
 
     { Post method }
-    function Post(const AURL: UnicodeString;
-      const ARecvTimeout: Integer = DEFAULT_TIMEOUT_RECV): UnicodeString;
+    function Post(const AURL: String; out AResponse: TBytes;
+      const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
+    function Post(const AURL: String; out AResponse: String;
+      const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
+    function Post(const AURL: String;
+      const ARecvTimeout: Integer = TIMEOUT_RECV): String; overload;
 
     { Put method }
-    function Put(const AURL: UnicodeString;
-      const ARecvTimeout: Integer = DEFAULT_TIMEOUT_RECV): UnicodeString;
+    function Put(const AURL: String; out AResponse: TBytes;
+      const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
+    function Put(const AURL: String; out AResponse: String;
+      const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
+    function Put(const AURL: String;
+      const ARecvTimeout: Integer = TIMEOUT_RECV): String; overload;
 
     { Delete method }
-    function Delete(const AURL: UnicodeString;
-      const ARecvTimeout: Integer = DEFAULT_TIMEOUT_RECV): UnicodeString;
+    function Delete(const AURL: String; out AResponse: TBytes;
+      const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
+    function Delete(const AURL: String; out AResponse: String;
+      const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
+    function Delete(const AURL: String;
+      const ARecvTimeout: Integer = TIMEOUT_RECV): String; overload;
 
     { Options method }
-    function Options(const AURL: UnicodeString;
-      const ARecvTimeout: Integer = DEFAULT_TIMEOUT_RECV): UnicodeString;
+    function Options(const AURL: String; out AResponse: TBytes;
+      const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
+    function Options(const AURL: String; out AResponse: String;
+      const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
+    function Options(const AURL: String;
+      const ARecvTimeout: Integer = TIMEOUT_RECV): String; overload;
+
+    { Close connection }
+    procedure Close;
+
+    { Convert bytes to string }
+    function BytesToString(const ABytes: TBytes; const ACharset: String): String;
+  public
+    { State }
+    property State: TgoHttpClientState read FState;
+
+    { Idle time in milliseconds }
+    property IdleTime: Integer read GetIdleTime;
 
     { Cookies sent to the server and received from the server }
     property Cookies: TStrings read GetCookies write SetCookies;
@@ -157,7 +326,7 @@ type
     { Optional body for a request.
       You can either use RequestBody or RequestData. If both are specified then
       only RequestBody is used. }
-    property RequestBody: UnicodeString read FRequestBody write FRequestBody;
+    property RequestBody: String read FRequestBody write FRequestBody;
 
     { Optional binary body data for a request.
       You can either use RequestBody or RequestData. If both are specified then
@@ -165,13 +334,22 @@ type
     property RequestData: TBytes read FRequestData write FRequestData;
 
     { Request headers }
-    property RequestHeaders: TStrings read FRequestHeaders;
+    property RequestHeaders: TgoHttpHeaders read FRequestHeaders;
 
     { Response headers from the server }
-    property ResponseHeaders: TStrings read FResponseHeaders;
+    property ResponseHeaders: TgoHttpHeaders read FResponseHeaders;
 
     { Response status code }
     property ResponseStatusCode: Integer read FResponseStatusCode;
+
+    { Response content type }
+    property ResponseContentType: String read FResponseContentType;
+
+    { Response charset }
+    property ResponseContentCharset: String read FResponseContentCharset;
+
+    { Response content length }
+    property ContentLength: Int64 read FContentLength;
 
     { Allow 301 and other redirects }
     property FollowRedirects: Boolean read FFollowRedirects write FFollowRedirects;
@@ -182,48 +360,578 @@ type
     { Called when a password is needed }
     property OnPassword: TOnPassword read FOnPassword write FOnPassword;
 
+    { Called when a buffer is received from the socket }
+    property OnRecv: TOnRecv read FOnRecv write FOnRecv;
+
     { Username and password for Basic Authentication }
-    property UserName: UnicodeString read FUserName write FUserName;
-    property Password: UnicodeString read FPassword write FPassword;
+    property UserName: String read FUserName write FUserName;
+    property Password: String read FPassword write FPassword;
 
     { Content type }
-    property ContentType: UnicodeString read FContentType write FContentType;
+    property ContentType: String read FContentType write FContentType;
 
     { User agent }
-    property UserAgent: UnicodeString read FUserAgent write FUserAgent;
+    property UserAgent: String read FUserAgent write FUserAgent;
+
+    { Range }
+    property Range: String read FRange write FRange;
 
     { Authorization }
-    property Authorization: UnicodeString read FAuthorization write FAuthorization;
+    property Authorization: String read FAuthorization write FAuthorization;
+
+    { Certificate in PEM format }
+    property Certificate: TBytes read FCertificate write FCertificate;
+
+    { Private key in PEM format }
+    property PrivateKey: TBytes read FPrivateKey write FPrivateKey;
   end;
+
+  { Http response message }
+  TgoHttpResponseMessage = class(TMessage)
+  private
+    FHttpClient: TgoHttpClient;
+    FResponseHeaders: TgoHttpHeaders;
+    FResponseStatusCode: Integer;
+    FResponseContentType: String;
+    FResponseContentCharset: String;
+    FResponse: TBytes;
+  public
+    constructor Create(
+      const AHttpClient: TgoHttpClient;
+      const AResponseHeaders: TgoHttpHeaders;
+      const AResponseStatusCode: Integer;
+      const AResponseContentType: String;
+      const AResponseContentCharset: String;
+      const AResponse: TBytes);
+  public
+    property HttpClient: TgoHttpClient read FHttpClient;
+    property ResponseHeaders: TgoHttpHeaders read FResponseHeaders;
+    property ResponseStatusCode: Integer read FResponseStatusCode;
+    property ResponseContentType: String read FResponseContentType;
+    property ResponseContentCharset: String read FResponseContentCharset;
+    property Response: TBytes read FResponse;
+  end;
+
+  { Http client manager }
+  TgoHttpClientManager = class(TThread)
+  private
+    FHttpClients: TList<TgoHttpClient>;
+    FLock: TCriticalSection;
+    procedure FreeClients(const AForce: Boolean = False);
+  protected
+    procedure Execute; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  public
+    { Queues the http client for release }
+    procedure Release(const AHttpClient: TgoHttpClient);
+  end;
+
+var
+  HttpClientManager: TgoHttpClientManager;
 
 implementation
 
 var
-  _HTTPClientSocketManager: TgoClientSocketManager;
+  _HttpClientSocketManager: TgoClientSocketManager;
 
-{ TgoHTTPClient }
+{ ngHttp2 callback cdecl }
 
-constructor TgoHTTPClient.Create;
+{$IFDEF HTTP2}
+function data_source_read_callback(session: nghttp2_session;
+  stream_id: int32; buf: puint8; len: size_t; data_flags: puint32;
+  source: pnghttp2_data_source; user_data: Pointer): ssize_t; cdecl;
+var
+  Http: TgoHttpClient;
+begin
+  Assert(Assigned(user_data));
+  Http := TgoHttpClient(user_data);
+  Result := Http.nghttp2_data_source_read_callback(session, stream_id, buf, len, data_flags, source, user_data);
+end;
+
+function on_header_callback(session: nghttp2_session; const frame: pnghttp2_frame;
+  const name: puint8; namelen: size_t; const value: puint8; valuelen: size_t;
+  flags: uint8; user_data: Pointer): Integer; cdecl;
+var
+  Http: TgoHttpClient;
+begin
+  Assert(Assigned(user_data));
+  Http := TgoHttpClient(user_data);
+  Result := Http.nghttp2_on_header_callback(session, frame, name, namelen, value, valuelen, flags, user_data);
+end;
+
+function on_frame_recv_callback(session: nghttp2_session;
+  const frame: pnghttp2_frame; user_data: Pointer): Integer; cdecl;
+var
+  Http: TgoHttpClient;
+begin
+  Assert(Assigned(user_data));
+  Http := TgoHttpClient(user_data);
+  Result := Http.nghttp2_on_frame_recv_callback(session, frame, user_data);
+end;
+
+function on_data_chunk_recv_callback(session: nghttp2_session;
+  flags: uint8; stream_id: int32; const data: puint8; len: size_t;
+  user_data: Pointer): Integer; cdecl;
+var
+  Http: TgoHttpClient;
+begin
+  Assert(Assigned(user_data));
+  Http := TgoHttpClient(user_data);
+  Result := Http.nghttp2_on_data_chunk_recv_callback(session, flags, stream_id, data, len, user_data);
+end;
+
+function on_stream_close_callback(session: nghttp2_session;
+  stream_id: int32; error_code: uint32; user_data: Pointer): Integer; cdecl;
+var
+  Http: TgoHttpClient;
+begin
+  Assert(Assigned(user_data));
+  Http := TgoHttpClient(user_data);
+  Result := Http.nghttp2_on_stream_close_callback(session, stream_id, error_code, user_data);
+end;
+{$ENDIF}
+
+{ TThreadSafeBuffer }
+
+constructor TThreadSafeBuffer.Create(const ACapacity: Integer);
+begin
+  SetLength(FBuffer, ACapacity);
+  FSize := 0;
+  FLock := TCriticalSection.Create;
+end;
+
+destructor TThreadSafeBuffer.Destroy;
+begin
+  FLock.Free;
+  inherited;
+end;
+
+function TThreadSafeBuffer.GetSize: Integer;
+begin
+  FLock.Enter;
+  try
+    Result := FSize;
+  finally
+    FLock.Leave;
+  end;
+end;
+
+procedure TThreadSafeBuffer.Write(const ABuffer: Pointer; const ASize: Integer);
+begin
+  FLock.Enter;
+  try
+    { expand buffer }
+    if FSize + ASize >= Length(FBuffer) then
+      SetLength(FBuffer, (FSize + ASize) * 2);
+
+    { append bytes }
+    Move(ABuffer^, FBuffer[FSize], ASize);
+    FSize := FSize + ASize;
+  finally
+    FLock.Leave;
+  end;
+end;
+
+function TThreadSafeBuffer.Read(out ABytes: TBytes): Boolean;
+begin
+  FLock.Enter;
+  try
+    if FSize > 0 then
+    begin
+      { read bytes into new buffer }
+      SetLength(ABytes, FSize);
+      Move(FBuffer[0], ABytes[0], FSize);
+
+      { clear buffer }
+      FSize := 0;
+      Result := True;
+    end
+    else
+      Result := False;
+  finally
+    FLock.Leave;
+  end;
+end;
+
+function TThreadSafeBuffer.Read(out ABytes: TBytes; const ACount: Integer): Boolean;
+var
+  Size: Integer;
+begin
+  FLock.Enter;
+  try
+    if FSize > 0 then
+    begin
+      { read bytes into new buffer }
+      if FSize >= ACount then
+        Size := ACount
+      else
+        Size := FSize;
+      SetLength(ABytes, Size);
+      Move(FBuffer[0], ABytes[0], Size);
+
+      { delete buffer }
+      if FSize > Size then
+      begin
+        Move(FBuffer[Size], FBuffer[0], FSize - Size);
+        FSize := FSize - Size;
+      end
+      else
+        FSize := 0;
+
+      Result := True;
+    end
+    else
+      Result := False;
+  finally
+    FLock.Leave;
+  end;
+end;
+
+function TThreadSafeBuffer.Read(const ABuffer: Pointer;
+  var ALength: NativeInt): Boolean;
+begin
+  FLock.Enter;
+  try
+    if FSize > 0 then
+    begin
+      { read bytes into existing buffer }
+      if FSize < ALength then
+        ALength := FSize;
+      Move(FBuffer[0], ABuffer^, ALength);
+
+      { delete buffer }
+      if FSize > ALength then
+      begin
+        Move(FBuffer[Size], FBuffer[0], FSize - ALength);
+        FSize := FSize - ALength;
+      end
+      else
+        FSize := 0;
+
+      Result := True;
+    end
+    else
+      Result := False;
+  finally
+    FLock.Leave;
+  end;
+end;
+
+function TThreadSafeBuffer.ReadTo(const ASubStr: RawByteString; out ABytes: TBytes): Boolean;
+var
+  Size, Index: Integer;
+begin
+  Result := False;
+  Size := Length(ASubStr);
+  FLock.Enter;
+  try
+    if FSize > Size then
+      for Index := 0 to FSize - Size do
+        if CompareMem(@FBuffer[Index], @ASubStr[1], Size) then
+        begin
+          { read bytes into new buffer }
+          SetLength(ABytes, Index + Size);
+          Move(FBuffer[0], ABytes[0], Index + Size);
+
+          { delete buffer }
+          if FSize > (Index + Size) then
+          begin
+            Move(FBuffer[Index + Size], FBuffer[0], FSize - (Index + Size));
+            FSize := FSize - (Index + Size);
+          end
+          else
+            FSize := 0;
+
+          Result := True;
+          Break;
+        end;
+  finally
+    FLock.Leave;
+  end;
+end;
+
+procedure TThreadSafeBuffer.Clear;
+begin
+  FLock.Enter;
+  try
+    FSize := 0;
+  finally
+    FLock.Leave;
+  end;
+end;
+
+{$IFDEF LOGGING}
+procedure TThreadSafeBuffer.Log(const AText: String);
+begin
+  grLog(Format('RecvBuffer %s (Size=%d)', [AText, FSize]), @FBuffer[0], FSize);
+end;
+{$ENDIF}
+
+{ THttpHeaders }
+
+constructor TgoHttpHeaders.Create;
+begin
+end;
+
+destructor TgoHttpHeaders.Destroy;
+begin
+  FHeaders := nil;
+  inherited;
+end;
+
+procedure TgoHttpHeaders.AddOrSet(const AName, AValue: String);
+var
+  Index: Integer;
+  Header: TgoHttpHeader;
+begin
+  Index := IndexOf(AName);
+  if Index = -1 then
+  begin
+    Header.Name := AName;
+    Header.Value := AValue;
+    {$IFDEF HTTP2}
+    Header.NameAsISO8859 := ISO8859String(AName);
+    Header.ValueAsISO8859 := ISO8859String(AValue);
+    {$ENDIF}
+    FHeaders := FHeaders + [Header];
+  end
+  else
+  begin
+    FHeaders[Index].Name := AName;
+    FHeaders[Index].Value := AValue;
+    {$IFDEF HTTP2}
+    FHeaders[Index].NameAsISO8859 := ISO8859String(AName);
+    FHeaders[Index].ValueAsISO8859 := ISO8859String(AValue);
+    {$ENDIF}
+  end;
+end;
+
+procedure TgoHttpHeaders.AddOrSet(const AHeader: String);
+var
+  Index: Integer;
+  Name: String;
+  Value: String;
+begin
+  Index := AHeader.IndexOf(':');
+  if Index > -1 then
+  begin
+    Name := AHeader.Substring(0, Index);
+    Value := AHeader.Substring(Index + 1);
+    AddOrSet(Name, Value);
+  end;
+end;
+
+function TgoHttpHeaders.Value(const AName: String): String;
+var
+  Header: TgoHttpHeader;
+begin
+  Result := '';
+  for Header in FHeaders do
+    if Header.Name.ToLower = AName.ToLower then
+    begin
+      Result := String(Header.Value).TrimLeft;
+      Break;
+    end;
+end;
+
+function TgoHttpHeaders.IndexOf(const AName: String): Integer;
+var
+  Index: Integer;
+begin
+  Result := -1;
+  for Index := 0 to Length(FHeaders) - 1 do
+    if FHeaders[Index].Name.ToLower = AName.ToLower then
+    begin
+      Result := Index;
+      Break;
+    end;
+end;
+
+function TgoHttpHeaders.AsString: String;
+var
+  Header: TgoHttpHeader;
+begin
+  for Header in FHeaders do
+    Result := Result + Header.Name + ': ' + Header.Value + CRLF;
+end;
+
+{$IFDEF HTTP2}
+procedure TgoHttpHeaders.AsNgHttp2Array(var AHeaders: TArray<nghttp2_nv>);
+var
+  Header: TgoHttpHeader;
+  NgHttp2Header: nghttp2_nv;
+begin
+  for Header in FHeaders do
+  begin
+    NgHttp2Header.name := PAnsiChar(Header.NameAsISO8859);
+    NgHttp2Header.value := PAnsiChar(Header.ValueAsISO8859);
+    NgHttp2Header.namelen := Length(Header.Name);
+    NgHttp2Header.valuelen := Length(Header.Value);
+    NgHttp2Header.flags := NGHTTP2_NV_FLAG_NONE;
+    AHeaders := AHeaders + [NgHttp2Header];
+  end;
+end;
+{$ENDIF}
+
+{ TgoHttpResponseMessage }
+
+constructor TgoHttpResponseMessage.Create(const AHttpClient: TgoHttpClient;
+  const AResponseHeaders: TgoHttpHeaders;
+  const AResponseStatusCode: Integer;
+  const AResponseContentType, AResponseContentCharset: String;
+  const AResponse: TBytes);
 begin
   inherited Create;
-  FHTTPVersion := '1.1';
+  FHttpClient := AHttpClient;
+  FResponseHeaders := AResponseHeaders;
+  FResponseStatusCode := AResponseStatusCode;
+  FResponseContentType := AResponseContentType;
+  FResponseContentCharset := AResponseContentCharset;
+  FResponse := AResponse;
+end;
+
+{ TgoHttpClientManager }
+
+constructor TgoHttpClientManager.Create;
+begin
+  inherited Create;
+  FHttpClients := TList<TgoHttpClient>.Create;
+  FLock := TCriticalSection.Create;
+end;
+
+destructor TgoHttpClientManager.Destroy;
+begin
+  FreeClients(True);
+  FLock.Free;
+  FHttpClients.Free;
+  inherited;
+end;
+
+procedure TgoHttpClientManager.FreeClients(const AForce: Boolean);
+var
+  HttpClient: TgoHttpClient;
+  HttpClients: TArray<TgoHttpClient>;
+  ClientsToFree: TArray<TgoHttpClient>;
+begin
+  FLock.Enter;
+  try
+    HttpClients := FHttpClients.ToArray;
+    for HttpClient in HttpClients do
+    begin
+      if (AForce) or
+        (HttpClient.IdleTime > HttpClient.FRecvTimeout) then
+        if (HttpClient.State = TgoHttpClientState.Sending) or
+          (HttpClient.State = TgoHttpClientState.Receiving) then
+          HttpClient.Close;
+      if (AForce) or
+        (HttpClient.IdleTime > HttpClient.FRecvTimeout) or
+        (HttpClient.State = TgoHttpClientState.Finished) or
+        (HttpClient.State = TgoHttpClientState.Error) or
+        (HttpClient.State = TgoHttpClientState.None) then
+      begin
+        ClientsToFree := ClientsToFree + [HttpClient];
+        FHttpClients.Remove(HttpClient);
+      end;
+    end;
+  finally
+    FLock.Leave;
+  end;
+  for HttpClient in ClientsToFree do
+    HttpClient.Free;
+end;
+
+procedure TgoHttpClientManager.Execute;
+var
+  LastCleanup: TDateTime;
+begin
+  LastCleanup := Now;
+  while not Terminated do
+  begin
+    if MillisecondsBetween(Now, LastCleanup) > INTERVAL_CLEANUP then
+    begin
+      FreeClients;
+      LastCleanup := Now;
+    end
+    else
+      Sleep(5); { waiting for interval }
+  end;
+end;
+
+procedure TgoHttpClientManager.Release(const AHttpClient: TgoHttpClient);
+begin
+  FLock.Enter;
+  try
+    FHttpClients.Add(AHttpClient);
+  finally
+    FLock.Leave;
+  end;
+end;
+
+{ TgoHttpClient }
+
+constructor TgoHttpClient.Create(const AHttp2: Boolean = False; const ABlocking: Boolean = True);
+{$IFDEF HTTP2}
+var
+  Settings: nghttp2_settings_entry;
+  Error: Integer;
+{$ENDIF}
+begin
+  inherited Create;
+
+  { initialize nghttp2 library }
+  {$IFDEF HTTP2}
+  if nghttp2_session_callbacks_new(FCallbacks_http2) = 0 then
+  begin
+    nghttp2_session_callbacks_set_on_header_callback(FCallbacks_http2, on_header_callback);
+    nghttp2_session_callbacks_set_on_frame_recv_callback(FCallbacks_http2, on_frame_recv_callback);
+    nghttp2_session_callbacks_set_on_data_chunk_recv_callback(FCallbacks_http2, on_data_chunk_recv_callback);
+    nghttp2_session_callbacks_set_on_stream_close_callback(FCallbacks_http2, on_stream_close_callback);
+    if (nghttp2_session_client_new(FSession_http2, FCallbacks_http2, Self) = 0) then
+    begin
+      Settings.settings_id := NGHTTP2_SETTINGS_MAX_CONCURRENT_STREAMS;
+      Settings.value := 100;
+      Error := nghttp2_submit_settings(FSession_http2, NGHTTP2_FLAG_NONE, Settings, 1);
+      if (Error <> 0) then
+        raise Exception.Create('Unable to  submit ngHttp2 settings');
+    end
+    else
+      raise Exception.Create('Unable to setup ngHttp2 session.');
+  end
+  else
+    raise Exception.Create('Unable to setup ngHttp2 callbacks.');
+  FHttp2 := AHttp2;
+  {$ENDIF}
+
+  FState := TgoHttpClientState.None;
+  FBlocking := ABlocking;
+  FHttpVersion := '1.1';
   FAuthorization := '';
   FContentType := '';
   FUserAgent := '';
+  FRange := '';
   FConnection := nil;
   FConnectionLock := TCriticalSection.Create;
   FConnected := TEvent.Create(nil, False, False, '');
   FFollowRedirects := True;
-  SetLength(FRecvBuffer, RECV_BUFFER_SIZE);
-  FRecvSize := 0;
-  FRequestHeaders := TStringList.Create;
-  FResponseHeaders := TStringList.Create;
+  FSendBuffer := TThreadSafeBuffer.Create;
+  FRecvBuffer := TThreadSafeBuffer.Create;
+  FRecvBuffer2 := TThreadSafeBuffer.Create;
+  FRecv := TEvent.Create(nil, False, False, '');
+  FRequestHeaders := TgoHttpHeaders.Create;
+  FInternalHeaders := TgoHttpHeaders.Create;
+  FResponseHeaders := TgoHttpHeaders.Create;
 end;
 
-destructor TgoHTTPClient.Destroy;
+destructor TgoHttpClient.Destroy;
 var
   Connection: TgoSocketConnection;
 begin
+  {$IFDEF HTTP2}
+  nghttp2_session_callbacks_del(FCallbacks_http2);
+  nghttp2_session_terminate_session(FSession_http2, NGHTTP2_NO_ERROR);
+  {$ENDIF}
   FConnectionLock.Enter;
   try
     Connection := FConnection;
@@ -232,84 +940,212 @@ begin
     FConnectionLock.Leave;
   end;
   if Connection <> nil then
-    _HTTPClientSocketManager.Release(Connection);
+    _HttpClientSocketManager.Release(Connection);
   FreeAndNil(FRequestHeaders);
+  FreeAndNil(FInternalHeaders);
   FreeAndNil(FResponseHeaders);
   FreeAndNil(FCookies);
   FreeAndNil(FSentCookies);
   FConnected.Free;
   FConnectionLock.Free;
+  FSendBuffer.Free;
+  FRecvBuffer2.Free;
+  FRecvBuffer.Free;
+  FRecv.Free;
   inherited Destroy;
 end;
 
+{$IFDEF HTTP2}
+function TgoHttpClient.nghttp2_data_source_read_callback(session: nghttp2_session;
+  stream_id: int32; buf: puint8; len: size_t; data_flags: puint32;
+  source: pnghttp2_data_source; user_data: Pointer): ssize_t;
+begin
+  // Note: if you want request specific data you can use the API nghttp2_session_get_stream_user_data(session, stream_id);
+  if NativeUInt(FSendBuffer.Size) <= len then
+  begin
+    Result := FSendBuffer.Size;
+    FSendBuffer.Read(Buf, Result);
+    data_flags^ := data_flags^ or NGHTTP2_DATA_FLAG_EOF;
+  end
+  else
+  begin
+    Result := len;
+    FSendBuffer.Read(Buf, Result);
+  end;
+end;
+
+function TgoHttpClient.nghttp2_on_header_callback(session: nghttp2_session; const frame: pnghttp2_frame;
+  const name: puint8; namelen: size_t; const value: puint8; valuelen: size_t;
+  flags: uint8; user_data: Pointer): Integer;
+var
+  AName, AValue: String;
+  Index: Integer;
+begin
+  {$IFDEF LOGGING}
+  grLog('on_header_callback');
+  {$ENDIF}
+  if frame.hd.&type = _NGHTTP2_HEADERS then
+    if (frame.headers.cat = NGHTTP2_HCAT_RESPONSE) then
+    begin
+      AName := TEncoding.ASCII.GetString(BytesOf(name, namelen));
+      AValue := TEncoding.ASCII.GetString(BytesOf(value, valuelen));
+      FResponseHeaders.AddOrSet(AName, AValue);
+      {$IFDEF LOGGING}
+      grLog(AName, AValue);
+      {$ENDIF}
+
+      { response status code }
+      if AName = ':status' then
+        FResponseStatusCode := StrToInt64Def(AValue, -1);
+
+      { content type }
+      if AName = 'content-type' then
+      begin
+        FResponseContentType := AValue;
+
+        { charset }
+        Index := FResponseContentType.IndexOf(S_CHARSET + '=');
+        if Index >= 0 then
+          FResponseContentCharset := FResponseContentType.Substring(Index + Length(S_CHARSET) + 1, Length(FResponseContentType) - Index - Length(S_CHARSET)).ToLower;
+      end;
+
+      { content length }
+      if AName = 'content-length' then
+        FContentLength := StrToInt64Def(AValue, -1);
+    end;
+  Result := 0;
+end;
+
+function TgoHttpClient.nghttp2_on_frame_recv_callback(session: nghttp2_session;
+  const frame: pnghttp2_frame; user_data: Pointer): Integer;
+begin
+  {$IFDEF LOGGING}
+  grLog('on_frame_recv_callback');
+  {$ENDIF}
+  if frame.hd.&type = _NGHTTP2_HEADERS then
+    if (frame.headers.cat = NGHTTP2_HCAT_RESPONSE) then
+    begin
+      // all headers received
+      {$IFDEF LOGGING}
+      grLog('All headers received');
+      {$ENDIF}
+      FResponseHeader2 := True;
+    end;
+  Result := 0;
+end;
+
+function TgoHttpClient.nghttp2_on_data_chunk_recv_callback(session: nghttp2_session;
+  flags: uint8; stream_id: int32; const data: puint8; len: size_t;
+  user_data: Pointer): Integer;
+begin
+  if stream_id = FStreamId2 then
+  begin
+    {$IFDEF LOGGING}
+    grLog('on_data_chunk_recv_callback ' + stream_id.ToString, data, len);
+    {$ENDIF}
+    // response chunk
+    FRecvBuffer2.Write(data, len);
+  end;
+  Result := 0;
+end;
+
+function TgoHttpClient.nghttp2_on_stream_close_callback(session: nghttp2_session;
+  stream_id: int32; error_code: uint32; user_data: Pointer): Integer;
+begin
+  if stream_id = FStreamId2 then
+  begin
+    {$IFDEF LOGGING}
+    grLog('on_stream_close_callback ' + stream_id.ToString);
+    {$ENDIF}
+    FResponseContent2 := True;
+  end;
+  Result := 0;
+  { Note : connection is still open at this point unless you call
+    nghttp2_session_terminate_session(session, NGHTTP2_NO_ERROR) }
+end;
+
+function TgoHttpClient.nghttp2_Send: Boolean;
+var
+  data: Pointer;
+  len: Integer;
+  Bytes: TBytes;
+begin
+  Result := False;
+  while nghttp2_session_want_write(FSession_http2) > 0 do
+  begin
+    len := nghttp2_session_mem_send(FSession_http2, data);
+    if len > 0 then
+    begin
+      SetLength(Bytes, len);
+      Move(data^, Bytes[0], len);
+      Result := FConnection.Send(Bytes);
+    end;
+  end;
+end;
+
+function TgoHttpClient.nghttp2_Recv: Boolean;
+var
+  Bytes: TBytes;
+begin
+  Result := FRecvBuffer.Read(Bytes);
+  if Result then
+    nghttp2_session_mem_recv(FSession_http2, @Bytes[0], Length(Bytes));
+end;
+{$ENDIF}
+
+
+function TgoHttpClient.GetIdleTime: Integer;
+begin
+  Result := MillisecondsBetween(Now, FLastRecv);
+end;
+
+procedure TgoHttpClient.Close;
+begin
+  FRecvAbort := True;
+  FRecv.SetEvent;
+  FConnection.Disconnect;
+end;
+
 { Cookies received from the server }
-function TgoHTTPClient.GetCookies: TStrings;
+function TgoHttpClient.GetCookies: TStrings;
 begin
   if FCookies = nil then
     FCookies := TStringList.Create;
   Result := FCookies;
 end;
-
 { Cookies sent to the server }
-procedure TgoHTTPClient.SetCookies(const AValue: TStrings);
+procedure TgoHttpClient.SetCookies(const AValue: TStrings);
 begin
   if GetCookies = AValue then
     Exit;
   GetCookies.Assign(AValue);
 end;
 
-{ Add a header and value to a list of headers }
-procedure TgoHTTPClient.AddHeader(AHTTPHeaders: TStrings; const AHeader, AValue: UnicodeString);
-var
-  Index: Integer;
+procedure TgoHttpClient.Reset;
 begin
-  Index := IndexOfHeader(AHTTPHeaders, AHeader);
-  if (Index <> -1) then
-    AHTTPHeaders.Delete(Index);
-  AHTTPHeaders.Add(AHeader + ': ' + AValue);
-end;
-
-{ Find the index of a header from a list of headers }
-function TgoHTTPClient.IndexOfHeader(AHTTPHeaders: TStrings; const AHeader: UnicodeString): Integer;
-begin
-  Result := AHTTPHeaders.Count - 1;
-  while (Result >= 0) and
-    (AHTTPHeaders[Result].Substring(0, AHeader.Length).ToLower <> AHeader.ToLower) do
-    Dec(Result);
-end;
-
-{ Get the value associated with a header from a list of headers }
-function TgoHTTPClient.GetHeaderValue(AHTTPHeaders: TStrings; const AHeader: UnicodeString): UnicodeString;
-var
-  Index, Pos1: Integer;
-begin
-  Index := IndexOfHeader(AHTTPHeaders, AHeader);
-  if (Index = -1) then
-    Result := ''
-  else
-  begin
-    Pos1 := AHTTPHeaders[Index].IndexOf(':');
-    if Pos1 = -1 then
-      Result := ''
-    else
-      Result := AHTTPHeaders[Index].Substring(Pos1 + 1).TrimLeft;
-  end;
-end;
-
-procedure TgoHTTPClient.Reset;
-begin
-  FRecvSize := 0;
-  FRequestSent := TSocketState.None;
-  FResponseRecv := TSocketState.None;
+  FLastRecv := Now;
+  FInternalHeaders.Headers := nil;
+  FRequestStatusLine := '';
   FResponseStatusCode := 0;
-  FResponseHeaders.Clear;
+  FResponseHeaders.Headers := nil;
+  FResponseHeader := False;
+  FChunkSize := -1;
+  FRecvAbort := False;
+  FResponse := nil;
+  FResponseBytes := 0;
+  FResponseHeaders.Headers := nil;
+  {$IFDEF HTTP2}
+  FResponseHeader2 := False;
+  FResponseContent2 := False;
+  {$ENDIF}
 end;
 
-procedure TgoHTTPClient.CreateRequest;
+procedure TgoHttpClient.CreateRequest;
 var
-  _Username: UnicodeString;
-  _Password: UnicodeString;
-  _Cookies: UnicodeString;
+  _Username: String;
+  _Password: String;
+  Cookies: String;
+  Path: String;
   Index: Integer;
 begin
   { parse the URL into a URI }
@@ -324,9 +1160,6 @@ begin
       FURI.Port := DEFAULT_HTTP_PORT;
   end;
 
-  { add header status line }
-  FRequestHeader := FMethod.ToUpper + ' ' + FURI.ToString + ' ' + 'HTTP/' + FHTTPVersion + CRLF;
-
   { use credentials in URI, if provided }
   _Username := FURI.Username;
   _Password := FURI.Password;
@@ -336,246 +1169,177 @@ begin
     _Username := FUserName;
     _Password := FPassword;
   end;
-  if (_Username <> '') then
+
+  {$IFDEF HTTP2}
+  if FHttp2 then
   begin
-    { add basic authentication }
-    FRequestHeader := FRequestHeader + 'Authorization: Basic ' +
-      TEncoding.Utf8.GetString(goBase64Encode(TEncoding.Utf8.GetBytes(_Username + ':' + _Password))) + CRLF;
-    { remove any existing credentials }
-    Index := IndexOfHeader(FRequestHeaders, 'Authorization');
-    if Index <> -1 then
-      FRequestHeaders.Delete(Index);
+    { add method }
+    FInternalHeaders.AddOrSet(':method', FMethod.ToUpper);
+
+    { add scheme }
+    FInternalHeaders.AddOrSet(':scheme', FURI.Scheme.ToLower);
+
+    { add path }
+    FInternalHeaders.AddOrSet(':path', FURI.Path);
+
+    { add host }
+    FInternalHeaders.AddOrSet('host', FURI.Host);
+
+    { add authorization }
+    if (_Username <> '') then
+    begin
+      { basic authentication }
+      FInternalHeaders.AddOrSet('authorization', 'Basic ' +
+        TEncoding.Utf8.GetString(goBase64Encode(TEncoding.Utf8.GetBytes(_Username + ':' + _Password))));
+    end
+    else
+      if (FAuthorization <> '') then
+        FInternalHeaders.AddOrSet('authorization', FAuthorization);
   end
   else
-    { add authorization }
-    if (FAuthorization <> '') then
-      FRequestHeader := FRequestHeader + 'Authorization: ' + FAuthorization + CRLF;
-
-  { add host }
-  FRequestHeader := FRequestHeader + 'Host: ' + FURI.Host;
-  if (FURI.Port <> 0) then
-    FRequestHeader := FRequestHeader + ':' + FURI.Port.ToString;
-  FRequestHeader := FRequestHeader + CRLF;
-
-  { add user-agent }
-  if (FUserAgent <> '') then
-    FRequestHeader := FRequestHeader + 'User-Agent: ' + FUserAgent + CRLF;
-
-  { add content type }
-  if (FContentType <> '') then
-    FRequestHeader := FRequestHeader + 'Content-Type: ' + FContentType + CRLF;
-
-  { add content length }
-  if (FRequestBody <> '') then
-    FRequestHeader := FRequestHeader + 'Content-Length: ' + IntToStr(Length(FRequestBody)) + CRLF
-  else if (FRequestData <> nil) then
-    FRequestHeader := FRequestHeader + 'Content-Length: ' + IntToStr(Length(FRequestData)) + CRLF;
-
-  { add additional request headers, if any }
-  for Index := 0 to FRequestHeaders.Count - 1 do
-    FRequestHeader := FRequestHeader + FRequestHeaders[Index] + CRLF;
-
-  { add cookies, if any }
-  if Assigned(FCookies) then
+  {$ENDIF}
   begin
-    _Cookies := 'Cookie:';
-    for Index := 0 to FCookies.Count-1 do
+    { add header status line }
+    Path := FURI.Path;
+    if Length(FURI.Params) > 0 then
+      Path := Path + '?' + FURI.Params;
+    FRequestStatusLine := FMethod.ToUpper + ' ' + Path + ' ' + 'HTTP/' + FHttpVersion;
+
+    { add host }
+    FInternalHeaders.AddOrSet('Host', FURI.Host);
+
+    { add user-agent }
+    if (FUserAgent <> '') then
+      FInternalHeaders.AddOrSet('User-Agent', FUserAgent);
+
+    { range request }
+    if (FRange <> '') then
+      FInternalHeaders.AddOrSet('Range', FRange);
+
+    { add content type }
+    if (FContentType <> '') then
+      FInternalHeaders.AddOrSet('Content-Type', FContentType);
+
+    { add content length }
+    if (FRequestBody <> '') then
+      FInternalHeaders.AddOrSet('Content-Length', Length(FRequestBody).ToString)
+    else
+    if (FRequestData <> nil) then
+      FInternalHeaders.AddOrSet('Content-Length', Length(FRequestData).ToString);
+
+    { add authorization }
+    if (_Username <> '') then
     begin
-      if Index > 0 then
-        _Cookies := _Cookies + '; ';
-      _Cookies := _Cookies + FCookies[Index];
+      { add basic authentication }
+      FInternalHeaders.AddOrSet('Authorization', 'Basic ' +
+        TEncoding.Utf8.GetString(goBase64Encode(TEncoding.Utf8.GetBytes(_Username + ':' + _Password))));
+    end
+    else
+      if (FAuthorization <> '') then
+        FInternalHeaders.AddOrSet('Authorization', FAuthorization);
+
+    { add cookies, if any }
+    if Assigned(FCookies) then
+    begin
+      Cookies := '';
+      for Index := 0 to FCookies.Count-1 do
+      begin
+        if Index > 0 then
+          Cookies := Cookies + '; ';
+        Cookies := Cookies + FCookies[Index];
+      end;
+      FInternalHeaders.AddOrSet('Cookie', Cookies);
     end;
-    FRequestHeader := FRequestHeader + _Cookies + CRLF;
+    FreeAndNil(FSentCookies);
+    FSentCookies := FCookies;
+    FCookies := nil;
   end;
-  FreeAndNil(FSentCookies);
-  FSentCookies := FCookies;
-  FCookies := nil;
-  FRequestHeader := FRequestHeader + CRLF;
 end;
 
-procedure TgoHTTPClient.SendRequest;
+function TgoHttpClient.SendRequest: Boolean;
 var
-  OK: Boolean;
+  Headers: String;
+  {$IFDEF HTTP2}
+  DataProvider: nghttp2_data_provider;
+  Data: TBytes;
+  Headers2: TArray<nghttp2_nv>;
+  {$ENDIF}
 begin
+  {$IFDEF LOGGING}
+  grLog('SendRequest Thread', GetCurrentThreadId);
+  {$ENDIF}
+  Result := False;
   FConnectionLock.Enter;
   try
     if (FConnection <> nil) then
     begin
-      OK := FConnection.Send(TEncoding.Utf8.GetBytes(FRequestHeader));
-      if (FRequestBody <> '') then
-        OK := OK and FConnection.Send(TEncoding.Utf8.GetBytes(FRequestBody))
-      else
-        OK := OK and FConnection.Send(FRequestData);
-
-      if OK then
+      {$IFDEF HTTP2}
+      if FHttp2 then
       begin
-        FResponseRecv := TSocketState.Receiving;
-        FRequestSent := TSocketState.Success;
+        { setup data callback }
+        DataProvider.source.ptr := nil;
+        DataProvider.read_callback := data_source_read_callback;
+
+        { create nghttp2 compatible headers }
+        FInternalHeaders.AsNgHttp2Array(Headers2);
+        FRequestHeaders.AsNgHttp2Array(Headers2);
+
+        { prepare send buffer for request body }
+        if (FRequestBody <> '') then
+          Data := TEncoding.Utf8.GetBytes(FRequestBody)
+        else
+          Data := FRequestData;
+        FSendBuffer.Write(@Data[0], Length(Data));
+
+        { submit request }
+        FStreamId2 := nghttp2_submit_request(FSession_http2, Nil, Headers2[0], Length(Headers2), @DataProvider, Self);
+        if FStreamId2 >= 0 then
+          Result := nghttp2_Send;
       end
       else
-        FRequestSent := TSocketState.Failure;
+      {$ENDIF}
+      begin
+        Headers :=
+          FRequestStatusLine + CRLF +
+          FInternalHeaders.AsString +
+          FRequestHeaders.AsString + CRLF;
+        {$IFDEF LOGGING}
+        grLog('RequestHeader', TEncoding.ASCII.GetBytes(Headers));
+        {$ENDIF}
+        if (FRequestBody <> '') then
+          Result := FConnection.Send(TEncoding.ASCII.GetBytes(Headers) + TEncoding.Utf8.GetBytes(FRequestBody))
+        else
+          Result := FConnection.Send(TEncoding.ASCII.GetBytes(Headers) + FRequestData);
+      end;
     end;
   finally
     FConnectionLock.Leave;
   end;
 end;
 
-function TgoHTTPClient.BytePos(const ASubStr: AnsiString; AOffset: Integer = 0): Integer;
-var
-  Size: Integer;
+function TgoHttpClient.WaitForRecv: Boolean;
 begin
-  Size := Length(ASubStr);
-  for Result := AOffset to FRecvSize - Size do
-    if CompareMem(@FRecvBuffer[Result], @ASubStr[1], Size) then
-      Exit;
-  Result := -1;
-end;
-
-function TgoHTTPClient.ResponseHeaderReady: Boolean;
-var
-  Index: Integer;
-  Strings: TArray<UnicodeString>;
-begin
-  Index := BytePos(CRLF + CRLF);
-  if Index > 0 then
-  begin
-    Result := True; { header received }
-
-    { headers }
-    FResponseIndexEndOfHeader := Index + 3;
-    FResponseHeaders.Text := TEncoding.UTF8.GetString(FRecvBuffer, 0, FResponseIndexEndOfHeader);
-
-    { response status code }
-    Strings := FResponseHeaders[0].ToLower.Substring(FResponseHeaders[0].ToLower.LastIndexOf('http:/')).Split([#32]);
-    if Length(Strings) >= 2 then
-      FResponseStatusCode := StrToInt64Def(Strings[1], -1)
-    else
-      FResponseStatusCode := -1;
-
-    { content length or transfer encoding? }
-    FContentLength := StrToInt64Def(GetHeaderValue(FResponseHeaders, S_CONTENT_LENGTH).Trim, -1);
-    if FContentLength < 0 then
-      { chunked encoding }
-      FTransferEncoding := GetHeaderValue(FResponseHeaders, S_TRANSFER_ENCODING).Trim;
-  end
-  else
-    Result := False;
-end;
-
-function TgoHTTPClient.ResponseContentReady: Boolean;
-var
-  Index: Integer;
-  S: UnicodeString;
-  Pos1, Pos2: Integer;
-  ChunkSize: Integer;
-begin
-  Index := FResponseIndexEndOfHeader + 1;
-  if FContentLength >= 0 then
-  begin
-    if FContentLength = (FRecvSize - Index) then
-      Result := True
-    else
-      Result := False;
-  end
-  else
-  begin
-    { chunked encoding }
-    Result := False;
-    if FTransferEncoding = S_CHUNKED then
-    begin
-      while True do
-      begin
-        Pos1 := BytePos(CRLF, Index);
-        if (Pos1 > 0) then
-        begin
-          S := TEncoding.Default.GetString(FRecvBuffer, Index, Pos1 - Index);
-          Pos2 := S.IndexOf(';'); { skip optional chunk parameters }
-          if Pos2 > 0 then
-            S := TEncoding.Default.GetString(FRecvBuffer, Index, Pos2 - Index + 1);
-          ChunkSize := StrToInt64Def('$' + S, -1);
-          if ChunkSize = 0 then
-          begin
-            Result := True;
-            Break;
-          end
-          else
-            if ChunkSize > 0 then
-            begin
-              { ChunkSize + Params + CRLF + Chunk + CRLF }
-              Index := Pos1 + 2 + ChunkSize + 2; { next chunk }
-              if Index >= FRecvSize then
-                Break;
-            end;
-        end
-        else
-          Break;
-      end;
-    end;
-  end;
-end;
-
-function TgoHTTPClient.ReadResponse: UnicodeString;
-var
-  Index: Integer;
-  S: UnicodeString;
-  Pos1, Pos2: Integer;
-  ChunkSize: Integer;
-begin
-  Index := FResponseIndexEndOfHeader + 1;
-  if FContentLength >= 0 then
-    Result := TEncoding.Default.GetString(FRecvBuffer, Index, FRecvSize - Index)
-  else
-  begin
-    { chunked encoding }
-    Result := '';
-    if FTransferEncoding = S_CHUNKED then
-    begin
-      repeat
-        Pos1 := BytePos(CRLF, Index);
-        if (Pos1 > 0) then
-        begin
-          S := TEncoding.Default.GetString(FRecvBuffer, Index, Pos1 - Index);
-          Pos2 := S.IndexOf(';'); { skip optional chunk parameters }
-          if Pos2 > 0 then
-            S := TEncoding.Default.GetString(FRecvBuffer, Index, Pos2 - Index + 1);
-          ChunkSize := StrToInt64Def('$' + S, -1);
-          if ChunkSize > 0 then
-          begin
-            { ChunkSize + Params + CRLF + Chunk + CRLF }
-            Index := Pos1 + 2; { start of chunk }
-            Result := Result + TEncoding.Default.GetString(FRecvBuffer, Index, ChunkSize);
-            Index := Index + ChunkSize + 2; { next chunk }
-          end;
-        end
-        else ChunkSize := -1;
-      until (ChunkSize <= 0);
-    end;
-  end;
-end;
-
-function TgoHTTPClient.WaitForSendSuccess: Boolean;
-begin
-  FLastSent := Now;
-  while (MillisecondsBetween(Now, FLastSent) < TIMEOUT_SEND) and
-    (FRequestSent = TSocketState.Sending) do
-    Sleep(5);
-  Result := FRequestSent = TSocketState.Success;
-end;
-
-function TgoHTTPClient.WaitForRecvSuccess(const ARecvTimeout: Integer): Boolean;
-begin
+  {$IFDEF LOGGING}
+  grLog('WaitForRecv Thread', GetCurrentThreadId);
+  {$ENDIF}
+  Result := False;
   FLastRecv := Now;
-  while (MillisecondsBetween(Now, FLastRecv) < ARecvTimeout) and
-    (FResponseRecv = TSocketState.Receiving) do
-    Sleep(5);
-  Result := FResponseRecv = TSocketState.Success;
+  while ((FRecv.WaitFor(FRecvTimeout) <> wrTimeout) and (not FRecvAbort)) do
+    if ResponseHeader and ResponseContent then
+    begin
+      Result := True;
+      Break;
+    end;
+  {$IFDEF LOGGING}
+  grLog('WaitForRecv ', Result);
+  {$ENDIF}
 end;
 
-function TgoHTTPClient.DoResponse(var AAgain: Boolean): UnicodeString;
+function TgoHttpClient.DoResponse(var AAgain: Boolean): TBytes;
 var
-  Location: UnicodeString;
+  Location: String;
 begin
-  Result := ReadResponse;
+  Result := FResponse;
   case FResponseStatusCode of
     301,
     302,
@@ -586,7 +1350,7 @@ begin
     begin
       if FFollowRedirects then
       begin
-        Location := GetHeaderValue(FResponseHeaders, 'Location');
+        Location := FResponseHeaders.Value('Location');
         try
           if not Assigned(FOnRedirect) then
           begin
@@ -618,8 +1382,8 @@ begin
   end;
 end;
 
-function TgoHTTPClient.DoRequest(const AMethod: UnicodeString;
-  const AURL: UnicodeString; const ARecvTimeout: Integer): UnicodeString;
+function TgoHttpClient.DoRequest(const AMethod, AURL: String;
+  out AResponse: TBytes; const ARecvTimeout: Integer): Boolean;
 var
   Again: Boolean;
 
@@ -632,17 +1396,26 @@ var
         (FURI.Host <> FLastURI.Host ) or
         (FURI.Port <> FLastURI.Port)) then
       begin
-        _HTTPClientSocketManager.Release(FConnection);
+        _HttpClientSocketManager.Release(FConnection);
         FConnection := nil;
       end;
       if FConnection = nil then
       begin
-        FConnection := _HTTPClientSocketManager.Request(FURI.Host, FURI.Port);
+        FConnection := _HttpClientSocketManager.Request(FURI.Host, FURI.Port);
         FConnection.OnConnected := OnSocketConnected;
         FConnection.OnDisconnected := OnSocketDisconnected;
         FConnection.OnRecv := OnSocketRecv;
         if FURI.Scheme.ToLower = 'https' then
-          FConnection.SSL := True
+        begin
+          FConnection.SSL := True;
+          {$IFDEF HTTP2}
+          FConnection.ALPN := FHttp2;
+          {$ENDIF}
+          if FCertificate <> nil then
+            FConnection.Certificate := FCertificate;
+          if FPrivateKey <> nil then
+            FConnection.PrivateKey := FPrivateKey;
+        end
         else
           FConnection.SSL := False;
       end;
@@ -656,92 +1429,449 @@ var
   end;
 
 begin
-  Result := '';
+  FState := TgoHttpClientState.None;
+  Result := False;
   FURL := AURL;
   FMethod := AMethod;
+  FRecvTimeout := ARecvTimeout;
   repeat
+    AResponse := nil;
     Again := False;
     Reset;
     CreateRequest;
+    FState := TgoHttpClientState.Sending;
     if Connect then
     begin
-      SendRequest;
-      if (WaitForSendSuccess) and (WaitForRecvSuccess(ARecvTimeout)) then
-        Result := DoResponse(Again);
+      if SendRequest then
+      begin
+        FState := TgoHttpClientState.Receiving;
+        if FBlocking then
+        begin
+          if WaitForRecv then
+          begin
+            AResponse := DoResponse(Again);
+            FState := TgoHttpClientState.Finished;
+            Result := True;
+          end;
+        end
+        else
+          Result := True;
+      end
+      else
+        FState := TgoHttpClientState.Error;
       FLastURI := FURI;
-    end;
+    end
+    else
+      FState := TgoHttpClientState.Error;
   until not Again;
+  {$IFDEF LOGGING}
+  grLog('ResponseLength', Length(AResponse));
+  {$ENDIF}
 end;
 
-procedure TgoHTTPClient.OnSocketConnected;
+procedure TgoHttpClient.OnSocketConnected;
 begin
-  FRequestSent := TSocketState.Sending;
+  {$IFDEF LOGGING}
+  grLog('OnSocketConnected');
+  {$ENDIF}
   FConnected.SetEvent;
 end;
 
-procedure TgoHTTPClient.OnSocketDisconnected;
+procedure TgoHttpClient.OnSocketDisconnected;
 begin
-  FRequestSent := TSocketState.None;
-  FResponseRecv := TSocketState.None;
+  {$IFDEF LOGGING}
+  grLog('OnSocketDisconnected');
+  {$ENDIF}
 end;
 
-procedure TgoHTTPClient.OnSocketSent(const ABuffer: Pointer;
+procedure TgoHttpClient.OnSocketSent(const ABuffer: Pointer;
   const ASize: Integer);
 begin
   FLastSent := Now;
 end;
 
-procedure TgoHTTPClient.OnSocketRecv(const ABuffer: Pointer; const ASize: Integer);
+{ DoRecv is always called with a copy buffer and outside of the main buffer
+  lock so that we do not block any socket pooling threads with our own
+  worker logic }
+procedure TgoHttpClient.DoRecv(const ABuffer: Pointer; const ASize: Integer);
+var
+  Index: Integer;
+  CreateResponse: Boolean;
 begin
+  {$IFDEF LOGGING}
+  grLog(Format('DoRecv (Size=%d)', [ASize]), ABuffer, ASize);
+  {$ENDIF}
+
+  FResponseBytes := FResponseBytes + ASize;
+  CreateResponse := True;
+  if Assigned(FOnRecv) then
+    FOnRecv(Self, ABuffer, ASize, CreateResponse);
+
+  { append response buffer, optional }
+  if CreateResponse then
+  begin
+    Index := Length(FResponse);
+    SetLength(FResponse, Length(FResponse) + ASize);
+    Move(ABuffer^, FResponse[Index], ASize);
+  end;
+end;
+
+function TgoHttpClient.ResponseHeader: Boolean;
+var
+  Bytes: TBytes;
+
+  procedure ParseResponseHeader(const ABytes: TBytes);
+  var
+    Headers: TStringList;
+    Strings: TArray<String>;
+    Index: Integer;
+  begin
+    Headers := TStringList.Create;
+    try
+      Headers.Text := TEncoding.ASCII.GetString(ABytes, 0, Length(ABytes) - 4); // exclude CRLFCRLF
+
+      if Headers.Count > 0 then
+      begin
+        { response status code }
+        Strings := Headers[0].ToLower.Substring(Headers[0].ToLower.LastIndexOf('http:/')).Split([#32]);
+        if Length(Strings) >= 2 then
+          FResponseStatusCode := StrToInt64Def(Strings[1], -1)
+        else
+          FResponseStatusCode := -1;
+
+        { response headers }
+        if Headers.Count > 1 then
+          for Index := 1 to Headers.Count - 1 do
+            FResponseHeaders.AddOrSet(Headers[Index]);
+
+        { content type }
+        FResponseContentType := FResponseHeaders.Value(S_CONTENT_TYPE);
+
+        { charset }
+        Index := FResponseContentType.IndexOf(S_CHARSET + '=');
+        if Index >= 0 then
+          FResponseContentCharset := FResponseContentType.Substring(Index + Length(S_CHARSET) + 1, Length(FResponseContentType) - Index - Length(S_CHARSET)).ToLower;
+
+        { content length or transfer encoding? }
+        FContentLength := StrToInt64Def(FResponseHeaders.Value(S_CONTENT_LENGTH), -1);
+        if FContentLength < 0 then
+          { chunked encoding }
+          FTransferEncoding := FResponseHeaders.Value(S_TRANSFER_ENCODING);
+      end;
+    finally
+      Headers.Free;
+    end;
+  end;
+
+begin
+  {$IFDEF HTTP2}
+  if FHttp2 then
+    Result := FResponseHeader2
+  else
+  {$ENDIF}
+  begin
+    Result := FResponseHeader;
+    if not FResponseHeader then
+    begin
+      if FRecvBuffer.ReadTo(CRLF + CRLF, Bytes) then
+      begin
+        ParseResponseHeader(Bytes);
+        FResponseHeader := True;
+        Result := True;
+      end;
+    end;
+  end;
+  {$IFDEF LOGGING}
+  grLog('ResponseHeader', Result);
+  {$ENDIF}
+end;
+
+function TgoHttpClient.ResponseContent: Boolean;
+var
+  S: RawByteString;
+  Index: Integer;
+  Bytes: TBytes;
+begin
+  if FMethod.ToUpper = 'HEAD' then  // no content expected
+    Result := True
+  else
+  begin
+    {$IFDEF HTTP2}
+    if FHttp2 then
+    begin
+      if FRecvBuffer2.Read(Bytes) then
+        DoRecv(@Bytes[0], Length(Bytes));
+      Result := FResponseContent2;
+    end
+    else
+    {$ENDIF}
+    begin
+      if FContentLength >= 0 then
+      begin
+        if FRecvBuffer.Read(Bytes) then
+          DoRecv(@Bytes[0], Length(Bytes));
+        Result := FResponseBytes >= FContentLength;
+      end
+      else
+      begin
+        Result := False;
+        { chunked encoding }
+        if FTransferEncoding = S_CHUNKED then
+        begin
+          while True do
+          begin
+            { calculate expected next chunk size, only once }
+            if FChunkSize = -1 then
+              if FRecvBuffer.ReadTo(CRLF, Bytes) then
+              begin
+                SetLength(S, Length(Bytes) - 2);
+                Move(Bytes[0], S[1], Length(Bytes) - 2);
+                Index := String(S).IndexOf(';'); { skip optional chunk parameters }
+                if Index >= 0 then
+                  SetLength(S, Index);
+                FChunkSize := StrToInt64Def('$' + String(S), -1);
+                {$IFDEF LOGGING}
+                //grLog('ChunkSize', FChunkSize);
+                {$ENDIF}
+              end;
+
+            if FChunkSize > 0 then
+            begin
+              { did we receive the chunk plus all padding bytes? }
+              if FRecvBuffer.Size > FChunkSize + 2 then
+              begin
+                if FRecvBuffer.Read(Bytes, FChunkSize + 2) then
+                  DoRecv(@Bytes[0], Length(Bytes) - 2);
+                FChunkSize := -1;
+              end
+              else
+                Break; // need more data
+            end
+            else
+            if FChunkSize = 0 then // completed
+            begin
+              FRecvBuffer.Clear; // ignore chunking tail
+              Result := True;
+              Break;
+            end
+            else
+              Break; // need more data
+          end;
+        end;
+      end;
+    end;
+  end;
+  {$IFDEF LOGGING}
+//  grLog('ResponseContent', Result);
+  {$ENDIF}
+end;
+
+{ OnSocketRecv can be called by multiple threads from the socket pool in relation
+  to the same http request.  These threads are always different from the main
+  thread.  This can create issues with FIFO buffer ordering so we write the buffer
+  into our main buffer in a thread safe manner, and we do it as quickly as possible. }
+procedure TgoHttpClient.OnSocketRecv(const ABuffer: Pointer; const ASize: Integer);
+var
+  ResponseMessage: TgoHttpResponseMessage;
+begin
+  {$IFDEF LOGGING}
+//  grLog(Format('OnSocketRecv (ThreadId=%d, Size=%d)', [GetCurrentThreadId, ASize]), ABuffer, ASize);
+  {$ENDIF}
   FLastRecv := Now;
+  FRecvBuffer.Write(ABuffer, ASize);
 
-  { expand the buffer if we are at capacity }
-  if FRecvSize + ASize >= Length(FRecvBuffer) then
-    SetLength(FRecvBuffer, (FRecvSize + ASize) * 2);
+  { http2 receive }
+  {$IFDEF HTTP2}
+  if FHttp2 then
+    nghttp2_Recv;
+  {$ENDIF}
 
-  { append the new buffer }
-  Move(ABuffer^, FRecvBuffer[FRecvSize], ASize);
-  FRecvSize := FRecvSize + ASize;
-
-  { received both a complete header and content? }
-  if ResponseHeaderReady and ResponseContentReady then
-    FResponseRecv := TSocketState.Success;
+  if FState <> TgoHttpClientState.Finished then
+  begin
+    if FBlocking then
+      FRecv.SetEvent
+    else
+    begin
+      if ResponseHeader and ResponseContent then
+      begin
+        ResponseMessage := TgoHttpResponseMessage.Create(
+          Self,
+          FResponseHeaders,
+          FResponseStatusCode,
+          FResponseContentType,
+          FResponseContentCharset,
+          FResponse);
+        TMessageManager.DefaultManager.SendMessage(Self, ResponseMessage);
+        FState := TgoHttpClientState.Finished;
+      end;
+    end;
+  end;
 end;
 
-function TgoHTTPClient.Get(const AURL: UnicodeString;
-  const ARecvTimeout: Integer): UnicodeString;
+function TgoHttpClient.BytesToString(const ABytes: TBytes; const ACharset: String): String;
 begin
-  Result := DoRequest('GET', AURL, ARecvTimeout);
+  if ACharset = 'iso-8859-1' then
+    Result := TEncoding.ANSI.GetString(ABytes)
+  else
+  if ACharset = 'utf-8' then
+    Result := TEncoding.UTF8.GetString(ABytes)
+  else
+    Result := TEncoding.ANSI.GetString(ABytes)
 end;
 
-function TgoHTTPClient.Post(const AURL: UnicodeString;
-  const ARecvTimeout: Integer): UnicodeString;
+function TgoHttpClient.Get(const AURL: String; out AResponse: TBytes;
+  const ARecvTimeout: Integer): Boolean;
 begin
-  Result := DoRequest('POST', AURL, ARecvTimeout);
+  Result := DoRequest('GET', AURL, AResponse, ARecvTimeout);
 end;
 
-function TgoHTTPClient.Put(const AURL: UnicodeString;
-  const ARecvTimeout: Integer): UnicodeString;
+function TgoHttpClient.Get(const AURL: String; out AResponse: String;
+  const ARecvTimeout: Integer): Boolean;
+var
+  Response: TBytes;
 begin
-  Result := DoRequest('PUT', AURL, ARecvTimeout);
+  if Get(AURL, Response, ARecvTimeout) then
+  begin
+    AResponse := BytesToString(Response, FResponseContentCharset);
+    Result := True;
+  end
+  else
+    Result := False;
 end;
 
-function TgoHTTPClient.Delete(const AURL: UnicodeString;
-  const ARecvTimeout: Integer): UnicodeString;
+function TgoHttpClient.Get(const AURL: String; const ARecvTimeout: Integer): String;
+var
+  Response: TBytes;
 begin
-  Result := DoRequest('DELETE', AURL, ARecvTimeout);
+  if Get(AURL, Response, ARecvTimeout) then
+    Result := BytesToString(Response, FResponseContentCharset);
 end;
 
-function TgoHTTPClient.Options(const AURL: UnicodeString;
-  const ARecvTimeout: Integer): UnicodeString;
+function TgoHttpClient.Head(const AURL: String; const ARecvTimeout: Integer): Boolean;
+var
+  AResponse: TBytes;
 begin
-  Result := DoRequest('OPTIONS', AURL, ARecvTimeout);
+  Result := DoRequest('HEAD', AURL, AResponse, ARecvTimeout);
+end;
+
+function TgoHttpClient.Post(const AURL: String; out AResponse: TBytes;
+  const ARecvTimeout: Integer): Boolean;
+begin
+  Result := DoRequest('POST', AURL, AResponse, ARecvTimeout);
+end;
+
+function TgoHttpClient.Post(const AURL: String; out AResponse: String;
+  const ARecvTimeout: Integer): Boolean;
+var
+  Response: TBytes;
+begin
+  if Post(AURL, Response, ARecvTimeout) then
+  begin
+    AResponse := BytesToString(Response, FResponseContentCharset);
+    Result := True;
+  end
+  else
+    Result := False;
+end;
+
+function TgoHttpClient.Post(const AURL: String; const ARecvTimeout: Integer): String;
+var
+  Response: TBytes;
+begin
+  if Post(AURL, Response, ARecvTimeout) then
+    Result := BytesToString(Response, FResponseContentCharset);
+end;
+
+function TgoHttpClient.Put(const AURL: String; out AResponse: TBytes;
+  const ARecvTimeout: Integer): Boolean;
+begin
+  Result := DoRequest('PUT', AURL, AResponse, ARecvTimeout);
+end;
+
+function TgoHttpClient.Put(const AURL: String; out AResponse: String;
+  const ARecvTimeout: Integer): Boolean;
+var
+  Response: TBytes;
+begin
+  if Put(AURL, Response, ARecvTimeout) then
+  begin
+    AResponse := BytesToString(Response, FResponseContentCharset);
+    Result := True;
+  end
+  else
+    Result := False;
+end;
+
+function TgoHttpClient.Put(const AURL: String; const ARecvTimeout: Integer): String;
+var
+  Response: TBytes;
+begin
+  if Put(AURL, Response, ARecvTimeout) then
+    Result := BytesToString(Response, FResponseContentCharset);
+end;
+
+function TgoHttpClient.Delete(const AURL: String; out AResponse: TBytes;
+  const ARecvTimeout: Integer): Boolean;
+begin
+  Result := DoRequest('DELETE', AURL, AResponse, ARecvTimeout);
+end;
+
+function TgoHttpClient.Delete(const AURL: String; out AResponse: String;
+  const ARecvTimeout: Integer): Boolean;
+var
+  Response: TBytes;
+begin
+  if Delete(AURL, Response, ARecvTimeout) then
+  begin
+    AResponse := BytesToString(Response, FResponseContentCharset);
+    Result := True;
+  end
+  else
+    Result := False;
+end;
+
+function TgoHttpClient.Delete(const AURL: String; const ARecvTimeout: Integer): String;
+var
+  Response: TBytes;
+begin
+  if Delete(AURL, Response, ARecvTimeout) then
+    Result := BytesToString(Response, FResponseContentCharset);
+end;
+
+function TgoHttpClient.Options(const AURL: String; out AResponse: TBytes;
+  const ARecvTimeout: Integer): Boolean;
+begin
+  Result := DoRequest('OPTIONS', AURL, AResponse, ARecvTimeout);
+end;
+
+function TgoHttpClient.Options(const AURL: String; out AResponse: String;
+  const ARecvTimeout: Integer): Boolean;
+var
+  Response: TBytes;
+begin
+  if Options(AURL, Response, ARecvTimeout) then
+  begin
+    AResponse := BytesToString(Response, FResponseContentCharset);
+    Result := True;
+  end
+  else
+    Result := False;
+end;
+
+function TgoHttpClient.Options(const AURL: String; const ARecvTimeout: Integer): String;
+var
+  Response: TBytes;
+begin
+  if Options(AURL, Response, ARecvTimeout) then
+    Result := BytesToString(Response, FResponseContentCharset);
 end;
 
 initialization
-  _HTTPClientSocketManager := TgoClientSocketManager.Create;
+  _HttpClientSocketManager := TgoClientSocketManager.Create;
+  HttpClientManager := TgoHttpClientManager.Create;
 
 finalization
-  _HTTPClientSocketManager.Free;
+  HttpClientManager.Free;
+  _HttpClientSocketManager.Free;
 
 end.
