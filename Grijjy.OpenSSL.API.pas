@@ -7,18 +7,15 @@ unit Grijjy.OpenSSL.API;
 interface
 
 uses
-  System.Classes,
-  {$IF Defined(MSWINDOWS)}
+  {$IFDEF MSWINDOWS}
   Windows,
-  {$ELSEIF Defined(LINUX)}
-  {$ELSE}
-    {$MESSAGE Error 'Unsupported Platform'}
   {$ENDIF}
+  System.Classes,
   System.SyncObjs,
   System.SysUtils;
 
 const
-  {$IFNDEF MSWINDOWS}
+  {$IFDEF LINUX}
   SSLEAY_DLL = 'libssl.so.1.0.0';
   LIBEAY_DLL = 'libcrypto.so.1.0.0';
   {$ELSE}
@@ -37,24 +34,16 @@ const
   SSL_ERROR_WANT_CONNECT = 7;
   SSL_ERROR_WANT_ACCEPT = 8;
 
-  SSL_ST_CONNECT = $1000;
-  SSL_ST_ACCEPT = $2000;
-  SSL_ST_MASK = $0FFF;
-  SSL_ST_INIT = (SSL_ST_CONNECT or SSL_ST_ACCEPT);
-  SSL_ST_BEFORE = $4000;
-  SSL_ST_OK = $03;
-  SSL_ST_RENEGOTIATE = ($04 or SSL_ST_INIT);
+  SSL_ST_OK = 3;
+  SSL_VERIFY_NONE = 0;
 
   SSL_OP_ALL = $000FFFFF;
   SSL_OP_NO_SSLv2 = $01000000;
   SSL_OP_NO_SSLv3 = $02000000;
   SSL_OP_NO_COMPRESSION = $00020000;
 
-  SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS = $00000800;
-
   BIO_CTRL_INFO = 3;
   BIO_CTRL_PENDING = 10;
-  SSL_VERIFY_NONE = $00;
 
   CRYPTO_LOCK = 1;
   CRYPTO_UNLOCK = 2;
@@ -70,43 +59,18 @@ const
   BIO_CLOSE = 1;
 
 type
-  size_t = NativeUInt;
-
-  TSSL_METHOD = packed record
-  end;
-  PSSL_METHOD = ^TSSL_METHOD;
-
-  TSSL_CTX = packed record
-  end;
-  PSSL_CTX = ^TSSL_CTX;
-
-  TBIO = packed record
-  end;
-  PBIO = ^TBIO;
-  PPBIO = ^PBIO;
-
-  TSSL = packed record
-  end;
-  PSSL = ^TSSL;
-
-  TX509_STORE = packed record
-  end;
-  PX509_STORE = ^TX509_STORE;
-
-  TEVP_PKEY = packed record
-  end;
-  PEVP_PKEY = ^TEVP_PKEY;
+  PSSL_METHOD = Pointer;
+  PSSL_CTX = Pointer;
+  PBIO = Pointer;
+  PSSL = Pointer;
+  PX509_STORE = Pointer;
+  PEVP_PKEY = Pointer;
   PPEVP_PKEY = ^PEVP_PKEY;
   PEVP_PKEY_CTX = Pointer;
-
   PEVP_MD_CTX = Pointer;
   PEVP_MD = Pointer;
-
-  ENGINE = Pointer;
-
-  TX509 = packed record
-  end;
-  PX509 = ^TX509;
+  PENGINE = Pointer;
+  PX509 = Pointer;
   PPX509 = ^PX509;
 
   TASN1_STRING = record
@@ -116,62 +80,26 @@ type
     flags: Longword;
   end;
   PASN1_STRING = ^TASN1_STRING;
-  TASN1_OCTET_STRING = TASN1_STRING;
-  PASN1_OCTET_STRING = ^TASN1_OCTET_STRING;
   TASN1_BIT_STRING = TASN1_STRING;
   PASN1_BIT_STRING = ^TASN1_BIT_STRING;
 
   TSetVerify_cb = function(Ok: Integer; StoreCtx: PX509_STORE): Integer; cdecl;
 
-  TCRYPTO_THREADID = packed record
-  end;
-  PCRYPTO_THREADID = ^TCRYPTO_THREADID;
-
   TCRYPTO_dynlock_value = record
     Mutex: TCriticalSection;
   end;
   PCRYPTO_dynlock_value = ^TCRYPTO_dynlock_value;
-  CRYPTO_dynlock_value  = TCRYPTO_dynlock_value;
 
-  TBIO_METHOD = packed record
-  end;
-  PBIO_METHOD = ^TBIO_METHOD;
-
-  TX509_NAME = packed record
-  end;
-  PX509_NAME = ^TX509_NAME;
-
-  TSTACK = packed record
-  end;
-  PSTACK = ^TSTACK;
-
-  TASN1_OBJECT = packed record
-  end;
-  PASN1_OBJECT = ^TASN1_OBJECT;
+  PBIO_METHOD = Pointer;
+  PX509_NAME = Pointer;
+  PSTACK = Pointer;
+  PASN1_OBJECT = Pointer;
 
   TStatLockLockCallback = procedure(Mode: Integer; N: Integer; const _File: MarshaledAString; Line: Integer); cdecl;
-  TStatLockIDCallback = function: Longword; cdecl;
-  TCryptoThreadIDCallback = procedure(ID: PCRYPTO_THREADID) cdecl;
-
   TDynLockCreateCallback = function(const _file: MarshaledAString; Line: Integer): PCRYPTO_dynlock_value; cdecl;
   TDynLockLockCallback = procedure(Mode: Integer; L: PCRYPTO_dynlock_value; _File: MarshaledAString; Line: Integer); cdecl;
   TDynLockDestroyCallback = procedure(L: PCRYPTO_dynlock_value; _File: MarshaledAString; Line: Integer); cdecl;
-  pem_password_cb = function(buf: Pointer; size: Integer; rwflag: Integer; userdata: Pointer): Integer; cdecl;
-
-  TgoSSLHelper = class
-  private class var
-    FTarget: Integer;
-  public
-    class procedure LoadSSL;
-    class procedure UnloadSSL;
-    class procedure SetCertificate(ctx: PSSL_CTX; const ACertificate, APrivateKey: TBytes;
-      const APassword: UnicodeString = ''); overload;
-    class procedure SetCertificate(ctx: PSSL_CTX; const ACertificateFile, APrivateKeyFile: UnicodeString;
-      const APassword: UnicodeString = ''); overload;
-  public
-    class function Sign_RSASHA256(const AData: TBytes; const APrivateKey: TBytes;
-      out ASignature: TBytes): Boolean;
-  end;
+  TPemPasswordCallback = function(buf: Pointer; size: Integer; rwflag: Integer; userdata: Pointer): Integer; cdecl;
 
 var
   SSL_library_init: function: Integer; cdecl = nil;
@@ -218,7 +146,7 @@ var
   CRYPTO_cleanup_all_ex_data: procedure; cdecl = nil;
   ERR_remove_state: procedure(tid: Cardinal); cdecl = nil;
   ERR_free_strings: procedure; cdecl = nil; // thread-unsafe, Application-global cleanup functions
-  ERR_error_string_n: procedure(err: Cardinal; buf: MarshaledAString; len: size_t); cdecl = nil;
+  ERR_error_string_n: procedure(err: Cardinal; buf: MarshaledAString; len: NativeUInt); cdecl = nil;
   ERR_get_error: function: Cardinal; cdecl = nil;
   ERR_remove_thread_state: procedure(pid: Cardinal); cdecl = nil;
   ERR_load_BIO_strings: function: Cardinal; cdecl = nil;
@@ -242,96 +170,66 @@ var
   OBJ_obj2nid: function(o: PASN1_OBJECT): Integer; cdecl = nil;
   OBJ_nid2sn: function(n: Integer): MarshaledAString; cdecl = nil;
   ASN1_STRING_data: function(x: PASN1_STRING): Pointer; cdecl = nil;
-  PEM_read_bio_X509: function(bp: PBIO; x: PX509; cb: pem_password_cb; u: Pointer): PX509; cdecl = nil;
-  PEM_read_bio_PrivateKey: function(bp: PBIO; x: PPEVP_PKEY; cb: pem_password_cb; u: Pointer): PEVP_PKEY; cdecl = nil;
-  PEM_read_bio_RSAPrivateKey: function(bp: PBIO; x: PPEVP_PKEY; cb: pem_password_cb; u: Pointer): PEVP_PKEY; cdecl = nil;
+  PEM_read_bio_X509: function(bp: PBIO; x: PX509; cb: TPemPasswordCallback; u: Pointer): PX509; cdecl = nil;
+  PEM_read_bio_PrivateKey: function(bp: PBIO; x: PPEVP_PKEY; cb: TPemPasswordCallback; u: Pointer): PEVP_PKEY; cdecl = nil;
+  PEM_read_bio_RSAPrivateKey: function(bp: PBIO; x: PPEVP_PKEY; cb: TPemPasswordCallback; u: Pointer): PEVP_PKEY; cdecl = nil;
   EVP_MD_CTX_create: function: PEVP_MD_CTX; cdecl = nil;
   EVP_MD_CTX_destroy: procedure(ctx: PEVP_MD_CTX); cdecl = nil;
   EVP_sha256: function: PEVP_MD; cdecl = nil;
+  EVP_sha1: function: PEVP_MD; cdecl = nil;
   EVP_PKEY_size: function(key: PEVP_PKEY): Integer; cdecl = nil;
-  EVP_DigestSignInit: function(aCtx: PEVP_MD_CTX; aPCtx: PEVP_PKEY_CTX; aType: PEVP_MD; aEngine: ENGINE; aKey: PEVP_PKEY): Integer; cdecl = nil;
+  EVP_DigestSignInit: function(aCtx: PEVP_MD_CTX; aPCtx: PEVP_PKEY_CTX; aType: PEVP_MD; aEngine: PENGINE; aKey: PEVP_PKEY): Integer; cdecl = nil;
   EVP_DigestUpdate: function(ctx: PEVP_MD_CTX; const d: Pointer; cnt: Cardinal): Integer; cdecl = nil;
   EVP_DigestSignFinal: function(ctx : PEVP_MD_CTX; const d: PByte; var cnt: Cardinal): Integer; cdecl = nil;
-  EVP_DigestVerifyInit: function(aCtx: PEVP_MD_CTX; aPCtx: PEVP_PKEY_CTX; aType: PEVP_MD; aEngine: ENGINE; aKey: pEVP_PKEY): Integer; cdecl = nil;
+  EVP_DigestVerifyInit: function(aCtx: PEVP_MD_CTX; aPCtx: PEVP_PKEY_CTX; aType: PEVP_MD; aEngine: PENGINE; aKey: pEVP_PKEY): Integer; cdecl = nil;
   EVP_DigestVerifyFinal: function(ctx : pEVP_MD_CTX; const d: PByte; cnt: Cardinal) : Integer; cdecl = nil;
-  CRYPTO_malloc: function(aLength : LongInt; const f : MarshaledAString; aLine : Integer): Pointer; cdecl= nil;
+  CRYPTO_malloc: function(aLength : LongInt; const f : MarshaledAString; aLine : Integer): Pointer; cdecl = nil;
   CRYPTO_free: procedure(str: Pointer); cdecl= nil;
+  HMAC: function(evp: PEVP_MD; key: PByte; key_len: Integer; data: PByte; data_len: Integer; md: PByte; var md_len: integer): PByte; cdecl = nil;
 
-function BIO_pending(bp: PBIO): Integer; inline;
-function BIO_get_mem_data(bp: PBIO; parg: Pointer): Integer; inline;
-function BIO_get_flags(b: PBIO): Integer; inline;
-function BIO_should_retry(b: PBIO): Boolean; inline;
+{ Helpers }
 
-function SSL_CTX_set_options(ctx: pointer; op: integer): integer;
+function BIOGetFlags(const ABIO: PBIO): Integer; inline;
+function BIORetry(const ABIO: PBIO): Boolean; inline;
 
-function SSL_is_init_finished(s: PSSL): Boolean; inline;
+function SetSSLCTXOptions(const ACTX: Pointer; const AOP: Integer): Integer;
 
-function SSL_is_fatal_error(ssl_error: Integer): Boolean;
-function SSL_error(ssl: PSSL; ret_code: Integer; out AErrorMsg: UnicodeString): Integer;
+function SSLErrorFatal(const AError: Integer): Boolean;
+function SSLError(const ASSL: PSSL; const AReturnCode: Integer; out AErrorMsg: String): Integer;
 
-function sk_ASN1_OBJECT_num(stack: PSTACK): Integer; inline;
-function sk_GENERAL_NAME_num(stack: PSTACK): Integer; inline;
-function sk_GENERAL_NAME_pop(stack: PSTACK): Pointer; inline;
+procedure LoadSSLEAY;
+procedure UnloadSSLEAY;
+procedure LoadLIBEAY;
+procedure UnloadLIBEAY;
+procedure SSLInitialize;
+procedure SSLFinalize;
 
 implementation
-
-uses
-  System.IOUtils;
 
 var
   _SSLEAYHandle, _LIBEAYHandle: HMODULE;
   _FSSLLocks: TArray<TCriticalSection>;
 
-function BIO_pending(bp: PBIO): Integer;
+function BIOGetFlags(const ABIO: PBIO): Integer;
 begin
-  Result := BIO_ctrl(bp, BIO_CTRL_PENDING, 0, nil);
+  Result := PInteger(MarshaledAString(ABIO) + 3 * SizeOf(Pointer) + 2 * SizeOf(Integer))^;
 end;
 
-function BIO_get_mem_data(bp: PBIO; parg: Pointer): Integer;
+function BIORetry(const ABIO: PBIO): Boolean;
 begin
-  Result := BIO_ctrl(bp, BIO_CTRL_INFO, 0, parg);
+  Result := ((BIOGetFlags(ABIO) and BIO_FLAGS_SHOULD_RETRY) <> 0);
 end;
 
-function sk_ASN1_OBJECT_num(stack: PSTACK): Integer;
-begin
-  Result := sk_num(stack);
-end;
-
-function sk_GENERAL_NAME_num(stack: PSTACK): Integer;
-begin
-  Result := sk_num(stack);
-end;
-
-function sk_GENERAL_NAME_pop(stack: PSTACK): Pointer;
-begin
-  Result := sk_pop(stack);
-end;
-
-function BIO_get_flags(b: PBIO): Integer;
-begin
-  Result := PInteger(MarshaledAString(b) + 3 * SizeOf(Pointer) + 2 * SizeOf(Integer))^;
-end;
-
-function BIO_should_retry(b: PBIO): Boolean;
-begin
-  Result := ((BIO_get_flags(b) and BIO_FLAGS_SHOULD_RETRY) <> 0);
-end;
-
-function SSL_CTX_set_options(ctx: pointer; op: integer): integer;
+function SetSSLCTXOptions(const ACTX: pointer; const AOP: integer): Integer;
 const
   SSL_CTRL_OPTIONS = 32;
 begin
-  result := SSL_CTX_ctrl(ctx, SSL_CTRL_OPTIONS, op, nil);
+  result := SSL_CTX_ctrl(ACTX, SSL_CTRL_OPTIONS, AOP, nil);
 end;
 
-function SSL_is_init_finished(s: PSSL): Boolean; inline;
+function SSLErrorFatal(const AError: Integer): Boolean;
 begin
-  Result := (SSL_state(s) = SSL_ST_OK);
-end;
-
-function SSL_is_fatal_error(ssl_error: Integer): Boolean;
-begin
-	case ssl_error of
+	case AError of
 		SSL_ERROR_NONE,
 		SSL_ERROR_WANT_READ,
 		SSL_ERROR_WANT_WRITE,
@@ -342,12 +240,12 @@ begin
 	end;
 end;
 
-function SSL_error(ssl: PSSL; ret_code: Integer; out AErrorMsg: UnicodeString): Integer;
+function SSLError(const ASSL: PSSL; const AReturnCode: Integer; out AErrorMsg: String): Integer;
 var
   error, error_log: Integer;
   ErrorBuf: TBytes;
 begin
-	error := SSL_get_error(ssl, ret_code);
+	error := SSL_get_error(ASSL, AReturnCode);
 	if(error <> SSL_ERROR_NONE) then
 	begin
 		error_log := error;
@@ -355,7 +253,7 @@ begin
     begin
       SetLength(ErrorBuf, 512);
 			ERR_error_string_n(error_log, @ErrorBuf[0], Length(ErrorBuf));
-			if (SSL_is_fatal_error(error_log)) then
+			if (SSLErrorFatal(error_log)) then
         AErrorMsg := StringOf(ErrorBuf);
 			error_log := ERR_get_error();
 		end;
@@ -465,6 +363,7 @@ begin
   EVP_MD_CTX_create := GetProc(_LIBEAYHandle, 'EVP_MD_CTX_create');
   EVP_MD_CTX_destroy := GetProc(_LIBEAYHandle, 'EVP_MD_CTX_destroy');
   EVP_sha256 := GetProc(_LIBEAYHandle, 'EVP_sha256');
+  EVP_sha1 := GetProc(_LIBEAYHandle, 'EVP_sha1');
   EVP_PKEY_size := GetProc(_LIBEAYHandle, 'EVP_PKEY_size');
   EVP_DigestSignInit := GetProc(_LIBEAYHandle, 'EVP_DigestSignInit');
   EVP_DigestUpdate := GetProc(_LIBEAYHandle, 'EVP_DigestUpdate');
@@ -493,6 +392,7 @@ begin
   PEM_read_bio_X509 := GetProc(_LIBEAYHandle, 'PEM_read_bio_X509');
   PEM_read_bio_PrivateKey := GetProc(_LIBEAYHandle, 'PEM_read_bio_PrivateKey');
   PEM_read_bio_RSAPrivateKey := GetProc(_LIBEAYHandle, 'PEM_read_bio_RSAPrivateKey');
+  HMAC := GetProc(_LIBEAYHandle, 'HMAC');
 end;
 
 procedure UnloadLIBEAY;
@@ -502,7 +402,7 @@ begin
   _LIBEAYHandle := 0;
 end;
 
-procedure ssl_lock_callback(Mode, N: Integer; const _File: MarshaledAString; Line: Integer); cdecl;
+procedure CRYPTO_locking_callback(Mode, N: Integer; const _File: MarshaledAString; Line: Integer); cdecl;
 begin
 	if(mode and CRYPTO_LOCK <> 0) then
     _FSSLLocks[N].Enter
@@ -510,7 +410,7 @@ begin
     _FSSLLocks[N].Leave;
 end;
 
-procedure ssl_lock_dyn_callback(Mode: Integer; L: PCRYPTO_dynlock_value; _File: MarshaledAString; Line: Integer); cdecl;
+procedure CRYPTO_dynlock_callback_lock(Mode: Integer; L: PCRYPTO_dynlock_value; _File: MarshaledAString; Line: Integer); cdecl;
 begin
   if (Mode and CRYPTO_LOCK <> 0) then
     L.Mutex.Enter
@@ -518,46 +418,47 @@ begin
     L.Mutex.Leave;
 end;
 
-function ssl_lock_dyn_create_callback(const _file: MarshaledAString; Line: Integer): PCRYPTO_dynlock_value; cdecl;
+function CRYPTO_dynlock_callback_create(const _file: MarshaledAString; Line: Integer): PCRYPTO_dynlock_value; cdecl;
 begin
   New(Result);
   Result.Mutex := TCriticalSection.Create;
 end;
 
-procedure ssl_lock_dyn_destroy_callback(L: PCRYPTO_dynlock_value; _File: MarshaledAString; Line: Integer); cdecl;
+procedure CRYPTO_dynlock_callback_destroy(L: PCRYPTO_dynlock_value; _File: MarshaledAString; Line: Integer); cdecl;
 begin
   L.Mutex.Free;
   Dispose(L);
 end;
 
-procedure SslInit;
+procedure SSLInitialize;
 var
-  LNumberOfLocks, I: Integer;
+  Locks, I: Integer;
 begin
   if (_SSLEAYHandle = 0) or (_LIBEAYHandle = 0) then Exit;
 
-  LNumberOfLocks := CRYPTO_num_locks();
-	if(LNumberOfLocks > 0) then
+  Locks := CRYPTO_num_locks();
+	if(Locks > 0) then
   begin
-    SetLength(_FSSLLocks, LNumberOfLocks);
+    SetLength(_FSSLLocks, Locks);
     for I := Low(_FSSLLocks) to High(_FSSLLocks) do
       _FSSLLocks[I] := TCriticalSection.Create;
 	end;
 
-	CRYPTO_set_locking_callback(ssl_lock_callback);
-  CRYPTO_set_dynlock_create_callback(ssl_lock_dyn_create_callback);
-	CRYPTO_set_dynlock_lock_callback(ssl_lock_dyn_callback);
-  CRYPTO_set_dynlock_destroy_callback(ssl_lock_dyn_destroy_callback);
+	CRYPTO_set_locking_callback(CRYPTO_locking_callback);
+  CRYPTO_set_dynlock_create_callback(CRYPTO_dynlock_callback_create);
+	CRYPTO_set_dynlock_lock_callback(CRYPTO_dynlock_callback_lock);
+  CRYPTO_set_dynlock_destroy_callback(CRYPTO_dynlock_callback_destroy);
 
   SSL_load_error_strings();
   SSL_library_init();
 end;
 
-procedure SslUninit;
+procedure SSLFinalize;
 var
   I: Integer;
 begin
-  if (_SSLEAYHandle = 0) or (_LIBEAYHandle = 0) then Exit;
+  if (_SSLEAYHandle = 0) or (_LIBEAYHandle = 0) then
+    Exit;
 
 	CRYPTO_set_locking_callback(nil);
 	CRYPTO_set_dynlock_create_callback(nil);
@@ -572,98 +473,6 @@ begin
   for I := Low(_FSSLLocks) to High(_FSSLLocks) do
     _FSSLLocks[I].Free;
   _FSSLLocks := nil;
-end;
-
-{ TgoSSLHelper }
-
-class procedure TgoSSLHelper.LoadSSL;
-begin
-  if (TInterlocked.Increment(FTarget) = 1) then
-  begin
-    LoadLIBEAY;
-    LoadSSLEAY;
-    SslInit;
-  end;
-end;
-
-class procedure TgoSSLHelper.UnloadSSL;
-begin
-  {$IFDEF FPC}
-  if (InterlockedDecrement(FTarget) = 0) then
-  {$ELSE}
-  if (TInterlocked.Decrement(FTarget) = 0) then
-  {$ENDIF}
-  begin
-    SslUninit;
-    UnloadSSLEAY;
-    UnloadLIBEAY;
-  end;
-end;
-
-class procedure TgoSSLHelper.SetCertificate(ctx: PSSL_CTX; const ACertificate, APrivateKey: TBytes;
-  const APassword: UnicodeString = '');
-var
-  BIOCert, BIOPrivateKey: PBIO;
-  Certificate: PX509;
-  PrivateKey: PEVP_PKEY;
-  Password: RawByteString;
-begin
-	BIOCert := BIO_new_mem_buf(@ACertificate[0], Length(ACertificate));
-	BIOPrivateKey := BIO_new_mem_buf(@APrivateKey[0], Length(APrivateKey));
-	Certificate := PEM_read_bio_X509(BIOCert, nil, nil, nil);
-  if APassword <> '' then
-  begin
-    Password := RawByteString(APassword);
-	  PrivateKey := PEM_read_bio_PrivateKey(BIOPrivateKey, nil, nil, MarshaledAString(Password));
-  end
-  else
-	  PrivateKey := PEM_read_bio_PrivateKey(BIOPrivateKey, nil, nil, nil);
-	SSL_CTX_use_certificate(ctx, Certificate);
-	SSL_CTX_use_privatekey(ctx, PrivateKey);
-	X509_free(Certificate);
-	EVP_PKEY_free(PrivateKey);
-	BIO_free(BIOCert);
-	BIO_free(BIOPrivateKey);
-  if (SSL_CTX_check_private_key(ctx) = 0) then
-    raise Exception.Create('Private key does not match the certificate public key');
-end;
-
-class procedure TgoSSLHelper.SetCertificate(ctx: PSSL_CTX; const ACertificateFile, APrivateKeyFile: UnicodeString;
-  const APassword: UnicodeString = '');
-var
-  Certificate, PrivateKey: TBytes;
-begin
-  Certificate := TFile.ReadAllBytes(ACertificateFile);
-  PrivateKey := TFile.ReadAllBytes(APrivateKeyFile);
-  SetCertificate(ctx, Certificate, PrivateKey, APassword);
-end;
-
-class function TgoSSLHelper.Sign_RSASHA256(const AData: TBytes; const APrivateKey: TBytes;
-  out ASignature: TBytes): Boolean;
-var
-  BIOPrivateKey: PBIO;
-  PrivateKey: PEVP_PKEY;
-  Ctx: PEVP_MD_CTX;
-  SHA256: PEVP_MD;
-  Size: Cardinal;
-begin
-	BIOPrivateKey := BIO_new_mem_buf(@APrivateKey[0], Length(APrivateKey));
-  PrivateKey := PEM_read_bio_PrivateKey(BIOPrivateKey, nil, nil, nil);
-  Ctx := EVP_MD_CTX_create;
-  try
-    SHA256 := EVP_sha256;
-    if (EVP_DigestSignInit(Ctx, nil , SHA256, nil, PrivateKey) > 0) and
-      (EVP_DigestUpdate(Ctx, @AData[0], Length(AData)) > 0) and
-      (EVP_DigestSignFinal(Ctx, nil, Size) > 0) then
-    begin
-      SetLength(ASignature, Size);
-      Result := EVP_DigestSignFinal(Ctx, @ASignature[0], Size) > 0;
-    end
-    else
-      Result := False;
-  finally
-    EVP_MD_CTX_destroy(Ctx);
-  end;
 end;
 
 end.

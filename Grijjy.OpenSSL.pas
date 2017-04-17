@@ -7,8 +7,8 @@ unit Grijjy.OpenSSL;
 interface
 
 uses
-  System.SysUtils,
   Grijjy.OpenSSL.API,
+  System.SysUtils,
   Grijjy.MemoryPool;
 
 const
@@ -19,7 +19,7 @@ type
   TgoOpenSSLNotify = procedure of object;
   TgoOpenSSLData = procedure(const ABuffer: Pointer; const ASize: Integer) of object;
 
-  { OpenSSL handler instance }
+  { OpenSSL protocol handler }
   TgoOpenSSL = class(TObject)
   protected
     FOnConnected: TgoOpenSSLNotify;
@@ -77,7 +77,30 @@ type
     property OnWrite: TgoOpenSSLData read FOnWrite write FOnWrite;
   end;
 
+  { Helper class for SSL }
+  TgoSSLHelper = class
+  private class var
+    FTarget: Integer;
+  public
+    class procedure LoadSSL;
+    class procedure UnloadSSL;
+    class procedure SetCertificate(ctx: PSSL_CTX; const ACertificate, APrivateKey: TBytes;
+      const APassword: UnicodeString = ''); overload;
+    class procedure SetCertificate(ctx: PSSL_CTX; const ACertificateFile, APrivateKeyFile: UnicodeString;
+      const APassword: UnicodeString = ''); overload;
+  public
+    class function Sign_RSASHA256(const AData: TBytes; const APrivateKey: TBytes;
+      out ASignature: TBytes): Boolean;
+    class function HMAC_SHA256(const AKey, AData: RawByteString): String;
+    class function HMAC_SHA1(const AKey, AData: RawByteString): TBytes;
+  end;
+
 implementation
+
+uses
+  System.IOUtils,
+  System.SyncObjs,
+  System.Classes;
 
 var
   _MemBufferPool: TgoMemoryPool;
@@ -113,7 +136,7 @@ begin
     if AALPN then
     begin
       { force TLS 1.2 }
-      SSL_CTX_set_options(FSSLContext,
+      SetSSLCTXOptions(FSSLContext,
         SSL_OP_ALL + SSL_OP_NO_SSLv2 + SSL_OP_NO_SSLv3 + SSL_OP_NO_COMPRESSION);
 
       { enable Application-Layer Protocol Negotiation Extension }
@@ -219,7 +242,7 @@ begin
   while True do
   begin
     BIO_write(FBIORead, ABuffer, ASize);
-    if not BIO_should_retry(FBIORead) then
+    if not BIORetry(FBIORead) then
       Break;
   end;
 
@@ -234,7 +257,7 @@ begin
     else
     begin
       Error := SSL_get_error(FSSL, Bytes);
-      if not ssl_is_fatal_error(Error) then
+      if not SSLErrorFatal(Error) then
         Break
       else
         Exit;
@@ -242,7 +265,7 @@ begin
   end;
 
   { handshake data needs to be written? }
-  if BIO_pending(FBIOWrite) <> 0 then
+  if BIO_ctrl(FBIOWrite, BIO_CTRL_PENDING, 0, nil) <> 0 then
   begin
     Bytes := BIO_read(FBIOWrite, FSSLWriteBuffer, DEFAULT_BLOCK_SIZE);
     if Bytes > 0 then
@@ -253,14 +276,14 @@ begin
     else
     begin
       Error := SSL_get_error(FSSL, Bytes);
-      if ssl_is_fatal_error(Error) then
+      if SSLErrorFatal(Error) then
         Exit;
     end;
   end;
 
   { with ssl we are only connected and can write once the handshake is finished }
   if FHandshaking then
-    if SSL_is_init_finished(FSSL) then
+    if SSL_state(FSSL) = SSL_ST_OK then
     begin
       FHandshaking := False;
       if Assigned(FOnConnected) then
@@ -279,11 +302,11 @@ begin
   if Bytes <> ASize then
   begin
     Error := SSL_get_error(FSSL, Bytes);
-    if ssl_is_fatal_error(Error) then
+    if SSLErrorFatal(Error) then
       Exit;
   end;
 
-  while BIO_pending(FBIOWrite) <> 0 do
+  while BIO_ctrl(FBIOWrite, BIO_CTRL_PENDING, 0, nil) <> 0 do
   begin
     Bytes := BIO_read(FBIOWrite, FSSLWriteBuffer, DEFAULT_BLOCK_SIZE);
     if Bytes > 0 then
@@ -295,7 +318,7 @@ begin
     else
     begin
       Error := SSL_get_error(FSSL, Bytes);
-      if ssl_is_fatal_error(Error) then
+      if SSLErrorFatal(Error) then
         Exit;
     end;
   end;
@@ -308,6 +331,127 @@ var
 begin
   SSL_get0_alpn_selected(FSSL, ALPN, ALPNLen);
   Result := (ALPNLen = 2) and (ALPN[0] = 'h') and (ALPN[1] = '2');
+end;
+
+{ TgoSSLHelper }
+
+class procedure TgoSSLHelper.LoadSSL;
+begin
+  if (TInterlocked.Increment(FTarget) = 1) then
+  begin
+    LoadLIBEAY;
+    LoadSSLEAY;
+    SSLInitialize;
+  end;
+end;
+
+class procedure TgoSSLHelper.UnloadSSL;
+begin
+  if (TInterlocked.Decrement(FTarget) = 0) then
+  begin
+    SSLFinalize;
+    UnloadSSLEAY;
+    UnloadLIBEAY;
+  end;
+end;
+
+class procedure TgoSSLHelper.SetCertificate(ctx: PSSL_CTX; const ACertificate, APrivateKey: TBytes;
+  const APassword: UnicodeString = '');
+var
+  BIOCert, BIOPrivateKey: PBIO;
+  Certificate: PX509;
+  PrivateKey: PEVP_PKEY;
+  Password: RawByteString;
+begin
+	BIOCert := BIO_new_mem_buf(@ACertificate[0], Length(ACertificate));
+	BIOPrivateKey := BIO_new_mem_buf(@APrivateKey[0], Length(APrivateKey));
+	Certificate := PEM_read_bio_X509(BIOCert, nil, nil, nil);
+  if APassword <> '' then
+  begin
+    Password := MarshaledAString(RawByteString(APassword));
+	  PrivateKey := PEM_read_bio_PrivateKey(BIOPrivateKey, nil, nil, @Password[1]);
+  end
+  else
+	  PrivateKey := PEM_read_bio_PrivateKey(BIOPrivateKey, nil, nil, nil);
+	SSL_CTX_use_certificate(ctx, Certificate);
+	SSL_CTX_use_privatekey(ctx, PrivateKey);
+	X509_free(Certificate);
+	EVP_PKEY_free(PrivateKey);
+	BIO_free(BIOCert);
+	BIO_free(BIOPrivateKey);
+  if (SSL_CTX_check_private_key(ctx) = 0) then
+    raise Exception.Create('Private key does not match the certificate public key');
+end;
+
+class procedure TgoSSLHelper.SetCertificate(ctx: PSSL_CTX; const ACertificateFile, APrivateKeyFile: UnicodeString;
+  const APassword: UnicodeString = '');
+var
+  Certificate, PrivateKey: TBytes;
+begin
+  Certificate := TFile.ReadAllBytes(ACertificateFile);
+  PrivateKey := TFile.ReadAllBytes(APrivateKeyFile);
+  SetCertificate(ctx, Certificate, PrivateKey, APassword);
+end;
+
+class function TgoSSLHelper.Sign_RSASHA256(const AData: TBytes; const APrivateKey: TBytes;
+  out ASignature: TBytes): Boolean;
+var
+  BIOPrivateKey: PBIO;
+  PrivateKey: PEVP_PKEY;
+  Ctx: PEVP_MD_CTX;
+  SHA256: PEVP_MD;
+  Size: Cardinal;
+begin
+	BIOPrivateKey := BIO_new_mem_buf(@APrivateKey[0], Length(APrivateKey));
+  PrivateKey := PEM_read_bio_PrivateKey(BIOPrivateKey, nil, nil, nil);
+  Ctx := EVP_MD_CTX_create;
+  try
+    SHA256 := EVP_sha256;
+    if (EVP_DigestSignInit(Ctx, nil, SHA256, nil, PrivateKey) > 0) and
+      (EVP_DigestUpdate(Ctx, @AData[0], Length(AData)) > 0) and
+      (EVP_DigestSignFinal(Ctx, nil, Size) > 0) then
+    begin
+      SetLength(ASignature, Size);
+      Result := EVP_DigestSignFinal(Ctx, @ASignature[0], Size) > 0;
+    end
+    else
+      Result := False;
+  finally
+    EVP_MD_CTX_destroy(Ctx);
+  end;
+end;
+
+class function TgoSSLHelper.HMAC_SHA256(const AKey, AData: RawByteString): String;
+const
+  EVP_MAX_MD_SIZE = 64;
+var
+  MessageAuthCode: PByte;
+  Size: Integer;
+  Buffer, Text: TBytes;
+begin
+  Size := EVP_MAX_MD_SIZE;
+  SetLength(Buffer, Size);
+  MessageAuthCode := HMAC(EVP_sha256, @AKey[1], Length(AKey), @AData[1], Length(AData), @Buffer[0], Size);
+  if MessageAuthCode <> nil then
+  begin
+    SetLength(Text, Size * 2);
+    BinToHex(Buffer, 0, Text, 0, Size);
+    Result := TEncoding.UTF8.GetString(Text).ToLower;
+  end;
+end;
+
+class function TgoSSLHelper.HMAC_SHA1(const AKey, AData: RawByteString): TBytes;
+const
+  EVP_MAX_MD_SIZE = 20;
+var
+  MessageAuthCode: PByte;
+  Size: Integer;
+begin
+  Size := EVP_MAX_MD_SIZE;
+  SetLength(Result, Size);
+  MessageAuthCode := HMAC(EVP_sha1, @AKey[1], Length(AKey), @AData[1], Length(AData), @Result[0], Size);
+  if MessageAuthCode <> nil then
+    SetLength(Result, Size);
 end;
 
 initialization

@@ -21,11 +21,15 @@ uses
   Grijjy.Uri,
   {$IFDEF MSWINDOWS}
   Windows,
+  Grijjy.SocketPool.Win,
+  {$ENDIF}
+  {$IFDEF LINUX}
+  Posix.Pthread,
+  Grijjy.SocketPool.Linux,
   {$ENDIF}
   {$IFDEF HTTP2}
   Nghttp2,
   {$ENDIF}
-  Grijjy.SocketPool.Win,
   Grijjy.BinaryCoding;
 
 const
@@ -60,7 +64,11 @@ type
   TOnRecv = procedure(Sender: TObject; const ABuffer: Pointer; const ASize: Integer; var ACreateResponse: Boolean) of object;
 
   { ISO-8859-1 ASCII compatible string }
+  {$IFDEF MSWINDOWS}
   ISO8859String = type AnsiString(28591);
+  {$ELSE}
+  ISO8859String = type RawByteString;
+  {$ENDIF}
 
 type
   { Thread safe buffer }
@@ -211,25 +219,25 @@ type
     FStreamId2: Integer;
     FResponseHeader2: Boolean;
     FResponseContent2: Boolean;
-    FCallbacks_http2: nghttp2_session_callbacks;
-    FSession_http2: nghttp2_session;
+    FCallbacks_http2: pnghttp2_session_callbacks;
+    FSession_http2: pnghttp2_session;
     {$ENDIF}
   private
     { ngHttp2 callbacks }
     {$IFDEF HTTP2}
-    function nghttp2_data_source_read_callback(session: nghttp2_session;
+    function nghttp2_data_source_read_callback(session: pnghttp2_session;
       stream_id: int32; buf: puint8; len: size_t; data_flags: puint32;
       source: pnghttp2_data_source; user_data: Pointer): ssize_t; cdecl;
-    function nghttp2_on_data_chunk_recv_callback(session: nghttp2_session;
+    function nghttp2_on_data_chunk_recv_callback(session: pnghttp2_session;
       flags: uint8; stream_id: int32; const data: puint8; len: size_t;
       user_data: Pointer): Integer; cdecl;
-    function nghttp2_on_frame_recv_callback(session: nghttp2_session;
+    function nghttp2_on_frame_recv_callback(session: pnghttp2_session;
       const frame: pnghttp2_frame; user_data: Pointer): Integer; cdecl;
-    function nghttp2_on_header_callback(session: nghttp2_session;
+    function nghttp2_on_header_callback(session: pnghttp2_session;
       const frame: pnghttp2_frame; const name: puint8; namelen: size_t;
       const value: puint8; valuelen: size_t; flags: uint8;
       user_data: Pointer): Integer; cdecl;
-    function nghttp2_on_stream_close_callback(session: nghttp2_session;
+    function nghttp2_on_stream_close_callback(session: pnghttp2_session;
       stream_id: int32; error_code: uint32; user_data: Pointer): Integer; cdecl;
     function nghttp2_Send: Boolean;
     function nghttp2_Recv: Boolean;
@@ -433,13 +441,16 @@ var
 
 implementation
 
+uses
+  Grijjy.SysUtils;
+
 var
   _HttpClientSocketManager: TgoClientSocketManager;
 
 { ngHttp2 callback cdecl }
 
 {$IFDEF HTTP2}
-function data_source_read_callback(session: nghttp2_session;
+function data_source_read_callback(session: pnghttp2_session;
   stream_id: int32; buf: puint8; len: size_t; data_flags: puint32;
   source: pnghttp2_data_source; user_data: Pointer): ssize_t; cdecl;
 var
@@ -450,7 +461,7 @@ begin
   Result := Http.nghttp2_data_source_read_callback(session, stream_id, buf, len, data_flags, source, user_data);
 end;
 
-function on_header_callback(session: nghttp2_session; const frame: pnghttp2_frame;
+function on_header_callback(session: pnghttp2_session; const frame: pnghttp2_frame;
   const name: puint8; namelen: size_t; const value: puint8; valuelen: size_t;
   flags: uint8; user_data: Pointer): Integer; cdecl;
 var
@@ -461,7 +472,7 @@ begin
   Result := Http.nghttp2_on_header_callback(session, frame, name, namelen, value, valuelen, flags, user_data);
 end;
 
-function on_frame_recv_callback(session: nghttp2_session;
+function on_frame_recv_callback(session: pnghttp2_session;
   const frame: pnghttp2_frame; user_data: Pointer): Integer; cdecl;
 var
   Http: TgoHttpClient;
@@ -471,7 +482,7 @@ begin
   Result := Http.nghttp2_on_frame_recv_callback(session, frame, user_data);
 end;
 
-function on_data_chunk_recv_callback(session: nghttp2_session;
+function on_data_chunk_recv_callback(session: pnghttp2_session;
   flags: uint8; stream_id: int32; const data: puint8; len: size_t;
   user_data: Pointer): Integer; cdecl;
 var
@@ -482,7 +493,7 @@ begin
   Result := Http.nghttp2_on_data_chunk_recv_callback(session, flags, stream_id, data, len, user_data);
 end;
 
-function on_stream_close_callback(session: nghttp2_session;
+function on_stream_close_callback(session: pnghttp2_session;
   stream_id: int32; error_code: uint32; user_data: Pointer): Integer; cdecl;
 var
   Http: TgoHttpClient;
@@ -765,8 +776,8 @@ var
 begin
   for Header in FHeaders do
   begin
-    NgHttp2Header.name := PAnsiChar(Header.NameAsISO8859);
-    NgHttp2Header.value := PAnsiChar(Header.ValueAsISO8859);
+    NgHttp2Header.name := MarshaledAString(Header.NameAsISO8859);
+    NgHttp2Header.value := MarshaledAString(Header.ValueAsISO8859);
     NgHttp2Header.namelen := Length(Header.Name);
     NgHttp2Header.valuelen := Length(Header.Value);
     NgHttp2Header.flags := NGHTTP2_NV_FLAG_NONE;
@@ -839,7 +850,7 @@ begin
     FLock.Leave;
   end;
   for HttpClient in ClientsToFree do
-    HttpClient.Free;
+    HttpClient.DisposeOf;
 end;
 
 procedure TgoHttpClientManager.Execute;
@@ -892,7 +903,7 @@ begin
     begin
       Settings.settings_id := NGHTTP2_SETTINGS_MAX_CONCURRENT_STREAMS;
       Settings.value := 100;
-      Error := nghttp2_submit_settings(FSession_http2, NGHTTP2_FLAG_NONE, Settings, 1);
+      Error := nghttp2_submit_settings(FSession_http2, NGHTTP2_FLAG_NONE, @Settings, 1);
       if (Error <> 0) then
         raise Exception.Create('Unable to  submit ngHttp2 settings');
     end
@@ -956,7 +967,7 @@ begin
 end;
 
 {$IFDEF HTTP2}
-function TgoHttpClient.nghttp2_data_source_read_callback(session: nghttp2_session;
+function TgoHttpClient.nghttp2_data_source_read_callback(session: pnghttp2_session;
   stream_id: int32; buf: puint8; len: size_t; data_flags: puint32;
   source: pnghttp2_data_source; user_data: Pointer): ssize_t;
 begin
@@ -974,7 +985,7 @@ begin
   end;
 end;
 
-function TgoHttpClient.nghttp2_on_header_callback(session: nghttp2_session; const frame: pnghttp2_frame;
+function TgoHttpClient.nghttp2_on_header_callback(session: pnghttp2_session; const frame: pnghttp2_frame;
   const name: puint8; namelen: size_t; const value: puint8; valuelen: size_t;
   flags: uint8; user_data: Pointer): Integer;
 var
@@ -1016,7 +1027,7 @@ begin
   Result := 0;
 end;
 
-function TgoHttpClient.nghttp2_on_frame_recv_callback(session: nghttp2_session;
+function TgoHttpClient.nghttp2_on_frame_recv_callback(session: pnghttp2_session;
   const frame: pnghttp2_frame; user_data: Pointer): Integer;
 begin
   {$IFDEF LOGGING}
@@ -1034,7 +1045,7 @@ begin
   Result := 0;
 end;
 
-function TgoHttpClient.nghttp2_on_data_chunk_recv_callback(session: nghttp2_session;
+function TgoHttpClient.nghttp2_on_data_chunk_recv_callback(session: pnghttp2_session;
   flags: uint8; stream_id: int32; const data: puint8; len: size_t;
   user_data: Pointer): Integer;
 begin
@@ -1049,7 +1060,7 @@ begin
   Result := 0;
 end;
 
-function TgoHttpClient.nghttp2_on_stream_close_callback(session: nghttp2_session;
+function TgoHttpClient.nghttp2_on_stream_close_callback(session: pnghttp2_session;
   stream_id: int32; error_code: uint32; user_data: Pointer): Integer;
 begin
   if stream_id = FStreamId2 then
@@ -1262,14 +1273,14 @@ var
   {$IFDEF HTTP2}
   DataProvider: nghttp2_data_provider;
   Data: TBytes;
-  Headers2: TArray<nghttp2_nv>;
+  FHeaders2: TArray<nghttp2_nv>;
   {$ENDIF}
 begin
   {$IFDEF LOGGING}
   grLog('SendRequest Thread', GetCurrentThreadId);
   {$ENDIF}
   Result := False;
-  FConnectionLock.Enter;
+//  FConnectionLock.Enter;
   try
     if (FConnection <> nil) then
     begin
@@ -1281,8 +1292,8 @@ begin
         DataProvider.read_callback := data_source_read_callback;
 
         { create nghttp2 compatible headers }
-        FInternalHeaders.AsNgHttp2Array(Headers2);
-        FRequestHeaders.AsNgHttp2Array(Headers2);
+        FInternalHeaders.AsNgHttp2Array(FHeaders2);
+        FRequestHeaders.AsNgHttp2Array(FHeaders2);
 
         { prepare send buffer for request body }
         if (FRequestBody <> '') then
@@ -1292,7 +1303,7 @@ begin
         FSendBuffer.Write(@Data[0], Length(Data));
 
         { submit request }
-        FStreamId2 := nghttp2_submit_request(FSession_http2, Nil, Headers2[0], Length(Headers2), @DataProvider, Self);
+        FStreamId2 := nghttp2_submit_request(FSession_http2, Nil, @FHeaders2[0], Length(FHeaders2), @DataProvider, Self);
         if FStreamId2 >= 0 then
           Result := nghttp2_Send;
       end
@@ -1313,7 +1324,7 @@ begin
       end;
     end;
   finally
-    FConnectionLock.Leave;
+//    FConnectionLock.Leave;
   end;
 end;
 
