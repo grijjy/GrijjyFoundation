@@ -4862,7 +4862,7 @@ class procedure TgoBsonSerializer.TPropertyInfo.SerializeTBytes(
   const AProp: TPropertyInfo; const AInstance: TObject;
   const AWriter: IgoBsonBaseWriter);
 begin
-  TgoBsonSerializer.SerializeTBytes(AProp, GetDynArrayProp(AInstance, AProp.Info), AWriter);
+  TgoBsonSerializer.SerializeTBytes(AProp, TBytes(GetDynArrayProp(AInstance, AProp.Info)), AWriter);
 end;
 
 class procedure TgoBsonSerializer.TPropertyInfo.SerializeUInt32(
