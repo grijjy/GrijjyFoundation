@@ -12,7 +12,7 @@
 <h1 class="unit">Unit Grijjy.Http</h1>
 <table class="sections wide_list">
 <tr>
-<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Uses</td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></td><td>Functions and Procedures</td><td><a class="section" href="#PasDoc-Types">Types</a></td><td><a class="section" href="#PasDoc-Constants">Constants</a></td><td>Variables</td></tr></table>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Uses</td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></td><td>Functions and Procedures</td><td><a class="section" href="#PasDoc-Types">Types</a></td><td><a class="section" href="#PasDoc-Constants">Constants</a></td><td><a class="section" href="#PasDoc-Variables">Variables</a></td></tr></table>
 <a name="PasDoc-Description"></a><h2 class="description">Description</h2>
 &nbsp;<a name="PasDoc-Uses"></a><h2 class="overview">Overview</h2>
 <a name="PasDoc-Classes"></a><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
@@ -22,64 +22,102 @@
 <th class="itemdesc">Description</th>
 </tr>
 <tr class="list">
-<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Http.TgoHTTPClient.html"><code>TgoHTTPClient</code></a></td>
-<td class="itemdesc">HTTP client</td>
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Http.TThreadSafeBuffer.html"><code>TThreadSafeBuffer</code></a></td>
+<td class="itemdesc">Thread safe buffer</td>
+</tr>
+<tr class="list2">
+<td class="itemname">record&nbsp;<a class="bold" href="Grijjy.Http.TgoHttpHeader.html"><code>TgoHttpHeader</code></a></td>
+<td class="itemdesc">Http header</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Http.TgoHttpHeaders.html"><code>TgoHttpHeaders</code></a></td>
+<td class="itemdesc">Http <a class="normal" href="Grijjy.Http.TgoHttpHeaders.html#Headers">headers</a> class</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Http.TgoHttpClient.html"><code>TgoHttpClient</code></a></td>
+<td class="itemdesc">Http client</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Http.TgoHttpResponseMessage.html"><code>TgoHttpResponseMessage</code></a></td>
+<td class="itemdesc">Http <a class="normal" href="Grijjy.Http.TgoHttpResponseMessage.html#Response">response</a> message</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.Http.TgoHttpClientManager.html"><code>TgoHttpClientManager</code></a></td>
+<td class="itemdesc">Http client manager</td>
 </tr>
 </table>
 <a name="PasDoc-Types"></a><h3 class="summary">Types</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.Http.html#TOnRedirect">TOnRedirect</a></b> = procedure(Sender: TObject; var ALocation: UnicodeString; const AFollow: Boolean) of object;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.Http.html#TOnRedirect">TOnRedirect</a></b> = procedure(Sender: TObject; var ALocation: String; const AFollow: Boolean) of object;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.Http.html#TOnPassword">TOnPassword</a></b> = procedure(Sender: TObject; var AAgain: Boolean) of object;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.Http.html#TSocketState">TSocketState</a></b> = (...);</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.Http.html#TOnRecv">TOnRecv</a></b> = procedure(Sender: TObject; const ABuffer: Pointer; const ASize: Integer; var ACreateResponse: Boolean) of object;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Http.html#ISO8859String">ISO8859String</a></b> = type AnsiString(28591);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Http.html#TgoHttpClientState">TgoHttpClientState</a></b> = (...);</code></td>
 </tr>
 </table>
 <a name="PasDoc-Constants"></a><h3 class="summary">Constants</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.Http.html#RECV_BUFFER_SIZE">RECV_BUFFER_SIZE</a></b> = 32768;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.Http.html#BUFFER_SIZE">BUFFER_SIZE</a></b> = 32768;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.Http.html#TIMEOUT_CONNECT">TIMEOUT_CONNECT</a></b> = 5000;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.Http.html#TIMEOUT_SEND">TIMEOUT_SEND</a></b> = 5000;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a></b> = 5000;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.Http.html#DEFAULT_TIMEOUT_RECV">DEFAULT_TIMEOUT_RECV</a></b> = 5000;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.Http.html#S_CONTENT_LENGTH">S_CONTENT_LENGTH</a></b> = 'content-length';</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.Http.html#S_CONTENT_LENGTH">S_CONTENT_LENGTH</a></b> = 'content-length:';</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.Http.html#S_CONTENT_TYPE">S_CONTENT_TYPE</a></b> = 'content-type';</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.Http.html#S_TRANSFER_ENCODING">S_TRANSFER_ENCODING</a></b> = 'transfer-encoding:';</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.Http.html#S_TRANSFER_ENCODING">S_TRANSFER_ENCODING</a></b> = 'transfer-encoding';</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.Http.html#S_CHUNKED">S_CHUNKED</a></b> = 'chunked';</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.Http.html#CRLF">CRLF</a></b> = #13#10;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.Http.html#S_CHARSET">S_CHARSET</a></b> = 'charset';</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.Http.html#DEFAULT_HTTP_PORT">DEFAULT_HTTP_PORT</a></b> = 80;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.Http.html#CRLF">CRLF</a></b> = #13#10;</code></td>
 </tr>
 <tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Http.html#DEFAULT_HTTP_PORT">DEFAULT_HTTP_PORT</a></b> = 80;</code></td>
+</tr>
+<tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.Http.html#DEFAULT_HTTPS_PORT">DEFAULT_HTTPS_PORT</a></b> = 443;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.Http.html#INTERVAL_CLEANUP">INTERVAL_CLEANUP</a></b> = 5000;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Variables"></a><h3 class="summary">Variables</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.Http.html#HttpClientManager">HttpClientManager</a></b>: <a  href="Grijjy.Http.TgoHttpClientManager.html">TgoHttpClientManager</a>;</code></td>
 </tr>
 </table>
 <h2 class="description">Description</h2>
 <h3 class="detail">Types</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="TOnRedirect"></a><code><b>TOnRedirect</b> = procedure(Sender: TObject; var ALocation: UnicodeString; const AFollow: Boolean) of object;</code></td>
+<td class="itemcode"><a name="TOnRedirect"></a><code><b>TOnRedirect</b> = procedure(Sender: TObject; var ALocation: String; const AFollow: Boolean) of object;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
-HTTP events</p>
+Http events</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -91,34 +129,50 @@ HTTP events</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="TSocketState"></a><code><b>TSocketState</b> = (...);</code></td>
+<td class="itemcode"><a name="TOnRecv"></a><code><b>TOnRecv</b> = procedure(Sender: TObject; const ABuffer: Pointer; const ASize: Integer; var ACreateResponse: Boolean) of object;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ISO8859String"></a><code><b>ISO8859String</b> = type AnsiString(28591);</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
-Socket activity state</p>
+ISO-8859-1 ASCII compatible string</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TgoHttpClientState"></a><code><b>TgoHttpClientState</b> = (...);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Client activity state</p>
 <h6 class="description_section">Values</h6>
 <ul>
 <li>
 None: &nbsp;</li>
 <li>
+Error: &nbsp;</li>
+<li>
 Sending: &nbsp;</li>
 <li>
 Receiving: &nbsp;</li>
 <li>
-Success: &nbsp;</li>
-<li>
-Failure: &nbsp;</li>
+Finished: &nbsp;</li>
 </ul>
 </td></tr>
 </table>
 <h3 class="detail">Constants</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="RECV_BUFFER_SIZE"></a><code><b>RECV_BUFFER_SIZE</b> = 32768;</code></td>
+<td class="itemcode"><a name="BUFFER_SIZE"></a><code><b>BUFFER_SIZE</b> = 32768;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
-Socket recv buffer size</p>
+Socket buffer size</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -132,21 +186,14 @@ Timeout for operations</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="TIMEOUT_SEND"></a><code><b>TIMEOUT_SEND</b> = 5000;</code></td>
+<td class="itemcode"><a name="TIMEOUT_RECV"></a><code><b>TIMEOUT_RECV</b> = 5000;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="DEFAULT_TIMEOUT_RECV"></a><code><b>DEFAULT_TIMEOUT_RECV</b> = 5000;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><a name="S_CONTENT_LENGTH"></a><code><b>S_CONTENT_LENGTH</b> = 'content-length:';</code></td>
+<td class="itemcode"><a name="S_CONTENT_LENGTH"></a><code><b>S_CONTENT_LENGTH</b> = 'content-length';</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -155,7 +202,14 @@ Strings</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="S_TRANSFER_ENCODING"></a><code><b>S_TRANSFER_ENCODING</b> = 'transfer-encoding:';</code></td>
+<td class="itemcode"><a name="S_CONTENT_TYPE"></a><code><b>S_CONTENT_TYPE</b> = 'content-type';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="S_TRANSFER_ENCODING"></a><code><b>S_TRANSFER_ENCODING</b> = 'transfer-encoding';</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -163,6 +217,13 @@ Strings</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><a name="S_CHUNKED"></a><code><b>S_CHUNKED</b> = 'chunked';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="S_CHARSET"></a><code><b>S_CHARSET</b> = 'charset';</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -192,6 +253,23 @@ Ports</p>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
-<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-30 08:24:21</em>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="INTERVAL_CLEANUP"></a><code><b>INTERVAL_CLEANUP</b> = 5000;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Cleanup</p>
+</td></tr>
+</table>
+<h3 class="detail">Variables</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="HttpClientManager"></a><code><b>HttpClientManager</b>: <a  href="Grijjy.Http.TgoHttpClientManager.html">TgoHttpClientManager</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-04-25 12:54:26</em>
 </span>
 </td></tr></table></body></html>

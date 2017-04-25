@@ -22,127 +22,69 @@
 <th class="itemdesc">Description</th>
 </tr>
 <tr class="list">
-<td class="itemname">packed record&nbsp;<a class="bold" href="Grijjy.OpenSSL.API.TSSL_METHOD.html"><code>TSSL_METHOD</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
-<tr class="list2">
-<td class="itemname">packed record&nbsp;<a class="bold" href="Grijjy.OpenSSL.API.TSSL_CTX.html"><code>TSSL_CTX</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
-<tr class="list">
-<td class="itemname">packed record&nbsp;<a class="bold" href="Grijjy.OpenSSL.API.TBIO.html"><code>TBIO</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
-<tr class="list2">
-<td class="itemname">packed record&nbsp;<a class="bold" href="Grijjy.OpenSSL.API.TSSL.html"><code>TSSL</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
-<tr class="list">
-<td class="itemname">packed record&nbsp;<a class="bold" href="Grijjy.OpenSSL.API.TX509_STORE.html"><code>TX509_STORE</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
-<tr class="list2">
-<td class="itemname">packed record&nbsp;<a class="bold" href="Grijjy.OpenSSL.API.TEVP_PKEY.html"><code>TEVP_PKEY</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
-<tr class="list">
-<td class="itemname">packed record&nbsp;<a class="bold" href="Grijjy.OpenSSL.API.TX509.html"><code>TX509</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
-<tr class="list2">
 <td class="itemname">record&nbsp;<a class="bold" href="Grijjy.OpenSSL.API.TASN1_STRING.html"><code>TASN1_STRING</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
-<tr class="list">
-<td class="itemname">packed record&nbsp;<a class="bold" href="Grijjy.OpenSSL.API.TCRYPTO_THREADID.html"><code>TCRYPTO_THREADID</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
 <tr class="list2">
 <td class="itemname">record&nbsp;<a class="bold" href="Grijjy.OpenSSL.API.TCRYPTO_dynlock_value.html"><code>TCRYPTO_dynlock_value</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list">
-<td class="itemname">packed record&nbsp;<a class="bold" href="Grijjy.OpenSSL.API.TBIO_METHOD.html"><code>TBIO_METHOD</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
-<tr class="list2">
-<td class="itemname">packed record&nbsp;<a class="bold" href="Grijjy.OpenSSL.API.TX509_NAME.html"><code>TX509_NAME</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
-<tr class="list">
-<td class="itemname">packed record&nbsp;<a class="bold" href="Grijjy.OpenSSL.API.TSTACK.html"><code>TSTACK</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
-<tr class="list2">
-<td class="itemname">packed record&nbsp;<a class="bold" href="Grijjy.OpenSSL.API.TASN1_OBJECT.html"><code>TASN1_OBJECT</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
-<tr class="list">
-<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.OpenSSL.API.TgoSSLHelper.html"><code>TgoSSLHelper</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
 </table>
 <a name="PasDoc-FuncsProcs"></a><h3 class="summary">Functions and Procedures</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code>function <b><a  href="Grijjy.OpenSSL.API.html#BIO_pending">BIO_pending</a></b>(bp: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>): Integer; inline;</code></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.OpenSSL.API.html#BIOGetFlags">BIOGetFlags</a></b>(const ABIO: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>): Integer; inline;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <b><a  href="Grijjy.OpenSSL.API.html#BIO_get_mem_data">BIO_get_mem_data</a></b>(bp: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>; parg: Pointer): Integer; inline;</code></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.OpenSSL.API.html#BIORetry">BIORetry</a></b>(const ABIO: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>): Boolean; inline;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <b><a  href="Grijjy.OpenSSL.API.html#BIO_get_flags">BIO_get_flags</a></b>(b: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>): Integer; inline;</code></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.OpenSSL.API.html#SetSSLCTXOptions">SetSSLCTXOptions</a></b>(const ACTX: Pointer; const AOP: Integer): Integer;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <b><a  href="Grijjy.OpenSSL.API.html#BIO_should_retry">BIO_should_retry</a></b>(b: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>): Boolean; inline;</code></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.OpenSSL.API.html#SSLErrorFatal">SSLErrorFatal</a></b>(const AError: Integer): Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <b><a  href="Grijjy.OpenSSL.API.html#SSL_CTX_set_options">SSL_CTX_set_options</a></b>(ctx: pointer; op: integer): integer;</code></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.OpenSSL.API.html#SSLError">SSLError</a></b>(const ASSL: <a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a>; const AReturnCode: Integer; out AErrorMsg: String): Integer;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <b><a  href="Grijjy.OpenSSL.API.html#SSL_is_init_finished">SSL_is_init_finished</a></b>(s: <a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a>): Boolean; inline;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.OpenSSL.API.html#LoadSSLEAY">LoadSSLEAY</a></b>;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <b><a  href="Grijjy.OpenSSL.API.html#SSL_is_fatal_error">SSL_is_fatal_error</a></b>(ssl_error: Integer): Boolean;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.OpenSSL.API.html#UnloadSSLEAY">UnloadSSLEAY</a></b>;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <b><a  href="Grijjy.OpenSSL.API.html#SSL_error">SSL_error</a></b>(ssl: <a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a>; ret_code: Integer; out AErrorMsg: UnicodeString): Integer;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.OpenSSL.API.html#LoadLIBEAY">LoadLIBEAY</a></b>;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <b><a  href="Grijjy.OpenSSL.API.html#sk_ASN1_OBJECT_num">sk_ASN1_OBJECT_num</a></b>(stack: <a  href="Grijjy.OpenSSL.API.html#PSTACK">PSTACK</a>): Integer; inline;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.OpenSSL.API.html#UnloadLIBEAY">UnloadLIBEAY</a></b>;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <b><a  href="Grijjy.OpenSSL.API.html#sk_GENERAL_NAME_num">sk_GENERAL_NAME_num</a></b>(stack: <a  href="Grijjy.OpenSSL.API.html#PSTACK">PSTACK</a>): Integer; inline;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.OpenSSL.API.html#SSLInitialize">SSLInitialize</a></b>;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <b><a  href="Grijjy.OpenSSL.API.html#sk_GENERAL_NAME_pop">sk_GENERAL_NAME_pop</a></b>(stack: <a  href="Grijjy.OpenSSL.API.html#PSTACK">PSTACK</a>): Pointer; inline;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.OpenSSL.API.html#SSLFinalize">SSLFinalize</a></b>;</code></td>
 </tr>
 </table>
 <a name="PasDoc-Types"></a><h3 class="summary">Types</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#size_t">size_t</a></b> = NativeUInt;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PSSL_METHOD">PSSL_METHOD</a></b> = Pointer;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PSSL_METHOD">PSSL_METHOD</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.TSSL_METHOD.html">TSSL_METHOD</a>;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a></b> = Pointer;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PSSL_CTX">PSSL_CTX</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.TSSL_CTX.html">TSSL_CTX</a>;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a></b> = Pointer;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.TBIO.html">TBIO</a>;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a></b> = Pointer;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PPBIO">PPBIO</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PX509_STORE">PX509_STORE</a></b> = Pointer;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.TSSL.html">TSSL</a>;</code></td>
-</tr>
-<tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PX509_STORE">PX509_STORE</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.TX509_STORE.html">TX509_STORE</a>;</code></td>
-</tr>
-<tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">PEVP_PKEY</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.TEVP_PKEY.html">TEVP_PKEY</a>;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">PEVP_PKEY</a></b> = Pointer;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PPEVP_PKEY">PPEVP_PKEY</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">PEVP_PKEY</a>;</code></td>
@@ -157,22 +99,16 @@
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PEVP_MD">PEVP_MD</a></b> = Pointer;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#ENGINE">ENGINE</a></b> = Pointer;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PENGINE">PENGINE</a></b> = Pointer;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PX509">PX509</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.TX509.html">TX509</a>;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PX509">PX509</a></b> = Pointer;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PPX509">PPX509</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.html#PX509">PX509</a>;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PASN1_STRING">PASN1_STRING</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.TASN1_STRING.html">TASN1_STRING</a>;</code></td>
-</tr>
-<tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TASN1_OCTET_STRING">TASN1_OCTET_STRING</a></b> = <a  href="Grijjy.OpenSSL.API.TASN1_STRING.html">TASN1_STRING</a>;</code></td>
-</tr>
-<tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PASN1_OCTET_STRING">PASN1_OCTET_STRING</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.html#TASN1_OCTET_STRING">TASN1_OCTET_STRING</a>;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TASN1_BIT_STRING">TASN1_BIT_STRING</a></b> = <a  href="Grijjy.OpenSSL.API.TASN1_STRING.html">TASN1_STRING</a>;</code></td>
@@ -184,34 +120,22 @@
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TSetVerify_cb">TSetVerify_cb</a></b> = function(Ok: Integer; StoreCtx: <a  href="Grijjy.OpenSSL.API.html#PX509_STORE">PX509_STORE</a>): Integer; cdecl;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PCRYPTO_THREADID">PCRYPTO_THREADID</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.TCRYPTO_THREADID.html">TCRYPTO_THREADID</a>;</code></td>
-</tr>
-<tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PCRYPTO_dynlock_value">PCRYPTO_dynlock_value</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.TCRYPTO_dynlock_value.html">TCRYPTO_dynlock_value</a>;</code></td>
 </tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PBIO_METHOD">PBIO_METHOD</a></b> = Pointer;</code></td>
+</tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#CRYPTO_dynlock_value">CRYPTO_dynlock_value</a></b>  = <a  href="Grijjy.OpenSSL.API.TCRYPTO_dynlock_value.html">TCRYPTO_dynlock_value</a>;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PX509_NAME">PX509_NAME</a></b> = Pointer;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PBIO_METHOD">PBIO_METHOD</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.TBIO_METHOD.html">TBIO_METHOD</a>;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PSTACK">PSTACK</a></b> = Pointer;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PX509_NAME">PX509_NAME</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.TX509_NAME.html">TX509_NAME</a>;</code></td>
-</tr>
-<tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PSTACK">PSTACK</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.TSTACK.html">TSTACK</a>;</code></td>
-</tr>
-<tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PASN1_OBJECT">PASN1_OBJECT</a></b> = &circ;<a  href="Grijjy.OpenSSL.API.TASN1_OBJECT.html">TASN1_OBJECT</a>;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PASN1_OBJECT">PASN1_OBJECT</a></b> = Pointer;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TStatLockLockCallback">TStatLockLockCallback</a></b> = procedure(Mode: Integer; N: Integer; const _File: MarshaledAString; Line: Integer); cdecl;</code></td>
-</tr>
-<tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TStatLockIDCallback">TStatLockIDCallback</a></b> = function: Longword; cdecl;</code></td>
-</tr>
-<tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TCryptoThreadIDCallback">TCryptoThreadIDCallback</a></b> = procedure(ID: <a  href="Grijjy.OpenSSL.API.html#PCRYPTO_THREADID">PCRYPTO_THREADID</a>) cdecl;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TDynLockCreateCallback">TDynLockCreateCallback</a></b> = function(const _file: MarshaledAString; Line: Integer): <a  href="Grijjy.OpenSSL.API.html#PCRYPTO_dynlock_value">PCRYPTO_dynlock_value</a>; cdecl;</code></td>
@@ -223,7 +147,7 @@
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TDynLockDestroyCallback">TDynLockDestroyCallback</a></b> = procedure(L: <a  href="Grijjy.OpenSSL.API.html#PCRYPTO_dynlock_value">PCRYPTO_dynlock_value</a>; _File: MarshaledAString; Line: Integer); cdecl;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#pem_password_cb">pem_password_cb</a></b> = function(buf: Pointer; size: Integer; rwflag: Integer; userdata: Pointer): Integer; cdecl;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#TPemPasswordCallback">TPemPasswordCallback</a></b> = function(buf: Pointer; size: Integer; rwflag: Integer; userdata: Pointer): Integer; cdecl;</code></td>
 </tr>
 </table>
 <a name="PasDoc-Constants"></a><h3 class="summary">Constants</h3>
@@ -262,40 +186,22 @@
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_ERROR_WANT_ACCEPT">SSL_ERROR_WANT_ACCEPT</a></b> = 8;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_ST_CONNECT">SSL_ST_CONNECT</a></b> = $1000;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_ST_OK">SSL_ST_OK</a></b> = 3;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_ST_ACCEPT">SSL_ST_ACCEPT</a></b> = $2000;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_VERIFY_NONE">SSL_VERIFY_NONE</a></b> = 0;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_ST_MASK">SSL_ST_MASK</a></b> = $0FFF;</code></td>
-</tr>
-<tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_ST_INIT">SSL_ST_INIT</a></b> = (<a  href="Grijjy.OpenSSL.API.html#SSL_ST_CONNECT">SSL_ST_CONNECT</a> or <a  href="Grijjy.OpenSSL.API.html#SSL_ST_ACCEPT">SSL_ST_ACCEPT</a>);</code></td>
-</tr>
-<tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_ST_BEFORE">SSL_ST_BEFORE</a></b> = $4000;</code></td>
-</tr>
-<tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_ST_OK">SSL_ST_OK</a></b> = $03;</code></td>
-</tr>
-<tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_ST_RENEGOTIATE">SSL_ST_RENEGOTIATE</a></b> = ($04 or <a  href="Grijjy.OpenSSL.API.html#SSL_ST_INIT">SSL_ST_INIT</a>);</code></td>
-</tr>
-<tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_OP_ALL">SSL_OP_ALL</a></b> = $000FFFFF;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_OP_NO_SSLv2">SSL_OP_NO_SSLv2</a></b> = $01000000;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_OP_NO_SSLv3">SSL_OP_NO_SSLv3</a></b> = $02000000;</code></td>
 </tr>
-<tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_OP_NO_COMPRESSION">SSL_OP_NO_COMPRESSION</a></b> = $00020000;</code></td>
-</tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS">SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS</a></b> = $00000800;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_OP_NO_COMPRESSION">SSL_OP_NO_COMPRESSION</a></b> = $00020000;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#BIO_CTRL_INFO">BIO_CTRL_INFO</a></b> = 3;</code></td>
@@ -304,39 +210,36 @@
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#BIO_CTRL_PENDING">BIO_CTRL_PENDING</a></b> = 10;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#SSL_VERIFY_NONE">SSL_VERIFY_NONE</a></b> = $00;</code></td>
-</tr>
-<tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#CRYPTO_LOCK">CRYPTO_LOCK</a></b> = 1;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#CRYPTO_UNLOCK">CRYPTO_UNLOCK</a></b> = 2;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#CRYPTO_READ">CRYPTO_READ</a></b> = 4;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#CRYPTO_WRITE">CRYPTO_WRITE</a></b> = 8;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#BIO_FLAGS_READ">BIO_FLAGS_READ</a></b> = 1;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#BIO_FLAGS_WRITE">BIO_FLAGS_WRITE</a></b> = 2;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#BIO_FLAGS_IO_SPECIAL">BIO_FLAGS_IO_SPECIAL</a></b> = 4;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#BIO_FLAGS_RWS">BIO_FLAGS_RWS</a></b> = (<a  href="Grijjy.OpenSSL.API.html#BIO_FLAGS_READ">BIO_FLAGS_READ</a> or <a  href="Grijjy.OpenSSL.API.html#BIO_FLAGS_WRITE">BIO_FLAGS_WRITE</a> or <a  href="Grijjy.OpenSSL.API.html#BIO_FLAGS_IO_SPECIAL">BIO_FLAGS_IO_SPECIAL</a>);</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#BIO_FLAGS_SHOULD_RETRY">BIO_FLAGS_SHOULD_RETRY</a></b> = 8;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#BIO_NOCLOSE">BIO_NOCLOSE</a></b> = 0;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#BIO_CLOSE">BIO_CLOSE</a></b> = 1;</code></td>
 </tr>
 </table>
@@ -475,7 +378,7 @@
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#ERR_free_strings">ERR_free_strings</a></b>: procedure; cdecl = nil;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#ERR_error_string_n">ERR_error_string_n</a></b>: procedure(err: Cardinal; buf: MarshaledAString; len: <a  href="Grijjy.OpenSSL.API.html#size_t">size_t</a>); cdecl = nil;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#ERR_error_string_n">ERR_error_string_n</a></b>: procedure(err: Cardinal; buf: MarshaledAString; len: NativeUInt); cdecl = nil;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#ERR_get_error">ERR_get_error</a></b>: function: Cardinal; cdecl = nil;</code></td>
@@ -547,13 +450,13 @@
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#ASN1_STRING_data">ASN1_STRING_data</a></b>: function(x: <a  href="Grijjy.OpenSSL.API.html#PASN1_STRING">PASN1_STRING</a>): Pointer; cdecl = nil;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PEM_read_bio_X509">PEM_read_bio_X509</a></b>: function(bp: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>; x: <a  href="Grijjy.OpenSSL.API.html#PX509">PX509</a>; cb: <a  href="Grijjy.OpenSSL.API.html#pem_password_cb">pem_password_cb</a>; u: Pointer): <a  href="Grijjy.OpenSSL.API.html#PX509">PX509</a>; cdecl = nil;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PEM_read_bio_X509">PEM_read_bio_X509</a></b>: function(bp: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>; x: <a  href="Grijjy.OpenSSL.API.html#PX509">PX509</a>; cb: <a  href="Grijjy.OpenSSL.API.html#TPemPasswordCallback">TPemPasswordCallback</a>; u: Pointer): <a  href="Grijjy.OpenSSL.API.html#PX509">PX509</a>; cdecl = nil;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PEM_read_bio_PrivateKey">PEM_read_bio_PrivateKey</a></b>: function(bp: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>; x: <a  href="Grijjy.OpenSSL.API.html#PPEVP_PKEY">PPEVP_PKEY</a>; cb: <a  href="Grijjy.OpenSSL.API.html#pem_password_cb">pem_password_cb</a>; u: Pointer): <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">PEVP_PKEY</a>; cdecl = nil;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PEM_read_bio_PrivateKey">PEM_read_bio_PrivateKey</a></b>: function(bp: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>; x: <a  href="Grijjy.OpenSSL.API.html#PPEVP_PKEY">PPEVP_PKEY</a>; cb: <a  href="Grijjy.OpenSSL.API.html#TPemPasswordCallback">TPemPasswordCallback</a>; u: Pointer): <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">PEVP_PKEY</a>; cdecl = nil;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PEM_read_bio_RSAPrivateKey">PEM_read_bio_RSAPrivateKey</a></b>: function(bp: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>; x: <a  href="Grijjy.OpenSSL.API.html#PPEVP_PKEY">PPEVP_PKEY</a>; cb: <a  href="Grijjy.OpenSSL.API.html#pem_password_cb">pem_password_cb</a>; u: Pointer): <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">PEVP_PKEY</a>; cdecl = nil;</code></td>
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#PEM_read_bio_RSAPrivateKey">PEM_read_bio_RSAPrivateKey</a></b>: function(bp: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>; x: <a  href="Grijjy.OpenSSL.API.html#PPEVP_PKEY">PPEVP_PKEY</a>; cb: <a  href="Grijjy.OpenSSL.API.html#TPemPasswordCallback">TPemPasswordCallback</a>; u: Pointer): <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">PEVP_PKEY</a>; cdecl = nil;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#EVP_MD_CTX_create">EVP_MD_CTX_create</a></b>: function: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD_CTX">PEVP_MD_CTX</a>; cdecl = nil;</code></td>
@@ -565,105 +468,113 @@
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#EVP_sha256">EVP_sha256</a></b>: function: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD">PEVP_MD</a>; cdecl = nil;</code></td>
 </tr>
 <tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#EVP_sha1">EVP_sha1</a></b>: function: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD">PEVP_MD</a>; cdecl = nil;</code></td>
+</tr>
+<tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#EVP_PKEY_size">EVP_PKEY_size</a></b>: function(key: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">PEVP_PKEY</a>): Integer; cdecl = nil;</code></td>
 </tr>
-<tr class="list2">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#EVP_DigestSignInit">EVP_DigestSignInit</a></b>: function(aCtx: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD_CTX">PEVP_MD_CTX</a>; aPCtx: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY_CTX">PEVP_PKEY_CTX</a>; aType: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD">PEVP_MD</a>; aEngine: <a  href="Grijjy.OpenSSL.API.html#ENGINE">ENGINE</a>; aKey: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">PEVP_PKEY</a>): Integer; cdecl = nil;</code></td>
-</tr>
 <tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#EVP_DigestSignInit">EVP_DigestSignInit</a></b>: function(aCtx: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD_CTX">PEVP_MD_CTX</a>; aPCtx: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY_CTX">PEVP_PKEY_CTX</a>; aType: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD">PEVP_MD</a>; aEngine: <a  href="Grijjy.OpenSSL.API.html#PENGINE">PENGINE</a>; aKey: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">PEVP_PKEY</a>): Integer; cdecl = nil;</code></td>
+</tr>
+<tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#EVP_DigestUpdate">EVP_DigestUpdate</a></b>: function(ctx: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD_CTX">PEVP_MD_CTX</a>; const d: Pointer; cnt: Cardinal): Integer; cdecl = nil;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#EVP_DigestSignFinal">EVP_DigestSignFinal</a></b>: function(ctx : <a  href="Grijjy.OpenSSL.API.html#PEVP_MD_CTX">PEVP_MD_CTX</a>; const d: PByte; var cnt: Cardinal): Integer; cdecl = nil;</code></td>
 </tr>
-<tr class="list">
-<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#EVP_DigestVerifyInit">EVP_DigestVerifyInit</a></b>: function(aCtx: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD_CTX">PEVP_MD_CTX</a>; aPCtx: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY_CTX">PEVP_PKEY_CTX</a>; aType: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD">PEVP_MD</a>; aEngine: <a  href="Grijjy.OpenSSL.API.html#ENGINE">ENGINE</a>; aKey: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">pEVP_PKEY</a>): Integer; cdecl = nil;</code></td>
-</tr>
 <tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#EVP_DigestVerifyInit">EVP_DigestVerifyInit</a></b>: function(aCtx: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD_CTX">PEVP_MD_CTX</a>; aPCtx: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY_CTX">PEVP_PKEY_CTX</a>; aType: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD">PEVP_MD</a>; aEngine: <a  href="Grijjy.OpenSSL.API.html#PENGINE">PENGINE</a>; aKey: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">pEVP_PKEY</a>): Integer; cdecl = nil;</code></td>
+</tr>
+<tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#EVP_DigestVerifyFinal">EVP_DigestVerifyFinal</a></b>: function(ctx : <a  href="Grijjy.OpenSSL.API.html#PEVP_MD_CTX">pEVP_MD_CTX</a>; const d: PByte; cnt: Cardinal) : Integer; cdecl = nil;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#CRYPTO_malloc">CRYPTO_malloc</a></b>: function(aLength : LongInt; const f : MarshaledAString; aLine : Integer): Pointer; cdecl = nil;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#CRYPTO_free">CRYPTO_free</a></b>: procedure(str: Pointer); cdecl = nil;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.OpenSSL.API.html#HMAC">HMAC</a></b>: function(evp: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD">PEVP_MD</a>; key: PByte; key_len: Integer; data: PByte; data_len: Integer; md: PByte; var md_len: integer): PByte; cdecl = nil;</code></td>
 </tr>
 </table>
 <h2 class="description">Description</h2>
 <h3 class="detail">Functions and Procedures</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="BIO_pending"></a><code>function <b>BIO_pending</b>(bp: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>): Integer; inline;</code></td>
+<td class="itemcode"><a name="BIOGetFlags"></a><code>function <b>BIOGetFlags</b>(const ABIO: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>): Integer; inline;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Helpers</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BIORetry"></a><code>function <b>BIORetry</b>(const ABIO: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>): Boolean; inline;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="BIO_get_mem_data"></a><code>function <b>BIO_get_mem_data</b>(bp: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>; parg: Pointer): Integer; inline;</code></td>
+<td class="itemcode"><a name="SetSSLCTXOptions"></a><code>function <b>SetSSLCTXOptions</b>(const ACTX: Pointer; const AOP: Integer): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="BIO_get_flags"></a><code>function <b>BIO_get_flags</b>(b: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>): Integer; inline;</code></td>
+<td class="itemcode"><a name="SSLErrorFatal"></a><code>function <b>SSLErrorFatal</b>(const AError: Integer): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="BIO_should_retry"></a><code>function <b>BIO_should_retry</b>(b: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>): Boolean; inline;</code></td>
+<td class="itemcode"><a name="SSLError"></a><code>function <b>SSLError</b>(const ASSL: <a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a>; const AReturnCode: Integer; out AErrorMsg: String): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="SSL_CTX_set_options"></a><code>function <b>SSL_CTX_set_options</b>(ctx: pointer; op: integer): integer;</code></td>
+<td class="itemcode"><a name="LoadSSLEAY"></a><code>procedure <b>LoadSSLEAY</b>;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="SSL_is_init_finished"></a><code>function <b>SSL_is_init_finished</b>(s: <a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a>): Boolean; inline;</code></td>
+<td class="itemcode"><a name="UnloadSSLEAY"></a><code>procedure <b>UnloadSSLEAY</b>;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="SSL_is_fatal_error"></a><code>function <b>SSL_is_fatal_error</b>(ssl_error: Integer): Boolean;</code></td>
+<td class="itemcode"><a name="LoadLIBEAY"></a><code>procedure <b>LoadLIBEAY</b>;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="SSL_error"></a><code>function <b>SSL_error</b>(ssl: <a  href="Grijjy.OpenSSL.API.html#PSSL">PSSL</a>; ret_code: Integer; out AErrorMsg: UnicodeString): Integer;</code></td>
+<td class="itemcode"><a name="UnloadLIBEAY"></a><code>procedure <b>UnloadLIBEAY</b>;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="sk_ASN1_OBJECT_num"></a><code>function <b>sk_ASN1_OBJECT_num</b>(stack: <a  href="Grijjy.OpenSSL.API.html#PSTACK">PSTACK</a>): Integer; inline;</code></td>
+<td class="itemcode"><a name="SSLInitialize"></a><code>procedure <b>SSLInitialize</b>;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="sk_GENERAL_NAME_num"></a><code>function <b>sk_GENERAL_NAME_num</b>(stack: <a  href="Grijjy.OpenSSL.API.html#PSTACK">PSTACK</a>): Integer; inline;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><a name="sk_GENERAL_NAME_pop"></a><code>function <b>sk_GENERAL_NAME_pop</b>(stack: <a  href="Grijjy.OpenSSL.API.html#PSTACK">PSTACK</a>): Pointer; inline;</code></td>
+<td class="itemcode"><a name="SSLFinalize"></a><code>procedure <b>SSLFinalize</b>;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -671,56 +582,42 @@
 <h3 class="detail">Types</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="size_t"></a><code><b>size_t</b> = NativeUInt;</code></td>
+<td class="itemcode"><a name="PSSL_METHOD"></a><code><b>PSSL_METHOD</b> = Pointer;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="PSSL_METHOD"></a><code><b>PSSL_METHOD</b> = &circ;<a  href="Grijjy.OpenSSL.API.TSSL_METHOD.html">TSSL_METHOD</a>;</code></td>
+<td class="itemcode"><a name="PSSL_CTX"></a><code><b>PSSL_CTX</b> = Pointer;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="PSSL_CTX"></a><code><b>PSSL_CTX</b> = &circ;<a  href="Grijjy.OpenSSL.API.TSSL_CTX.html">TSSL_CTX</a>;</code></td>
+<td class="itemcode"><a name="PBIO"></a><code><b>PBIO</b> = Pointer;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="PBIO"></a><code><b>PBIO</b> = &circ;<a  href="Grijjy.OpenSSL.API.TBIO.html">TBIO</a>;</code></td>
+<td class="itemcode"><a name="PSSL"></a><code><b>PSSL</b> = Pointer;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="PPBIO"></a><code><b>PPBIO</b> = &circ;<a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>;</code></td>
+<td class="itemcode"><a name="PX509_STORE"></a><code><b>PX509_STORE</b> = Pointer;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="PSSL"></a><code><b>PSSL</b> = &circ;<a  href="Grijjy.OpenSSL.API.TSSL.html">TSSL</a>;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><a name="PX509_STORE"></a><code><b>PX509_STORE</b> = &circ;<a  href="Grijjy.OpenSSL.API.TX509_STORE.html">TX509_STORE</a>;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><a name="PEVP_PKEY"></a><code><b>PEVP_PKEY</b> = &circ;<a  href="Grijjy.OpenSSL.API.TEVP_PKEY.html">TEVP_PKEY</a>;</code></td>
+<td class="itemcode"><a name="PEVP_PKEY"></a><code><b>PEVP_PKEY</b> = Pointer;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -755,14 +652,14 @@
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="ENGINE"></a><code><b>ENGINE</b> = Pointer;</code></td>
+<td class="itemcode"><a name="PENGINE"></a><code><b>PENGINE</b> = Pointer;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="PX509"></a><code><b>PX509</b> = &circ;<a  href="Grijjy.OpenSSL.API.TX509.html">TX509</a>;</code></td>
+<td class="itemcode"><a name="PX509"></a><code><b>PX509</b> = Pointer;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -777,20 +674,6 @@
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><a name="PASN1_STRING"></a><code><b>PASN1_STRING</b> = &circ;<a  href="Grijjy.OpenSSL.API.TASN1_STRING.html">TASN1_STRING</a>;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><a name="TASN1_OCTET_STRING"></a><code><b>TASN1_OCTET_STRING</b> = <a  href="Grijjy.OpenSSL.API.TASN1_STRING.html">TASN1_STRING</a>;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><a name="PASN1_OCTET_STRING"></a><code><b>PASN1_OCTET_STRING</b> = &circ;<a  href="Grijjy.OpenSSL.API.html#TASN1_OCTET_STRING">TASN1_OCTET_STRING</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -818,13 +701,6 @@
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="PCRYPTO_THREADID"></a><code><b>PCRYPTO_THREADID</b> = &circ;<a  href="Grijjy.OpenSSL.API.TCRYPTO_THREADID.html">TCRYPTO_THREADID</a>;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
 <td class="itemcode"><a name="PCRYPTO_dynlock_value"></a><code><b>PCRYPTO_dynlock_value</b> = &circ;<a  href="Grijjy.OpenSSL.API.TCRYPTO_dynlock_value.html">TCRYPTO_dynlock_value</a>;</code></td>
 </tr>
 <tr><td colspan="1">
@@ -832,35 +708,28 @@
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="CRYPTO_dynlock_value"></a><code><b>CRYPTO_dynlock_value</b>  = <a  href="Grijjy.OpenSSL.API.TCRYPTO_dynlock_value.html">TCRYPTO_dynlock_value</a>;</code></td>
+<td class="itemcode"><a name="PBIO_METHOD"></a><code><b>PBIO_METHOD</b> = Pointer;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="PBIO_METHOD"></a><code><b>PBIO_METHOD</b> = &circ;<a  href="Grijjy.OpenSSL.API.TBIO_METHOD.html">TBIO_METHOD</a>;</code></td>
+<td class="itemcode"><a name="PX509_NAME"></a><code><b>PX509_NAME</b> = Pointer;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="PX509_NAME"></a><code><b>PX509_NAME</b> = &circ;<a  href="Grijjy.OpenSSL.API.TX509_NAME.html">TX509_NAME</a>;</code></td>
+<td class="itemcode"><a name="PSTACK"></a><code><b>PSTACK</b> = Pointer;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="PSTACK"></a><code><b>PSTACK</b> = &circ;<a  href="Grijjy.OpenSSL.API.TSTACK.html">TSTACK</a>;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><a name="PASN1_OBJECT"></a><code><b>PASN1_OBJECT</b> = &circ;<a  href="Grijjy.OpenSSL.API.TASN1_OBJECT.html">TASN1_OBJECT</a>;</code></td>
+<td class="itemcode"><a name="PASN1_OBJECT"></a><code><b>PASN1_OBJECT</b> = Pointer;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -868,20 +737,6 @@
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><a name="TStatLockLockCallback"></a><code><b>TStatLockLockCallback</b> = procedure(Mode: Integer; N: Integer; const _File: MarshaledAString; Line: Integer); cdecl;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><a name="TStatLockIDCallback"></a><code><b>TStatLockIDCallback</b> = function: Longword; cdecl;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><a name="TCryptoThreadIDCallback"></a><code><b>TCryptoThreadIDCallback</b> = procedure(ID: <a  href="Grijjy.OpenSSL.API.html#PCRYPTO_THREADID">PCRYPTO_THREADID</a>) cdecl;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -909,7 +764,7 @@
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="pem_password_cb"></a><code><b>pem_password_cb</b> = function(buf: Pointer; size: Integer; rwflag: Integer; userdata: Pointer): Integer; cdecl;</code></td>
+<td class="itemcode"><a name="TPemPasswordCallback"></a><code><b>TPemPasswordCallback</b> = function(buf: Pointer; size: Integer; rwflag: Integer; userdata: Pointer): Integer; cdecl;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -994,49 +849,14 @@
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="SSL_ST_CONNECT"></a><code><b>SSL_ST_CONNECT</b> = $1000;</code></td>
+<td class="itemcode"><a name="SSL_ST_OK"></a><code><b>SSL_ST_OK</b> = 3;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="SSL_ST_ACCEPT"></a><code><b>SSL_ST_ACCEPT</b> = $2000;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><a name="SSL_ST_MASK"></a><code><b>SSL_ST_MASK</b> = $0FFF;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><a name="SSL_ST_INIT"></a><code><b>SSL_ST_INIT</b> = (<a  href="Grijjy.OpenSSL.API.html#SSL_ST_CONNECT">SSL_ST_CONNECT</a> or <a  href="Grijjy.OpenSSL.API.html#SSL_ST_ACCEPT">SSL_ST_ACCEPT</a>);</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><a name="SSL_ST_BEFORE"></a><code><b>SSL_ST_BEFORE</b> = $4000;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><a name="SSL_ST_OK"></a><code><b>SSL_ST_OK</b> = $03;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><a name="SSL_ST_RENEGOTIATE"></a><code><b>SSL_ST_RENEGOTIATE</b> = ($04 or <a  href="Grijjy.OpenSSL.API.html#SSL_ST_INIT">SSL_ST_INIT</a>);</code></td>
+<td class="itemcode"><a name="SSL_VERIFY_NONE"></a><code><b>SSL_VERIFY_NONE</b> = 0;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -1071,13 +891,6 @@
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS"></a><code><b>SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS</b> = $00000800;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
 <td class="itemcode"><a name="BIO_CTRL_INFO"></a><code><b>BIO_CTRL_INFO</b> = 3;</code></td>
 </tr>
 <tr><td colspan="1">
@@ -1086,13 +899,6 @@
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><a name="BIO_CTRL_PENDING"></a><code><b>BIO_CTRL_PENDING</b> = 10;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><a name="SSL_VERIFY_NONE"></a><code><b>SSL_VERIFY_NONE</b> = $00;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -1485,7 +1291,7 @@
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="ERR_error_string_n"></a><code><b>ERR_error_string_n</b>: procedure(err: Cardinal; buf: MarshaledAString; len: <a  href="Grijjy.OpenSSL.API.html#size_t">size_t</a>); cdecl = nil;</code></td>
+<td class="itemcode"><a name="ERR_error_string_n"></a><code><b>ERR_error_string_n</b>: procedure(err: Cardinal; buf: MarshaledAString; len: NativeUInt); cdecl = nil;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -1655,21 +1461,21 @@ thread-unsafe, Application-global cleanup functions</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="PEM_read_bio_X509"></a><code><b>PEM_read_bio_X509</b>: function(bp: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>; x: <a  href="Grijjy.OpenSSL.API.html#PX509">PX509</a>; cb: <a  href="Grijjy.OpenSSL.API.html#pem_password_cb">pem_password_cb</a>; u: Pointer): <a  href="Grijjy.OpenSSL.API.html#PX509">PX509</a>; cdecl = nil;</code></td>
+<td class="itemcode"><a name="PEM_read_bio_X509"></a><code><b>PEM_read_bio_X509</b>: function(bp: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>; x: <a  href="Grijjy.OpenSSL.API.html#PX509">PX509</a>; cb: <a  href="Grijjy.OpenSSL.API.html#TPemPasswordCallback">TPemPasswordCallback</a>; u: Pointer): <a  href="Grijjy.OpenSSL.API.html#PX509">PX509</a>; cdecl = nil;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="PEM_read_bio_PrivateKey"></a><code><b>PEM_read_bio_PrivateKey</b>: function(bp: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>; x: <a  href="Grijjy.OpenSSL.API.html#PPEVP_PKEY">PPEVP_PKEY</a>; cb: <a  href="Grijjy.OpenSSL.API.html#pem_password_cb">pem_password_cb</a>; u: Pointer): <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">PEVP_PKEY</a>; cdecl = nil;</code></td>
+<td class="itemcode"><a name="PEM_read_bio_PrivateKey"></a><code><b>PEM_read_bio_PrivateKey</b>: function(bp: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>; x: <a  href="Grijjy.OpenSSL.API.html#PPEVP_PKEY">PPEVP_PKEY</a>; cb: <a  href="Grijjy.OpenSSL.API.html#TPemPasswordCallback">TPemPasswordCallback</a>; u: Pointer): <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">PEVP_PKEY</a>; cdecl = nil;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="PEM_read_bio_RSAPrivateKey"></a><code><b>PEM_read_bio_RSAPrivateKey</b>: function(bp: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>; x: <a  href="Grijjy.OpenSSL.API.html#PPEVP_PKEY">PPEVP_PKEY</a>; cb: <a  href="Grijjy.OpenSSL.API.html#pem_password_cb">pem_password_cb</a>; u: Pointer): <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">PEVP_PKEY</a>; cdecl = nil;</code></td>
+<td class="itemcode"><a name="PEM_read_bio_RSAPrivateKey"></a><code><b>PEM_read_bio_RSAPrivateKey</b>: function(bp: <a  href="Grijjy.OpenSSL.API.html#PBIO">PBIO</a>; x: <a  href="Grijjy.OpenSSL.API.html#PPEVP_PKEY">PPEVP_PKEY</a>; cb: <a  href="Grijjy.OpenSSL.API.html#TPemPasswordCallback">TPemPasswordCallback</a>; u: Pointer): <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">PEVP_PKEY</a>; cdecl = nil;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -1697,6 +1503,13 @@ thread-unsafe, Application-global cleanup functions</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
+<td class="itemcode"><a name="EVP_sha1"></a><code><b>EVP_sha1</b>: function: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD">PEVP_MD</a>; cdecl = nil;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
 <td class="itemcode"><a name="EVP_PKEY_size"></a><code><b>EVP_PKEY_size</b>: function(key: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">PEVP_PKEY</a>): Integer; cdecl = nil;</code></td>
 </tr>
 <tr><td colspan="1">
@@ -1704,7 +1517,7 @@ thread-unsafe, Application-global cleanup functions</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="EVP_DigestSignInit"></a><code><b>EVP_DigestSignInit</b>: function(aCtx: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD_CTX">PEVP_MD_CTX</a>; aPCtx: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY_CTX">PEVP_PKEY_CTX</a>; aType: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD">PEVP_MD</a>; aEngine: <a  href="Grijjy.OpenSSL.API.html#ENGINE">ENGINE</a>; aKey: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">PEVP_PKEY</a>): Integer; cdecl = nil;</code></td>
+<td class="itemcode"><a name="EVP_DigestSignInit"></a><code><b>EVP_DigestSignInit</b>: function(aCtx: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD_CTX">PEVP_MD_CTX</a>; aPCtx: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY_CTX">PEVP_PKEY_CTX</a>; aType: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD">PEVP_MD</a>; aEngine: <a  href="Grijjy.OpenSSL.API.html#PENGINE">PENGINE</a>; aKey: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">PEVP_PKEY</a>): Integer; cdecl = nil;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -1725,7 +1538,7 @@ thread-unsafe, Application-global cleanup functions</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="EVP_DigestVerifyInit"></a><code><b>EVP_DigestVerifyInit</b>: function(aCtx: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD_CTX">PEVP_MD_CTX</a>; aPCtx: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY_CTX">PEVP_PKEY_CTX</a>; aType: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD">PEVP_MD</a>; aEngine: <a  href="Grijjy.OpenSSL.API.html#ENGINE">ENGINE</a>; aKey: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">pEVP_PKEY</a>): Integer; cdecl = nil;</code></td>
+<td class="itemcode"><a name="EVP_DigestVerifyInit"></a><code><b>EVP_DigestVerifyInit</b>: function(aCtx: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD_CTX">PEVP_MD_CTX</a>; aPCtx: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY_CTX">PEVP_PKEY_CTX</a>; aType: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD">PEVP_MD</a>; aEngine: <a  href="Grijjy.OpenSSL.API.html#PENGINE">PENGINE</a>; aKey: <a  href="Grijjy.OpenSSL.API.html#PEVP_PKEY">pEVP_PKEY</a>): Integer; cdecl = nil;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -1751,6 +1564,13 @@ thread-unsafe, Application-global cleanup functions</p>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
-<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-30 08:24:21</em>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="HMAC"></a><code><b>HMAC</b>: function(evp: <a  href="Grijjy.OpenSSL.API.html#PEVP_MD">PEVP_MD</a>; key: PByte; key_len: Integer; data: PByte; data_len: Integer; md: PByte; var md_len: integer): PByte; cdecl = nil;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-04-25 12:54:26</em>
 </span>
 </td></tr></table></body></html>

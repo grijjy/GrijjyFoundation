@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
 <html>
 <head>
-<title>Grijjy Foundation: Grijjy.Http: Class TgoHTTPClient</title>
+<title>Grijjy Foundation: Grijjy.Http: Class TgoHttpClient</title>
 <meta name="generator" content="P2PasDoc 0.13.0">
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <link rel="StyleSheet" type="text/css" href="pasdoc.css">
@@ -9,7 +9,7 @@
 <body>
 <table class="container"><tr><td class="navigation">
 <h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
-<a name="TgoHTTPClient"></a><h1 class="cio">Class TgoHTTPClient</h1>
+<a name="TgoHttpClient"></a><h1 class="cio">Class TgoHttpClient</h1>
 <table class="sections wide_list">
 <tr>
 <td><a class="section" href="#PasDoc-Description">Description</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
@@ -18,113 +18,189 @@
 <a  href="Grijjy.Http.html">Grijjy.Http</a></p>
 <h2 class="declaration">Declaration</h2>
 <p class="declaration">
-<code>type TgoHTTPClient = class(TObject)</code></p>
+<code>type TgoHttpClient = class(TObject)</code></p>
 <h2 class="description">Description</h2>
 <p>
-HTTP client</p>
+Http client</p>
 <a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
 <ul class="hierarchy"><li class="ancestor">TObject</li>
-<li class="thisitem">TgoHTTPClient</li></ul><h2 class="overview">Overview</h2>
+<li class="thisitem">TgoHttpClient</li></ul><h2 class="overview">Overview</h2>
 <a name="PasDoc-Methods"></a><h3 class="summary">Methods</h3>
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>constructor <b><a  href="Grijjy.Http.TgoHTTPClient.html#Create">Create</a></b>;</code></td>
+<td class="itemcode"><code>constructor <b><a  href="Grijjy.Http.TgoHttpClient.html#Create">Create</a></b>(const AHttp2: Boolean = False; const ABlocking: Boolean = True);</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>destructor <b><a  href="Grijjy.Http.TgoHTTPClient.html#Destroy">Destroy</a></b>; override;</code></td>
+<td class="itemcode"><code>destructor <b><a  href="Grijjy.Http.TgoHttpClient.html#Destroy">Destroy</a></b>; override;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="Grijjy.Http.TgoHTTPClient.html#AddHeader">AddHeader</a></b>(AHTTPHeaders: TStrings; const AHeader, AValue: UnicodeString);</code></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHttpClient.html#Get">Get</a></b>(const AURL: String; out AResponse: TBytes; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHTTPClient.html#IndexOfHeader">IndexOfHeader</a></b>(AHTTPHeaders: TStrings; const AHeader: UnicodeString): Integer;</code></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHttpClient.html#Get">Get</a></b>(const AURL: String; out AResponse: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHTTPClient.html#GetHeaderValue">GetHeaderValue</a></b>(AHTTPHeaders: TStrings; const AHeader: UnicodeString): UnicodeString;</code></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHttpClient.html#Get">Get</a></b>(const AURL: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): String; overload;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHTTPClient.html#Get">Get</a></b>(const AURL: UnicodeString; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#DEFAULT_TIMEOUT_RECV">DEFAULT_TIMEOUT_RECV</a>): UnicodeString;</code></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHttpClient.html#Head">Head</a></b>(const AURL: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHTTPClient.html#Post">Post</a></b>(const AURL: UnicodeString; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#DEFAULT_TIMEOUT_RECV">DEFAULT_TIMEOUT_RECV</a>): UnicodeString;</code></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHttpClient.html#Post">Post</a></b>(const AURL: String; out AResponse: TBytes; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHTTPClient.html#Put">Put</a></b>(const AURL: UnicodeString; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#DEFAULT_TIMEOUT_RECV">DEFAULT_TIMEOUT_RECV</a>): UnicodeString;</code></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHttpClient.html#Post">Post</a></b>(const AURL: String; out AResponse: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHTTPClient.html#Delete">Delete</a></b>(const AURL: UnicodeString; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#DEFAULT_TIMEOUT_RECV">DEFAULT_TIMEOUT_RECV</a>): UnicodeString;</code></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHttpClient.html#Post">Post</a></b>(const AURL: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): String; overload;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHTTPClient.html#Options">Options</a></b>(const AURL: UnicodeString; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#DEFAULT_TIMEOUT_RECV">DEFAULT_TIMEOUT_RECV</a>): UnicodeString;</code></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHttpClient.html#Put">Put</a></b>(const AURL: String; out AResponse: TBytes; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHttpClient.html#Put">Put</a></b>(const AURL: String; out AResponse: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHttpClient.html#Put">Put</a></b>(const AURL: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): String; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHttpClient.html#Delete">Delete</a></b>(const AURL: String; out AResponse: TBytes; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHttpClient.html#Delete">Delete</a></b>(const AURL: String; out AResponse: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHttpClient.html#Delete">Delete</a></b>(const AURL: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): String; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHttpClient.html#Options">Options</a></b>(const AURL: String; out AResponse: TBytes; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHttpClient.html#Options">Options</a></b>(const AURL: String; out AResponse: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHttpClient.html#Options">Options</a></b>(const AURL: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): String; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Http.TgoHttpClient.html#Close">Close</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TgoHttpClient.html#BytesToString">BytesToString</a></b>(const ABytes: TBytes; const ACharset: String): String;</code></td>
 </tr>
 </table>
 <a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHTTPClient.html#Cookies">Cookies</a></b>: TStrings read GetCookies write SetCookies;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#State">State</a></b>: <a  href="Grijjy.Http.html#TgoHttpClientState">TgoHttpClientState</a> read FState;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHTTPClient.html#RequestBody">RequestBody</a></b>: UnicodeString read FRequestBody write FRequestBody;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#IdleTime">IdleTime</a></b>: Integer read GetIdleTime;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHTTPClient.html#RequestData">RequestData</a></b>: TBytes read FRequestData write FRequestData;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#Cookies">Cookies</a></b>: TStrings read GetCookies write SetCookies;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHTTPClient.html#RequestHeaders">RequestHeaders</a></b>: TStrings read FRequestHeaders;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#RequestBody">RequestBody</a></b>: String read FRequestBody write FRequestBody;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHTTPClient.html#ResponseHeaders">ResponseHeaders</a></b>: TStrings read FResponseHeaders;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#RequestData">RequestData</a></b>: TBytes read FRequestData write FRequestData;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHTTPClient.html#ResponseStatusCode">ResponseStatusCode</a></b>: Integer read FResponseStatusCode;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#RequestHeaders">RequestHeaders</a></b>: <a  href="Grijjy.Http.TgoHttpHeaders.html">TgoHttpHeaders</a> read FRequestHeaders;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHTTPClient.html#FollowRedirects">FollowRedirects</a></b>: Boolean read FFollowRedirects write FFollowRedirects;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#ResponseHeaders">ResponseHeaders</a></b>: <a  href="Grijjy.Http.TgoHttpHeaders.html">TgoHttpHeaders</a> read FResponseHeaders;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHTTPClient.html#OnRedirect">OnRedirect</a></b>: <a  href="Grijjy.Http.html#TOnRedirect">TOnRedirect</a> read FOnRedirect write FOnRedirect;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#ResponseStatusCode">ResponseStatusCode</a></b>: Integer read FResponseStatusCode;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHTTPClient.html#OnPassword">OnPassword</a></b>: <a  href="Grijjy.Http.html#TOnPassword">TOnPassword</a> read FOnPassword write FOnPassword;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#ResponseContentType">ResponseContentType</a></b>: String read FResponseContentType;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHTTPClient.html#UserName">UserName</a></b>: UnicodeString read FUserName write FUserName;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#ResponseContentCharset">ResponseContentCharset</a></b>: String read FResponseContentCharset;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHTTPClient.html#Password">Password</a></b>: UnicodeString read FPassword write FPassword;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#ContentLength">ContentLength</a></b>: Int64 read FContentLength;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHTTPClient.html#ContentType">ContentType</a></b>: UnicodeString read FContentType write FContentType;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#FollowRedirects">FollowRedirects</a></b>: Boolean read FFollowRedirects write FFollowRedirects;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHTTPClient.html#UserAgent">UserAgent</a></b>: UnicodeString read FUserAgent write FUserAgent;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#OnRedirect">OnRedirect</a></b>: <a  href="Grijjy.Http.html#TOnRedirect">TOnRedirect</a> read FOnRedirect write FOnRedirect;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHTTPClient.html#Authorization">Authorization</a></b>: UnicodeString read FAuthorization write FAuthorization;</code></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#OnPassword">OnPassword</a></b>: <a  href="Grijjy.Http.html#TOnPassword">TOnPassword</a> read FOnPassword write FOnPassword;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#OnRecv">OnRecv</a></b>: <a  href="Grijjy.Http.html#TOnRecv">TOnRecv</a> read FOnRecv write FOnRecv;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#UserName">UserName</a></b>: String read FUserName write FUserName;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#Password">Password</a></b>: String read FPassword write FPassword;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#ContentType">ContentType</a></b>: String read FContentType write FContentType;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#UserAgent">UserAgent</a></b>: String read FUserAgent write FUserAgent;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#Range">Range</a></b>: String read FRange write FRange;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#Authorization">Authorization</a></b>: String read FAuthorization write FAuthorization;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#Certificate">Certificate</a></b>: TBytes read FCertificate write FCertificate;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TgoHttpClient.html#PrivateKey">PrivateKey</a></b>: TBytes read FPrivateKey write FPrivateKey;</code></td>
 </tr>
 </table>
 <h2 class="description">Description</h2>
@@ -132,7 +208,7 @@ HTTP client</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>;</code></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>(const AHttp2: Boolean = False; const ABlocking: Boolean = True);</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -148,84 +224,184 @@ HTTP client</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="AddHeader"></a><code>procedure <b>AddHeader</b>(AHTTPHeaders: TStrings; const AHeader, AValue: UnicodeString);</code></td>
+<td class="itemcode"><a name="Get"></a><code>function <b>Get</b>(const AURL: String; out AResponse: TBytes; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
-Add a header and value to a list of headers</p>
+<a class="normal" href="Grijjy.Http.TgoHttpClient.html#Get">Get</a> method</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="IndexOfHeader"></a><code>function <b>IndexOfHeader</b>(AHTTPHeaders: TStrings; const AHeader: UnicodeString): Integer;</code></td>
+<td class="itemcode"><a name="Get"></a><code>function <b>Get</b>(const AURL: String; out AResponse: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Get"></a><code>function <b>Get</b>(const AURL: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): String; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Head"></a><code>function <b>Head</b>(const AURL: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
-Find the index of a header from a list of headers</p>
+<code>Head</code> method</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="GetHeaderValue"></a><code>function <b>GetHeaderValue</b>(AHTTPHeaders: TStrings; const AHeader: UnicodeString): UnicodeString;</code></td>
+<td class="itemcode"><a name="Post"></a><code>function <b>Post</b>(const AURL: String; out AResponse: TBytes; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
-<a class="normal" href="Grijjy.Http.TgoHTTPClient.html#Get">Get</a> the value associated with a header from a list of headers</p>
+<a class="normal" href="Grijjy.Http.TgoHttpClient.html#Post">Post</a> method</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Get"></a><code>function <b>Get</b>(const AURL: UnicodeString; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#DEFAULT_TIMEOUT_RECV">DEFAULT_TIMEOUT_RECV</a>): UnicodeString;</code></td>
+<td class="itemcode"><a name="Post"></a><code>function <b>Post</b>(const AURL: String; out AResponse: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Post"></a><code>function <b>Post</b>(const AURL: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): String; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Put"></a><code>function <b>Put</b>(const AURL: String; out AResponse: TBytes; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
-<code>Get</code> method</p>
+<a class="normal" href="Grijjy.Http.TgoHttpClient.html#Put">Put</a> method</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Post"></a><code>function <b>Post</b>(const AURL: UnicodeString; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#DEFAULT_TIMEOUT_RECV">DEFAULT_TIMEOUT_RECV</a>): UnicodeString;</code></td>
+<td class="itemcode"><a name="Put"></a><code>function <b>Put</b>(const AURL: String; out AResponse: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Put"></a><code>function <b>Put</b>(const AURL: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): String; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Delete"></a><code>function <b>Delete</b>(const AURL: String; out AResponse: TBytes; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
-<code>Post</code> method</p>
+<a class="normal" href="Grijjy.Http.TgoHttpClient.html#Delete">Delete</a> method</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Put"></a><code>function <b>Put</b>(const AURL: UnicodeString; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#DEFAULT_TIMEOUT_RECV">DEFAULT_TIMEOUT_RECV</a>): UnicodeString;</code></td>
+<td class="itemcode"><a name="Delete"></a><code>function <b>Delete</b>(const AURL: String; out AResponse: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Delete"></a><code>function <b>Delete</b>(const AURL: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): String; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Options"></a><code>function <b>Options</b>(const AURL: String; out AResponse: TBytes; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
-<code>Put</code> method</p>
+<a class="normal" href="Grijjy.Http.TgoHttpClient.html#Options">Options</a> method</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Delete"></a><code>function <b>Delete</b>(const AURL: UnicodeString; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#DEFAULT_TIMEOUT_RECV">DEFAULT_TIMEOUT_RECV</a>): UnicodeString;</code></td>
+<td class="itemcode"><a name="Options"></a><code>function <b>Options</b>(const AURL: String; out AResponse: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Options"></a><code>function <b>Options</b>(const AURL: String; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#TIMEOUT_RECV">TIMEOUT_RECV</a>): String; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Close"></a><code>procedure <b>Close</b>;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
-<code>Delete</code> method</p>
+<code>Close</code> connection</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Options"></a><code>function <b>Options</b>(const AURL: UnicodeString; const ARecvTimeout: Integer = <a  href="Grijjy.Http.html#DEFAULT_TIMEOUT_RECV">DEFAULT_TIMEOUT_RECV</a>): UnicodeString;</code></td>
+<td class="itemcode"><a name="BytesToString"></a><code>function <b>BytesToString</b>(const ABytes: TBytes; const ACharset: String): String;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
-<code>Options</code> method</p>
+Convert bytes to string</p>
 </td></tr>
 </table>
 <h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="State"></a><code>property <b>State</b>: <a  href="Grijjy.Http.html#TgoHttpClientState">TgoHttpClientState</a> read FState;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+<code>State</code></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IdleTime"></a><code>property <b>IdleTime</b>: Integer read GetIdleTime;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Idle time in milliseconds</p>
+</td></tr>
+</table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -239,11 +415,11 @@ Find the index of a header from a list of headers</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="RequestBody"></a><code>property <b>RequestBody</b>: UnicodeString read FRequestBody write FRequestBody;</code></td>
+<td class="itemcode"><a name="RequestBody"></a><code>property <b>RequestBody</b>: String read FRequestBody write FRequestBody;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
-Optional body for a request. You can either use <code>RequestBody</code> or <a class="normal" href="Grijjy.Http.TgoHTTPClient.html#RequestData">RequestData</a>. If both are specified then only <code>RequestBody</code> is used.</p>
+Optional body for a request. You can either use <code>RequestBody</code> or <a class="normal" href="Grijjy.Http.TgoHttpClient.html#RequestData">RequestData</a>. If both are specified then only <code>RequestBody</code> is used.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -253,13 +429,13 @@ Optional body for a request. You can either use <code>RequestBody</code> or <a c
 </tr>
 <tr><td colspan="2">
 <p>
-Optional binary body data for a request. You can either use <a class="normal" href="Grijjy.Http.TgoHTTPClient.html#RequestBody">RequestBody</a> or <code>RequestData</code>. If both are specified then only <a class="normal" href="Grijjy.Http.TgoHTTPClient.html#RequestBody">RequestBody</a> is used.</p>
+Optional binary body data for a request. You can either use <a class="normal" href="Grijjy.Http.TgoHttpClient.html#RequestBody">RequestBody</a> or <code>RequestData</code>. If both are specified then only <a class="normal" href="Grijjy.Http.TgoHttpClient.html#RequestBody">RequestBody</a> is used.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="RequestHeaders"></a><code>property <b>RequestHeaders</b>: TStrings read FRequestHeaders;</code></td>
+<td class="itemcode"><a name="RequestHeaders"></a><code>property <b>RequestHeaders</b>: <a  href="Grijjy.Http.TgoHttpHeaders.html">TgoHttpHeaders</a> read FRequestHeaders;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
@@ -269,7 +445,7 @@ Request headers</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="ResponseHeaders"></a><code>property <b>ResponseHeaders</b>: TStrings read FResponseHeaders;</code></td>
+<td class="itemcode"><a name="ResponseHeaders"></a><code>property <b>ResponseHeaders</b>: <a  href="Grijjy.Http.TgoHttpHeaders.html">TgoHttpHeaders</a> read FResponseHeaders;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
@@ -284,6 +460,36 @@ Response headers from the server</p>
 <tr><td colspan="2">
 <p>
 Response status code</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ResponseContentType"></a><code>property <b>ResponseContentType</b>: String read FResponseContentType;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Response content type</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ResponseContentCharset"></a><code>property <b>ResponseContentCharset</b>: String read FResponseContentCharset;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Response charset</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ContentLength"></a><code>property <b>ContentLength</b>: Int64 read FContentLength;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Response content length</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -313,23 +519,33 @@ Called when a redirect is requested</p>
 </tr>
 <tr><td colspan="2">
 <p>
-Called when a <a class="normal" href="Grijjy.Http.TgoHTTPClient.html#Password">password</a> is needed</p>
+Called when a <a class="normal" href="Grijjy.Http.TgoHttpClient.html#Password">password</a> is needed</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="UserName"></a><code>property <b>UserName</b>: UnicodeString read FUserName write FUserName;</code></td>
+<td class="itemcode"><a name="OnRecv"></a><code>property <b>OnRecv</b>: <a  href="Grijjy.Http.html#TOnRecv">TOnRecv</a> read FOnRecv write FOnRecv;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
-<code>Username</code> and <a class="normal" href="Grijjy.Http.TgoHTTPClient.html#Password">password</a> for Basic Authentication</p>
+Called when a buffer is received from the socket</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Password"></a><code>property <b>Password</b>: UnicodeString read FPassword write FPassword;</code></td>
+<td class="itemcode"><a name="UserName"></a><code>property <b>UserName</b>: String read FUserName write FUserName;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+<code>Username</code> and <a class="normal" href="Grijjy.Http.TgoHttpClient.html#Password">password</a> for Basic Authentication</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Password"></a><code>property <b>Password</b>: String read FPassword write FPassword;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -337,7 +553,7 @@ Called when a <a class="normal" href="Grijjy.Http.TgoHTTPClient.html#Password">p
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="ContentType"></a><code>property <b>ContentType</b>: UnicodeString read FContentType write FContentType;</code></td>
+<td class="itemcode"><a name="ContentType"></a><code>property <b>ContentType</b>: String read FContentType write FContentType;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
@@ -347,7 +563,7 @@ Content type</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="UserAgent"></a><code>property <b>UserAgent</b>: UnicodeString read FUserAgent write FUserAgent;</code></td>
+<td class="itemcode"><a name="UserAgent"></a><code>property <b>UserAgent</b>: String read FUserAgent write FUserAgent;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
@@ -357,13 +573,43 @@ User agent</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Authorization"></a><code>property <b>Authorization</b>: UnicodeString read FAuthorization write FAuthorization;</code></td>
+<td class="itemcode"><a name="Range"></a><code>property <b>Range</b>: String read FRange write FRange;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+<code>Range</code></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Authorization"></a><code>property <b>Authorization</b>: String read FAuthorization write FAuthorization;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
 <code>Authorization</code></p>
 </td></tr>
 </table>
-<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-30 08:24:21</em>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Certificate"></a><code>property <b>Certificate</b>: TBytes read FCertificate write FCertificate;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+<code>Certificate</code> in PEM format</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="PrivateKey"></a><code>property <b>PrivateKey</b>: TBytes read FPrivateKey write FPrivateKey;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Private key in PEM format</p>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-04-25 12:54:26</em>
 </span>
 </td></tr></table></body></html>

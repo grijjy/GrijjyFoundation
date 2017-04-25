@@ -17,22 +17,12 @@
 <th class="itemdesc">Description</th>
 </tr>
 <tr class="list">
-<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#BIO_get_flags">BIO_get_flags</a></td>
+<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#BIOGetFlags">BIOGetFlags</a></td>
 <td class="itemunit"><a class="bold" href="Grijjy.OpenSSL.API.html">Grijjy.OpenSSL.API</a></td>
-<td class="itemdesc"><p>&nbsp;</p></td>
+<td class="itemdesc"><p>Helpers</p></td>
 </tr>
 <tr class="list2">
-<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#BIO_get_mem_data">BIO_get_mem_data</a></td>
-<td class="itemunit"><a class="bold" href="Grijjy.OpenSSL.API.html">Grijjy.OpenSSL.API</a></td>
-<td class="itemdesc"><p>&nbsp;</p></td>
-</tr>
-<tr class="list">
-<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#BIO_pending">BIO_pending</a></td>
-<td class="itemunit"><a class="bold" href="Grijjy.OpenSSL.API.html">Grijjy.OpenSSL.API</a></td>
-<td class="itemdesc"><p>&nbsp;</p></td>
-</tr>
-<tr class="list2">
-<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#BIO_should_retry">BIO_should_retry</a></td>
+<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#BIORetry">BIORetry</a></td>
 <td class="itemunit"><a class="bold" href="Grijjy.OpenSSL.API.html">Grijjy.OpenSSL.API</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
@@ -40,6 +30,36 @@
 <td class="itemname"><a class="bold" href="Grijjy.Winsock2.html#EnumerateTCPConnections">EnumerateTCPConnections</a></td>
 <td class="itemunit"><a class="bold" href="Grijjy.Winsock2.html">Grijjy.Winsock2</a></td>
 <td class="itemdesc"><p>NetStat</p></td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold" href="Linuxapi.Epoll.html#epoll_create">epoll_create</a></td>
+<td class="itemunit"><a class="bold" href="Linuxapi.Epoll.html">Linuxapi.Epoll</a></td>
+<td class="itemdesc"><p>create an epoll instance</p></td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold" href="Linuxapi.Epoll.html#epoll_create1">epoll_create1</a></td>
+<td class="itemunit"><a class="bold" href="Linuxapi.Epoll.html">Linuxapi.Epoll</a></td>
+<td class="itemdesc"><p>&nbsp;</p></td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold" href="Linuxapi.Epoll.html#epoll_ctl">epoll_ctl</a></td>
+<td class="itemunit"><a class="bold" href="Linuxapi.Epoll.html">Linuxapi.Epoll</a></td>
+<td class="itemdesc"><p>apply an operation to an epoll instance</p></td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold" href="Linuxapi.Epoll.html#epoll_pwait">epoll_pwait</a></td>
+<td class="itemunit"><a class="bold" href="Linuxapi.Epoll.html">Linuxapi.Epoll</a></td>
+<td class="itemdesc"><p>&nbsp;</p></td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold" href="Linuxapi.Epoll.html#epoll_wait">epoll_wait</a></td>
+<td class="itemunit"><a class="bold" href="Linuxapi.Epoll.html">Linuxapi.Epoll</a></td>
+<td class="itemdesc"><p>wait for events on an epoll instance</p></td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold" href="Linuxapi.Epoll.html#EventToString">EventToString</a></td>
+<td class="itemunit"><a class="bold" href="Linuxapi.Epoll.html">Linuxapi.Epoll</a></td>
+<td class="itemdesc"><p>Helpers</p></td>
 </tr>
 <tr class="list2">
 <td class="itemname"><a class="bold" href="Grijjy.Winsock2.html#Finalize_Winsock">Finalize_Winsock</a></td>
@@ -139,12 +159,12 @@
 <tr class="list">
 <td class="itemname"><a class="bold" href="Grijjy.SysUtils.html#goUtf8ToUtf16">goUtf8ToUtf16</a></td>
 <td class="itemunit"><a class="bold" href="Grijjy.SysUtils.html">Grijjy.SysUtils</a></td>
-<td class="itemdesc"><p>Fast UTF-8 to Unicode conversion.</p></td>
+<td class="itemdesc"><p>Fast UTF-8 to Unicode conversion using a provided buffer.</p></td>
 </tr>
 <tr class="list2">
 <td class="itemname"><a class="bold" href="Grijjy.SysUtils.html#goUtf8ToUtf16">goUtf8ToUtf16</a></td>
 <td class="itemunit"><a class="bold" href="Grijjy.SysUtils.html">Grijjy.SysUtils</a></td>
-<td class="itemdesc"><p>Fast UTF-8 to Unicode conversion using a provided buffer.</p></td>
+<td class="itemdesc"><p>Fast UTF-8 to Unicode conversion.</p></td>
 </tr>
 <tr class="list">
 <td class="itemname"><a class="bold" href="Grijjy.SysUtils.html#goUtf8ToUtf16">goUtf8ToUtf16</a></td>
@@ -172,41 +192,66 @@
 <td class="itemdesc"><p>Creates a Java Web Token using the provided private key in PEM format</p></td>
 </tr>
 <tr class="list2">
-<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#sk_ASN1_OBJECT_num">sk_ASN1_OBJECT_num</a></td>
+<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#LoadLIBEAY">LoadLIBEAY</a></td>
 <td class="itemunit"><a class="bold" href="Grijjy.OpenSSL.API.html">Grijjy.OpenSSL.API</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
 <tr class="list">
-<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#sk_GENERAL_NAME_num">sk_GENERAL_NAME_num</a></td>
+<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#LoadSSLEAY">LoadSSLEAY</a></td>
 <td class="itemunit"><a class="bold" href="Grijjy.OpenSSL.API.html">Grijjy.OpenSSL.API</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
 <tr class="list2">
-<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#sk_GENERAL_NAME_pop">sk_GENERAL_NAME_pop</a></td>
+<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#SetSSLCTXOptions">SetSSLCTXOptions</a></td>
 <td class="itemunit"><a class="bold" href="Grijjy.OpenSSL.API.html">Grijjy.OpenSSL.API</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
 <tr class="list">
-<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#SSL_CTX_set_options">SSL_CTX_set_options</a></td>
+<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#SSLError">SSLError</a></td>
 <td class="itemunit"><a class="bold" href="Grijjy.OpenSSL.API.html">Grijjy.OpenSSL.API</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
 <tr class="list2">
-<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#SSL_error">SSL_error</a></td>
+<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#SSLErrorFatal">SSLErrorFatal</a></td>
 <td class="itemunit"><a class="bold" href="Grijjy.OpenSSL.API.html">Grijjy.OpenSSL.API</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
 <tr class="list">
-<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#SSL_is_fatal_error">SSL_is_fatal_error</a></td>
+<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#SSLFinalize">SSLFinalize</a></td>
 <td class="itemunit"><a class="bold" href="Grijjy.OpenSSL.API.html">Grijjy.OpenSSL.API</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
 <tr class="list2">
-<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#SSL_is_init_finished">SSL_is_init_finished</a></td>
+<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#SSLInitialize">SSLInitialize</a></td>
+<td class="itemunit"><a class="bold" href="Grijjy.OpenSSL.API.html">Grijjy.OpenSSL.API</a></td>
+<td class="itemdesc"><p>&nbsp;</p></td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold" href="Linuxapi.Timerfd.html#timerfd_create">timerfd_create</a></td>
+<td class="itemunit"><a class="bold" href="Linuxapi.Timerfd.html">Linuxapi.Timerfd</a></td>
+<td class="itemdesc"><p>creates a new timer object</p></td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold" href="Linuxapi.Timerfd.html#timerfd_gettime">timerfd_gettime</a></td>
+<td class="itemunit"><a class="bold" href="Linuxapi.Timerfd.html">Linuxapi.Timerfd</a></td>
+<td class="itemdesc"><p>returns the current setting of the timer</p></td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold" href="Linuxapi.Timerfd.html#timerfd_settime">timerfd_settime</a></td>
+<td class="itemunit"><a class="bold" href="Linuxapi.Timerfd.html">Linuxapi.Timerfd</a></td>
+<td class="itemdesc"><p>starts or stops the timer</p></td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#UnloadLIBEAY">UnloadLIBEAY</a></td>
+<td class="itemunit"><a class="bold" href="Grijjy.OpenSSL.API.html">Grijjy.OpenSSL.API</a></td>
+<td class="itemdesc"><p>&nbsp;</p></td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold" href="Grijjy.OpenSSL.API.html#UnloadSSLEAY">UnloadSSLEAY</a></td>
 <td class="itemunit"><a class="bold" href="Grijjy.OpenSSL.API.html">Grijjy.OpenSSL.API</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
 </table>
-<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-01-30 08:24:21</em>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-04-25 12:54:26</em>
 </span>
 </td></tr></table></body></html>
