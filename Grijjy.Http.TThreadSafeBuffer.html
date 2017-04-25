@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.Http: Class TThreadSafeBuffer</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<a name="TThreadSafeBuffer"></a><h1 class="cio">Class TThreadSafeBuffer</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="Grijjy.Http.html">Grijjy.Http</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TThreadSafeBuffer = class(TObject)</code></p>
+<h2 class="description">Description</h2>
+<p>
+Thread safe buffer</p>
+<a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TObject</li>
+<li class="thisitem">TThreadSafeBuffer</li></ul><h2 class="overview">Overview</h2>
+<a name="PasDoc-Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a  href="Grijjy.Http.TThreadSafeBuffer.html#Create">Create</a></b>(const ACapacity: Integer = <a  href="Grijjy.Http.html#BUFFER_SIZE">BUFFER_SIZE</a>);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>destructor <b><a  href="Grijjy.Http.TThreadSafeBuffer.html#Destroy">Destroy</a></b>; override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Http.TThreadSafeBuffer.html#Write">Write</a></b>(const ABuffer: Pointer; const ASize: Integer);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TThreadSafeBuffer.html#Read">Read</a></b>(out ABytes: TBytes): Boolean; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TThreadSafeBuffer.html#Read">Read</a></b>(out ABytes: TBytes; const ACount: Integer): Boolean; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TThreadSafeBuffer.html#Read">Read</a></b>(const ABuffer: Pointer; var ALength: NativeInt): Boolean; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.Http.TThreadSafeBuffer.html#ReadTo">ReadTo</a></b>(const ASubStr: RawByteString; out ABytes: TBytes): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.Http.TThreadSafeBuffer.html#Clear">Clear</a></b>;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.Http.TThreadSafeBuffer.html#Size">Size</a></b>: Integer <a  href="Grijjy.Http.TThreadSafeBuffer.html#Read">read</a> GetSize;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>(const ACapacity: Integer = <a  href="Grijjy.Http.html#BUFFER_SIZE">BUFFER_SIZE</a>);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Destroy"></a><code>destructor <b>Destroy</b>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Write"></a><code>procedure <b>Write</b>(const ABuffer: Pointer; const ASize: Integer);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+<code>Write</code> buffer</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Read"></a><code>function <b>Read</b>(out ABytes: TBytes): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+<a class="normal" href="Grijjy.Http.TThreadSafeBuffer.html#Read">Read</a> entire buffer</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Read"></a><code>function <b>Read</b>(out ABytes: TBytes; const ACount: Integer): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+<a class="normal" href="Grijjy.Http.TThreadSafeBuffer.html#Read">Read</a> count number of bytes from the buffer</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Read"></a><code>function <b>Read</b>(const ABuffer: Pointer; var ALength: NativeInt): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+<code>Read</code> up to length number of bytes from the buffer, for nghttp2</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReadTo"></a><code>function <b>ReadTo</b>(const ASubStr: RawByteString; out ABytes: TBytes): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+<a class="normal" href="Grijjy.Http.TThreadSafeBuffer.html#Read">Read</a> all bytes up to and including substring match</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Clear"></a><code>procedure <b>Clear</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+<code>Clear</code> the buffer</p>
+</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Size"></a><code>property <b>Size</b>: Integer <a  href="Grijjy.Http.TThreadSafeBuffer.html#Read">read</a> GetSize;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Current actual <code>size</code> of the buffer</p>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-04-25 12:54:26</em>
+</span>
+</td></tr></table></body></html>

@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.ProtocolBuffers</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<h1 class="unit">Unit Grijjy.ProtocolBuffers</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Uses</td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></td><td>Functions and Procedures</td><td><a class="section" href="#PasDoc-Types">Types</a></td><td>Constants</td><td>Variables</td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="description">Description</h2>
+<p>
+Google Protocol Buffers for Delphi.
+
+<p>This unit contains declarations for serializing attributed Delphi records in Protocol Buffer format.
+
+<p>It does <b>not</b> use the Google Protocol Buffers framework. Instead, it uses a custom framework, but serializes in a Protocol Buffers compatible bitstream.
+
+<p><b>About Protocol Buffers</b>
+
+<p>Protocol Buffers is both a framework and a bitstream specification:
+
+<p><a  href="https://developers.google.com/protocol-buffers/">https://developers.google.com/protocol-buffers/</a>
+
+<p>It is used to serialize messages in an efficient binary format. A message is a collection of fields, where each field is uniquely identified with an integer Tag. Fields can be of various simple data types, including integers, enums, strings, booleans and strings, as well as compound data types such as nested messages, repeated messages (arrays) and binary data.
+
+<p><b>Delphi Implementation</b>
+
+<p>This Delphi implementation uses attributed records to define messages. These are regular Delphi records, but fields that are decorated with the [Serialize] attribute can be serialized. For example:
+
+<p></p>
+
+<pre class="longcode">
+  <span class="pascal_keyword">type</span>
+    TPhoneType = (Mobile, Home, Work);
+
+  <span class="pascal_keyword">type</span>
+    TPhoneNumber = <span class="pascal_keyword">record</span>
+    <span class="pascal_keyword">public</span>
+      [Serialize(<span class="pascal_numeric">1</span>)] Number: <span class="pascal_keyword">String</span>;
+      [Serialize(<span class="pascal_numeric">2</span>)] PhoneType: TPhoneType;
+    <span class="pascal_keyword">public</span>
+      <span class="pascal_keyword">procedure</span> Initialize;
+    <span class="pascal_keyword">end</span>;
+
+  <span class="pascal_keyword">type</span>
+    TPerson = <span class="pascal_keyword">record</span>
+    <span class="pascal_keyword">public</span>
+      [Serialize(<span class="pascal_numeric">1</span>)] <span class="pascal_keyword">Name</span>: <span class="pascal_keyword">String</span>;
+      [Serialize(<span class="pascal_numeric">2</span>)] Id: Integer;
+      [Serialize(<span class="pascal_numeric">3</span>)] Email: <span class="pascal_keyword">String</span>;
+      [Serialize(<span class="pascal_numeric">4</span>)] MainPhone: TPhoneNumber;
+      [Serialize(<span class="pascal_numeric">5</span>)] OtherPhones: TArray&lt;TPhoneNumber&gt;;
+    <span class="pascal_keyword">public</span>
+      <span class="pascal_keyword">procedure</span> Initialize;
+    <span class="pascal_keyword">end</span>;</pre>
+
+<p>
+
+<p>Each serializable field must be decorated with a [Serialize] attribute with a single parameter containing the Tag for that field. Tags <b>must</b> be unique within the record, but you can use the same tag in different records or in nested records. When a record contains duplicate tags, an exception will be raised when the record is (de)serialized.
+
+<p>Tags start at 1 and must be positive. You should reserve tags 1-15 for the most common fields, since these tags are stored most efficiently (using 1 byte). Tags 16-2047 are stored in 2 bytes, and other tags take more bytes.
+
+<p>Records are serialized in an extensible way. You can add, delete and reorder fields without breaking compatibility with older bitstreams. However, you should never change the tag or data type of a field.
+
+<p><b>Supported Data Types</b>
+
+<p>You can use a wide variety of Delphi data types for your serializable fields:
+
+<p></p>
+
+<ul class="compact_spacing">
+  <li><p>UInt8 (Byte), UInt16 (Word), UInt32 (Longword/Cardinal), UInt64</p></li>
+  <li><p>Int8 (Shortint), Int16 (Smallint), Int32 (Longint/Integer), Int64</p></li>
+  <li><p>Single, Double</p></li>
+  <li><p>Boolean</p></li>
+  <li><p>Enumerated types, <b>as long as</b> the type does <b>not</b> contain any explicitly assigned values (Delphi does not provide RTTI for these)</p></li>
+  <li><p>Records (that is, your field can be of another record type)</p></li>
+  <li><p>Strings (of type UnicodeString)</p></li>
+  <li><p>TBytes (for raw binary data)</p></li>
+  <li><p>1-dimensional dynamic arrays (TArray&lt;&gt;) of the types described above,</p></li>
+</ul>
+
+<p> Tech note: all arrays of primitive numeric types (integers, floats and enums) are stored in &quot;packed&quot; format, which is supported since Protocol Buffers version 2.1.0. This is a more efficient format that doesn't repeat the tag for each element. All other array types are stored unpacked (where the tag is repeated for each element).
+
+<p>The integer data types are stored in an efficient VarInt format. This means that smaller values are stored in less bytes than larger values. 32-bit integer types are stored in 1-5 bytes, and 64-bit integer types are stored in 1-10 bytes. Sometimes, you can have integer data that contains random values across the entire 32-bit or 64-bit range. In those cases, it is more efficient to store these integers as fixed 32-bit or 64-bit values. You can do this by declaring the field as one of 4 fixed integer types:
+
+<p></p>
+
+<ul class="compact_spacing">
+  <li><p><a class="normal" href="Grijjy.ProtocolBuffers.html#FixedInt32">FixedInt32</a>, <a class="normal" href="Grijjy.ProtocolBuffers.html#FixedUInt32">FixedUInt32</a>, <a class="normal" href="Grijjy.ProtocolBuffers.html#FixedInt64">FixedInt64</a>, <a class="normal" href="Grijjy.ProtocolBuffers.html#FixedUInt64">FixedUInt64</a></p></li>
+</ul>
+
+<p> All other data types can <b>not</b> be used for serializable fields. An exception will be raised when an unsupported data type is encountered. However, you can still use these types for regular (non-serializable) fields. In particular, the following types are <b>not</b> supported:
+
+<p></p>
+
+<ul class="compact_spacing">
+  <li><p>Extended, Comp, Currency</p></li>
+  <li><p>Class, Object, Interface</p></li>
+  <li><p>Enumerated types with explicitly assigned values</p></li>
+  <li><p>AnsiString, RawByteString, UCS4String etc.</p></li>
+  <li><p>Static arrays</p></li>
+  <li><p>Multi-dimensional dynamic arrays</p></li>
+</ul>
+
+<p> <b>Using the (de)serializer</b>
+
+<p>Serializing is very easy. You just fill your record with the values you want to serialize and call:
+
+<p></p>
+
+<pre class="longcode">
+  TgoProtocolBuffer.Serialize&lt;TPerson&gt;(MyPerson, <span class="pascal_string">'Person.dat'</span>);</pre>
+
+<p>
+
+<p>This is a generic method with a type parameter that must match the type of record you are serializing.
+
+<p>Since Delphi is able to infer the generic type from the first parameter, you can also write this a little bit shorter:
+
+<p></p>
+
+<pre class="longcode">
+  TgoProtocolBuffer.Serialize(MyPerson, <span class="pascal_string">'Person.dat'</span>);</pre>
+
+<p>
+
+<p>You can serialize to a file, stream or TBytes array.
+
+<p>Deserializing is equally simple:
+
+<p></p>
+
+<pre class="longcode">
+  TgoProtocolBuffer.Deserialize(MyPerson, <span class="pascal_string">'Person.dat'</span>);</pre>
+
+<p>
+
+<p>Because all fields in a record are optional, some fields may not be in the stream. To prevent the record from having unitialized fields after deserialization, the record is cleared before it is deserialized (that is, all fields are set to 0 or nil).
+
+<p>You can also provide your own means of initializing the record with default values. To do that, you have to add a parameterless Initialize procedure to your record. Then, the deserialization process will call that routine after clearing the record (so it will still clear any fields you don't initialize yourself).</p>
+<a name="PasDoc-Uses"></a><h2 class="overview">Overview</h2>
+<a name="PasDoc-Classes"></a><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.ProtocolBuffers.EgoSerializationError.html"><code>EgoSerializationError</code></a></td>
+<td class="itemdesc">Exception type that is raise when an error occurs during (de)serialization</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.ProtocolBuffers.SerializeAttribute.html"><code>SerializeAttribute</code></a></td>
+<td class="itemdesc">A Delphi attribute you use to decorate record fields that need to be serialized.</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="Grijjy.ProtocolBuffers.TgoProtocolBuffer.html"><code>TgoProtocolBuffer</code></a></td>
+<td class="itemdesc">Static class used for (de)serializing records in Protocol Buffer format</td>
+</tr>
+</table>
+<a name="PasDoc-Types"></a><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.ProtocolBuffers.html#FixedUInt32">FixedUInt32</a></b> = type UInt32;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.ProtocolBuffers.html#FixedInt32">FixedInt32</a></b>  = type Int32;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.ProtocolBuffers.html#FixedUInt64">FixedUInt64</a></b> = type UInt64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Grijjy.ProtocolBuffers.html#FixedInt64">FixedInt64</a></b>  = type Int64;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Grijjy.ProtocolBuffers.html#TgoSerializationTag">TgoSerializationTag</a></b> = 1..536870911;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="FixedUInt32"></a><code><b>FixedUInt32</b> = type UInt32;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+A 32-bit unsigned integer that is always serialized using 4 bytes.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="FixedInt32"></a><code><b>FixedInt32</b>  = type Int32;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+A 32-bit signed integer that is always serialized using 4 bytes.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="FixedUInt64"></a><code><b>FixedUInt64</b> = type UInt64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+A 64-bit unsigned integer that is always serialized using 8 bytes.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="FixedInt64"></a><code><b>FixedInt64</b>  = type Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+A 64-bit signed integer that is always serialized using 8 bytes.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TgoSerializationTag"></a><code><b>TgoSerializationTag</b> = 1..536870911;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Valid range of field tags</p>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-04-25 12:54:26</em>
+</span>
+</td></tr></table></body></html>

@@ -1,0 +1,308 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Linuxapi.Epoll</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<h1 class="unit">Unit Linuxapi.Epoll</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td>Uses</td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></td><td><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></td><td><a class="section" href="#PasDoc-Types">Types</a></td><td><a class="section" href="#PasDoc-Constants">Constants</a></td><td>Variables</td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="description">Description</h2>
+&nbsp;<a name="PasDoc-Uses"></a><h2 class="overview">Overview</h2>
+<a name="PasDoc-Classes"></a><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">record&nbsp;<a class="bold" href="Linuxapi.Epoll.epoll_data.html"><code>epoll_data</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">packed record&nbsp;<a class="bold" href="Linuxapi.Epoll.epoll_event.html"><code>epoll_event</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<a name="PasDoc-FuncsProcs"></a><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Linuxapi.Epoll.html#epoll_create">epoll_create</a></b>(size: Integer): Integer; cdecl; external libc name _PU + 'epoll_create';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Linuxapi.Epoll.html#epoll_create1">epoll_create1</a></b>(flags: Integer): Integer; cdecl; external libc name _PU + 'epoll_create1';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Linuxapi.Epoll.html#epoll_ctl">epoll_ctl</a></b>(epfd: Integer; op: Integer; fd: Integer; event: <a  href="Linuxapi.Epoll.html#pepoll_event">pepoll_event</a>): Integer; cdecl; external libc name _PU + 'epoll_ctl';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Linuxapi.Epoll.html#epoll_wait">epoll_wait</a></b>(epfd: Integer; events: <a  href="Linuxapi.Epoll.html#pepoll_event">pepoll_event</a>; maxevents, timeout: Integer): Integer; cdecl; external libc name _PU + 'epoll_wait';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="Linuxapi.Epoll.html#epoll_pwait">epoll_pwait</a></b>(epfd: Integer; events: <a  href="Linuxapi.Epoll.html#pepoll_event">pepoll_event</a>; maxevents, timeout: Integer; sigmask: <a  href="Linuxapi.Epoll.html#ptsigset">ptsigset</a>): Integer; cdecl; external libc name _PU + 'epoll_pwait';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="Linuxapi.Epoll.html#EventToString">EventToString</a></b>(const AEvent: <a  href="Linuxapi.Epoll.epoll_event.html">epoll_event</a>): UnicodeString;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Types"></a><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#pepoll_event">pepoll_event</a></b> = &circ;<a  href="Linuxapi.Epoll.epoll_event.html">epoll_event</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#ptsigset">ptsigset</a></b> = &circ;sigset_t;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Constants"></a><h3 class="summary">Constants</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#EPOLLIN">EPOLLIN</a></b> = $01;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#EPOLLPRI">EPOLLPRI</a></b> = $02;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#EPOLLOUT">EPOLLOUT</a></b> = $04;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#EPOLLERR">EPOLLERR</a></b> = $08;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#EPOLLHUP">EPOLLHUP</a></b> = $10;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#EPOLLRDNORM">EPOLLRDNORM</a></b> = $40;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#EPOLLRDBAND">EPOLLRDBAND</a></b> = $80;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#EPOLLWRNORM">EPOLLWRNORM</a></b> = $100;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#EPOLLWRBAND">EPOLLWRBAND</a></b> = $200;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#EPOLLMSG">EPOLLMSG</a></b> = $400;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#EPOLLRDHUP">EPOLLRDHUP</a></b> = $2000;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#EPOLLWAKEUP">EPOLLWAKEUP</a></b> = 1 shl 29;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#EPOLLONESHOT">EPOLLONESHOT</a></b> = 1 shl 30;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#EPOLLET">EPOLLET</a></b>  = UInt32(1 shl 31);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#EPOLL_CTL_ADD">EPOLL_CTL_ADD</a></b> = 1;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#EPOLL_CTL_DEL">EPOLL_CTL_DEL</a></b> = 2;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="Linuxapi.Epoll.html#EPOLL_CTL_MOD">EPOLL_CTL_MOD</a></b> = 3;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="epoll_create"></a><code>function <b>epoll_create</b>(size: Integer): Integer; cdecl; external libc name _PU + 'epoll_create';</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+create an epoll instance</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="epoll_create1"></a><code>function <b>epoll_create1</b>(flags: Integer): Integer; cdecl; external libc name _PU + 'epoll_create1';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="epoll_ctl"></a><code>function <b>epoll_ctl</b>(epfd: Integer; op: Integer; fd: Integer; event: <a  href="Linuxapi.Epoll.html#pepoll_event">pepoll_event</a>): Integer; cdecl; external libc name _PU + 'epoll_ctl';</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+apply an operation to an epoll instance</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="epoll_wait"></a><code>function <b>epoll_wait</b>(epfd: Integer; events: <a  href="Linuxapi.Epoll.html#pepoll_event">pepoll_event</a>; maxevents, timeout: Integer): Integer; cdecl; external libc name _PU + 'epoll_wait';</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+wait for events on an epoll instance</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="epoll_pwait"></a><code>function <b>epoll_pwait</b>(epfd: Integer; events: <a  href="Linuxapi.Epoll.html#pepoll_event">pepoll_event</a>; maxevents, timeout: Integer; sigmask: <a  href="Linuxapi.Epoll.html#ptsigset">ptsigset</a>): Integer; cdecl; external libc name _PU + 'epoll_pwait';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EventToString"></a><code>function <b>EventToString</b>(const AEvent: <a  href="Linuxapi.Epoll.epoll_event.html">epoll_event</a>): UnicodeString;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Helpers</p>
+</td></tr>
+</table>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="pepoll_event"></a><code><b>pepoll_event</b> = &circ;<a  href="Linuxapi.Epoll.epoll_event.html">epoll_event</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ptsigset"></a><code><b>ptsigset</b> = &circ;sigset_t;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Constants</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EPOLLIN"></a><code><b>EPOLLIN</b> = $01;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EPOLLPRI"></a><code><b>EPOLLPRI</b> = $02;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EPOLLOUT"></a><code><b>EPOLLOUT</b> = $04;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EPOLLERR"></a><code><b>EPOLLERR</b> = $08;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EPOLLHUP"></a><code><b>EPOLLHUP</b> = $10;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EPOLLRDNORM"></a><code><b>EPOLLRDNORM</b> = $40;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EPOLLRDBAND"></a><code><b>EPOLLRDBAND</b> = $80;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EPOLLWRNORM"></a><code><b>EPOLLWRNORM</b> = $100;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EPOLLWRBAND"></a><code><b>EPOLLWRBAND</b> = $200;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EPOLLMSG"></a><code><b>EPOLLMSG</b> = $400;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EPOLLRDHUP"></a><code><b>EPOLLRDHUP</b> = $2000;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EPOLLWAKEUP"></a><code><b>EPOLLWAKEUP</b> = 1 shl 29;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EPOLLONESHOT"></a><code><b>EPOLLONESHOT</b> = 1 shl 30;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EPOLLET"></a><code><b>EPOLLET</b>  = UInt32(1 shl 31);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EPOLL_CTL_ADD"></a><code><b>EPOLL_CTL_ADD</b> = 1;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+opcodes <a class="normal" href="Linuxapi.Epoll.html#epoll_ctl">epoll_ctl</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EPOLL_CTL_DEL"></a><code><b>EPOLL_CTL_DEL</b> = 2;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="EPOLL_CTL_MOD"></a><code><b>EPOLL_CTL_MOD</b> = 3;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-04-25 12:54:26</em>
+</span>
+</td></tr></table></body></html>

@@ -1,0 +1,334 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>Grijjy Foundation: Grijjy.SysUtils: Class TgoByteBuffer</title>
+<meta name="generator" content="P2PasDoc 0.13.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>Grijjy Foundation</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<a name="TgoByteBuffer"></a><h1 class="cio">Class TgoByteBuffer</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Description</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section" href="#PasDoc-Methods">Methods</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="Grijjy.SysUtils.html">Grijjy.SysUtils</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TgoByteBuffer = class(TObject)</code></p>
+<h2 class="description">Description</h2>
+<p>
+Class representing a <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">buffer</a> of bytes, with methods to efficiently add data to the <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">buffer</a>.
+
+<p>Use this class to build up a <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">buffer</a> of bytes using (many) smaller appends. This is more efficient then concatenating multiple TBytes together.</p>
+<a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TObject</li>
+<li class="thisitem">TgoByteBuffer</li></ul><h2 class="overview">Overview</h2>
+<a name="PasDoc-Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a  href="Grijjy.SysUtils.TgoByteBuffer.html#Create">Create</a></b>(const ACapacity: Integer = 256; const ADelta: Integer = 256);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.SysUtils.TgoByteBuffer.html#Append">Append</a></b>(const AByte: Byte); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.SysUtils.TgoByteBuffer.html#Append">Append</a></b>(const ABytes: TBytes); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.SysUtils.TgoByteBuffer.html#Append">Append</a></b>(const ABytes: array of Byte); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.SysUtils.TgoByteBuffer.html#Append">Append</a></b>(const ABytes: TBytes; const AIndex: Integer); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.SysUtils.TgoByteBuffer.html#Append">Append</a></b>(const ABytes: array of Byte; const AIndex: Integer); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.SysUtils.TgoByteBuffer.html#Append">Append</a></b>(const ABytes: TBytes; const AIndex, ASize: Integer); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.SysUtils.TgoByteBuffer.html#Append">Append</a></b>(const ABytes: array of Byte; const AIndex, ASize: Integer); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.SysUtils.TgoByteBuffer.html#AppendBuffer">AppendBuffer</a></b>(const ABuffer; const ASize: Integer);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.SysUtils.TgoByteBuffer.html#Clear">Clear</a></b>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Grijjy.SysUtils.TgoByteBuffer.html#TrimExcess">TrimExcess</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="Grijjy.SysUtils.TgoByteBuffer.html#ToBytes">ToBytes</a></b>: TBytes;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.SysUtils.TgoByteBuffer.html#Capacity">Capacity</a></b>: Integer read FCapacity;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.SysUtils.TgoByteBuffer.html#Size">Size</a></b>: Integer read FSize;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">Buffer</a></b>: TBytes read FBuffer;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>(const ACapacity: Integer = 256; const ADelta: Integer = 256);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+<code>Create</code> a new byte <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">buffer</a>.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ACapacity</dt>
+<dd>(optional) initial <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Capacity">capacity</a>. Defaults to 256.</dd>
+<dt>ADelta</dt>
+<dd>(optional) number of bytes to increase <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Capacity">capacity</a> when <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">buffer</a> becomes to small. When ADelta is not a power of 2, it is adjusted to the next power of 2</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Append"></a><code>procedure <b>Append</b>(const AByte: Byte); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Appends a single byte.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AByte</dt>
+<dd>the byte to <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Append">append</a>.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Append"></a><code>procedure <b>Append</b>(const ABytes: TBytes); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Appends an array of bytes.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ABytes</dt>
+<dd>the array of bytes to <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Append">append</a>.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Append"></a><code>procedure <b>Append</b>(const ABytes: array of Byte); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Appends an array of bytes.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ABytes</dt>
+<dd>the array of bytes to <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Append">append</a>.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Append"></a><code>procedure <b>Append</b>(const ABytes: TBytes; const AIndex: Integer); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Appends a segment of an array of bytes.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ABytes</dt>
+<dd>the array of bytes containing the segment to <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Append">append</a>.</dd>
+<dt>AIndex</dt>
+<dd>index into ABytes of the start of the segment. The segment runs until the end of the ABytes array. If the index is invalid, nothing happens.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Append"></a><code>procedure <b>Append</b>(const ABytes: array of Byte; const AIndex: Integer); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Appends a segment of an array of bytes.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ABytes</dt>
+<dd>the array of bytes containing the segment to <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Append">append</a>.</dd>
+<dt>AIndex</dt>
+<dd>index into ABytes of the start of the segment. The segment runs until the end of the ABytes array. If the index is invalid, nothing happens.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Append"></a><code>procedure <b>Append</b>(const ABytes: TBytes; const AIndex, ASize: Integer); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Appends a segment of an array of bytes.
+
+<p>  </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ABytes</dt>
+<dd>the array of bytes containing the segment to <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Append">append</a>.</dd>
+<dt>AIndex</dt>
+<dd>index into ABytes of the start of the segment. If the index is invalid, nothing happens.</dd>
+<dt>ASize</dt>
+<dd>the number of bytes in the segment to <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Append">append</a>. If the <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Size">size</a> exceeds beyond the end of the ABytes array, then it will be adjust to fit.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Append"></a><code>procedure <b>Append</b>(const ABytes: array of Byte; const AIndex, ASize: Integer); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Appends a segment of an array of bytes.
+
+<p>  </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ABytes</dt>
+<dd>the array of bytes containing the segment to <code>append</code>.</dd>
+<dt>AIndex</dt>
+<dd>index into ABytes of the start of the segment. If the index is invalid, nothing happens.</dd>
+<dt>ASize</dt>
+<dd>the number of bytes in the segment to <code>append</code>. If the <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Size">size</a> exceeds beyond the end of the ABytes array, then it will be adjust to fit.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="AppendBuffer"></a><code>procedure <b>AppendBuffer</b>(const ABuffer; const ASize: Integer);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Appends an untyped memory <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">buffer</a>.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ABuffer</dt>
+<dd>untyped memory <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">buffer</a> with the data to <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Append">append</a>.</dd>
+<dt>ASize</dt>
+<dd>the number of bytes in <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">buffer</a> to <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Append">append</a>.</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Clear"></a><code>procedure <b>Clear</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Clears the <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">buffer</a>. This does not free the memory for the <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">buffer</a>, so subsequent appends will use the already allocated memory.
+
+<p>To free the memory for the <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">buffer</a>, free the object or call <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#TrimExcess">TrimExcess</a> after clearing the <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">buffer</a>.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="TrimExcess"></a><code>procedure <b>TrimExcess</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Sets the <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Capacity">capacity</a> to the used number of bytes, reducing memory to the minimum required. Call this after calling <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Clear">Clear</a> to completely release all memory.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ToBytes"></a><code>function <b>ToBytes</b>: TBytes;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Returns the <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">buffer</a> as a byte array.
+
+<p>For performance reasons, this method does <b>not</b> make a copy. Instead it calls <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#TrimExcess">TrimExcess</a> and returns the internal <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">buffer</a>. This means that any changes you make to bytes in the returned <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">buffer</a>, will also affect this <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">buffer</a> object.</p>
+</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Capacity"></a><code>property <b>Capacity</b>: Integer read FCapacity;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Current <code>capacity</code> (number of reserved bytes)</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Size"></a><code>property <b>Size</b>: Integer read FSize;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Current <code>size</code> of the <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Buffer">buffer</a> in bytes</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Buffer"></a><code>property <b>Buffer</b>: TBytes read FBuffer;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Provides direct access to the <code>buffer</code>. Note that this value can change as you <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#Append">append</a> to the <code>buffer</code>. So you should generally use <a class="normal" href="Grijjy.SysUtils.TgoByteBuffer.html#ToBytes">ToBytes</a> instead.</p>
+</td></tr>
+</table>
+<div style="height:1000px"></div><hr noshade size="1"><span class="appinfo"><em>Generated by <a  href="http://pasdoc.sourceforge.net/">P2PasDoc 0.13.0</a> on 2017-04-25 12:54:26</em>
+</span>
+</td></tr></table></body></html>
