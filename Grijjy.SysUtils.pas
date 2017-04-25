@@ -8,6 +8,126 @@ interface
 uses
   System.SysUtils;
 
+type
+  { Class representing a buffer of bytes, with methods to efficiently add data
+    to the buffer.
+
+    Use this class to build up a buffer of bytes using (many) smaller appends.
+    This is more efficient then concatenating multiple TBytes together. }
+  TgoByteBuffer = class
+  {$REGION 'Internal Declarations'}
+  private
+    FBuffer: TBytes;
+    FSize: Integer;
+    FDeltaMask: Integer;
+    FDeltaShift: Integer;
+    FCapacity: Integer;
+  {$ENDREGION 'Internal Declarations'}
+  public
+    { Create a new byte buffer.
+
+      Parameters:
+        ACapacity: (optional) initial capacity. Defaults to 256.
+        ADelta: (optional) number of bytes to increase capacity when buffer
+          becomes to small. When ADelta is not a power of 2, it is adjusted to
+          the next power of 2 }
+    constructor Create(const ACapacity: Integer = 256;
+      const ADelta: Integer = 256);
+
+    { Appends a single byte.
+
+      Parameters:
+        AByte: the byte to append. }
+    procedure Append(const AByte: Byte); overload;
+
+    { Appends an array of bytes.
+
+      Parameters:
+        ABytes: the array of bytes to append. }
+    procedure Append(const ABytes: TBytes); overload;
+
+    { Appends an array of bytes.
+
+      Parameters:
+        ABytes: the array of bytes to append. }
+    procedure Append(const ABytes: array of Byte); overload;
+
+    { Appends a segment of an array of bytes.
+
+      Parameters:
+        ABytes: the array of bytes containing the segment to append.
+        AIndex: index into ABytes of the start of the segment. The segment runs
+          until the end of the ABytes array. If the index is invalid, nothing
+          happens. }
+    procedure Append(const ABytes: TBytes; const AIndex: Integer); overload;
+
+    { Appends a segment of an array of bytes.
+
+      Parameters:
+        ABytes: the array of bytes containing the segment to append.
+        AIndex: index into ABytes of the start of the segment. The segment runs
+          until the end of the ABytes array. If the index is invalid, nothing
+          happens. }
+    procedure Append(const ABytes: array of Byte; const AIndex: Integer); overload;
+
+    { Appends a segment of an array of bytes.
+
+      Parameters:
+        ABytes: the array of bytes containing the segment to append.
+        AIndex: index into ABytes of the start of the segment. If the index is
+          invalid, nothing happens.
+        ASize: the number of bytes in the segment to append. If the size exceeds
+          beyond the end of the ABytes array, then it will be adjust to fit. }
+    procedure Append(const ABytes: TBytes; const AIndex, ASize: Integer); overload;
+
+    { Appends a segment of an array of bytes.
+
+      Parameters:
+        ABytes: the array of bytes containing the segment to append.
+        AIndex: index into ABytes of the start of the segment. If the index is
+          invalid, nothing happens.
+        ASize: the number of bytes in the segment to append. If the size exceeds
+          beyond the end of the ABytes array, then it will be adjust to fit. }
+    procedure Append(const ABytes: array of Byte; const AIndex, ASize: Integer); overload;
+
+    { Appends an untyped memory buffer.
+
+      Parameters:
+        ABuffer: untyped memory buffer with the data to append.
+        ASize: the number of bytes in buffer to append. }
+    procedure AppendBuffer(const ABuffer; const ASize: Integer);
+
+    { Clears the buffer. This does not free the memory for the buffer, so
+      subsequent appends will use the already allocated memory.
+
+      To free the memory for the buffer, free the object or call TrimExcess
+      after clearing the buffer. }
+    procedure Clear;
+
+    { Sets the capacity to the used number of bytes, reducing memory to the
+      minimum required. Call this after calling Clear to completely release
+      all memory. }
+    procedure TrimExcess;
+
+    { Returns the buffer as a byte array.
+
+      For performance reasons, this method does @bold(not) make a copy. Instead
+      it calls TrimExcess and returns the internal buffer. This means that any
+      changes you make to bytes in the returned buffer, will also affect this
+      buffer object. }
+    function ToBytes: TBytes;
+
+    { Current capacity (number of reserved bytes) }
+    property Capacity: Integer read FCapacity;
+
+    { Current size of the buffer in bytes }
+    property Size: Integer read FSize;
+
+    { Provides direct access to the buffer. Note that this value can change as
+      you append to the buffer. So you should generally use ToBytes instead. }
+    property Buffer: TBytes read FBuffer;
+  end;
+
 { Returns the name of the machine.
 
   Tech notes:
@@ -193,6 +313,7 @@ uses
   {$ELSE}
   Posix.UniStd,
   {$ENDIF}
+  System.Math,
   System.RTLConsts;
 
 {$IFDEF MSWINDOWS}
@@ -740,6 +861,110 @@ begin
     ABytes[E] := Temp;
     Inc(B);
     Dec(E);
+  end;
+end;
+
+{ TgoByteBuffer }
+
+procedure TgoByteBuffer.Append(const AByte: Byte);
+begin
+  AppendBuffer(AByte, 1);
+end;
+
+procedure TgoByteBuffer.Append(const ABytes: TBytes);
+begin
+  if Assigned(ABytes) then
+    AppendBuffer(ABytes[0], Length(ABytes));
+end;
+
+procedure TgoByteBuffer.Append(const ABytes: array of Byte);
+begin
+  if (Length(ABytes) > 0) then
+    AppendBuffer(ABytes[0], Length(ABytes));
+end;
+
+procedure TgoByteBuffer.Clear;
+begin
+  FSize := 0;
+end;
+
+constructor TgoByteBuffer.Create(const ACapacity, ADelta: Integer);
+var
+  D: Integer;
+begin
+  inherited Create;
+  FCapacity := Max(ACapacity, 0);
+  D := Max(ADelta - 1, 1);
+  while (D > 0) do
+  begin
+    Inc(FDeltaShift);
+    D := D shr 1;
+  end;
+  FDeltaMask := (1 shl FDeltaShift) - 1;
+  SetLength(FBuffer, FCapacity);
+end;
+
+procedure TgoByteBuffer.AppendBuffer(const ABuffer; const ASize: Integer);
+var
+  GrowSize: Integer;
+begin
+  if ((FSize + ASize) > FCapacity) then
+  begin
+    GrowSize := (FSize + ASize) - FCapacity;
+    GrowSize := ((GrowSize + FDeltaMask) shr FDeltaShift) shl FDeltaShift;
+    Inc(FCapacity, GrowSize);
+    SetLength(FBuffer, FCapacity);
+  end;
+  Move(ABuffer, FBuffer[FSize], ASize);
+  Inc(FSize, ASize);
+end;
+
+function TgoByteBuffer.ToBytes: TBytes;
+begin
+  TrimExcess;
+  Result := FBuffer;
+end;
+
+procedure TgoByteBuffer.TrimExcess;
+begin
+  FCapacity := FSize;
+  SetLength(FBuffer, FSize);
+end;
+
+procedure TgoByteBuffer.Append(const ABytes: TBytes; const AIndex: Integer);
+begin
+  Append(ABytes, AIndex, Length(ABytes) - AIndex);
+end;
+
+procedure TgoByteBuffer.Append(const ABytes: TBytes; const AIndex,
+  ASize: Integer);
+var
+  Size: Integer;
+begin
+  if (AIndex < Length(ABytes)) then
+  begin
+    Size := Min(ASize, Length(ABytes) - AIndex);
+    if (Size > 0) then
+      AppendBuffer(ABytes[AIndex], Size);
+  end;
+end;
+
+procedure TgoByteBuffer.Append(const ABytes: array of Byte;
+  const AIndex: Integer);
+begin
+  Append(ABytes, AIndex, Length(ABytes) - AIndex);
+end;
+
+procedure TgoByteBuffer.Append(const ABytes: array of Byte; const AIndex,
+  ASize: Integer);
+var
+  Size: Integer;
+begin
+  if (AIndex < Length(ABytes)) then
+  begin
+    Size := Min(ASize, Length(ABytes) - AIndex);
+    if (Size > 0) then
+      AppendBuffer(ABytes[AIndex], Size);
   end;
 end;
 
