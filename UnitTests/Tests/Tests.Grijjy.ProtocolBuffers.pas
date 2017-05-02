@@ -327,7 +327,7 @@ function TTestProtocolBuffers.SerializePerson(out A: TPerson): TBytes;
 begin
   A.Name := 'Erik van Bilsen';
   A.Id := 42;
-  A.Email := 'erik@grijjy.com';
+  A.Email := 'erik@mymail.com';
   SetLength(A.Phone, 2);
   A.Phone[0].Number := 'Number1';
   A.Phone[0].PhoneType := TPhoneType.Mobile;
@@ -341,7 +341,7 @@ function TTestProtocolBuffers.SerializePersonEx(out A: TPersonEx): TBytes;
 begin
   A.Person.Name := 'Allen Drennan';
   A.Person.Id := 24;
-  A.Person.Email := 'allen@grijjy.com';
+  A.Person.Email := 'allen@mymail.com';
   SetLength(A.Person.Phone, 1);
   A.Person.Phone[0].Number := 'Number1';
   A.Person.Phone[0].PhoneType := TPhoneType.Mobile;

@@ -1,16 +1,17 @@
 unit Grijjy.ProtocolBuffers;
 (*<Google Protocol Buffers for Delphi.
+
   This unit contains declarations for serializing attributed Delphi records
   in Protocol Buffer format.
 
   It does @bold(not) use the Google Protocol Buffers framework. Instead, it uses
-  a custom frameworks, but serializes in a Protocol Buffers compatible bitstream.
+  a custom framework, but serializes in a Protocol Buffers compatible bitstream.
 
   @bold(About Protocol Buffers)
 
   Protocol Buffers is both a framework and a bitstream specification:
 
-  https://code.google.com/p/protobuf/
+  https://developers.google.com/protocol-buffers/
 
   It is used to serialize messages in an efficient binary format. A message is
   a collection of fields, where each field is uniquely identified with an
@@ -31,7 +32,7 @@ unit Grijjy.ProtocolBuffers;
   type
     TPhoneNumber = record
     public
-      [Serialize(1)] Number: UnicodeString;
+      [Serialize(1)] Number: String;
       [Serialize(2)] PhoneType: TPhoneType;
     public
       procedure Initialize;
@@ -40,9 +41,9 @@ unit Grijjy.ProtocolBuffers;
   type
     TPerson = record
     public
-      [Serialize(1)] Name: UnicodeString;
-      [Serialize(2)] Id: Int32;
-      [Serialize(3)] Email: UnicodeString;
+      [Serialize(1)] Name: String;
+      [Serialize(2)] Id: Integer;
+      [Serialize(3)] Email: String;
       [Serialize(4)] MainPhone: TPhoneNumber;
       [Serialize(5)] OtherPhones: TArray<TPhoneNumber>;
     public
@@ -75,8 +76,7 @@ unit Grijjy.ProtocolBuffers;
   * Enumerated types, @bold(as long as) the type does @bold(not) contain any
     explicitly assigned values (Delphi does not provide RTTI for these)
   * Records (that is, your field can be of another record type)
-  * UnicodeStrings (make sure you declare string fields of type
-    @code(UnicodeString) if the record is going to be used with Free Pascal!)
+  * Strings (of type UnicodeString)
   * TBytes (for raw binary data)
   * 1-dimensional dynamic arrays (TArray<>) of the types described above,
 
@@ -118,13 +118,21 @@ unit Grijjy.ProtocolBuffers;
   </source>
 
   This is a generic method with a type parameter that must match the type of
-  record you are serializing. You can serialize to a file, stream or TBytes
-  array.
+  record you are serializing.
+
+  Since Delphi is able to infer the generic type from the first parameter, you
+  can also write this a little bit shorter:
+
+  <source>
+  TgoProtocolBuffer.Serialize(MyPerson, 'Person.dat');
+  </source>
+
+  You can serialize to a file, stream or TBytes array.
 
   Deserializing is equally simple:
 
   <source>
-  TgoProtocolBuffer.Deserialize<TPerson>(MyPerson, 'Person.dat');
+  TgoProtocolBuffer.Deserialize(MyPerson, 'Person.dat');
   </source>
 
   Because all fields in a record are optional, some fields may not be in the
@@ -135,7 +143,7 @@ unit Grijjy.ProtocolBuffers;
   You can also provide your own means of initializing the record with default
   values. To do that, you have to add a parameterless Initialize procedure to
   your record. Then, the deserialization process will call that routine after
-  of clearing the record (so it will still clear any fields you don't initialize
+  clearing the record (so it will still clear any fields you don't initialize
   yourself). *)
 
 {$INCLUDE 'Grijjy.inc'}

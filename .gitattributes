@@ -1,7 +1,7 @@
 * text=auto
 
 # Pascal source files should use CRLF line endings to keep the Delphi IDE happy
-*.pas eol=crlf
+#*.pas eol=crlf
 *.dpr eol=crlf
 *.dpk eol=crlf
 
