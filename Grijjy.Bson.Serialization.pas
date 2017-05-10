@@ -2543,7 +2543,7 @@ end;
 class procedure TgoBsonSerializer.SerializeEnum(const AInfo: TInfo;
   const AValue: UInt32; const AWriter: IgoBsonBaseWriter);
 begin
-  if (AInfo.IgnoreIfDefault) and (AValue = 0) then
+  if (AInfo.IgnoreIfDefault) and (AValue = AInfo.DefaultValue.FAsInt32) then
     Exit;
 
   if (AInfo.Name <> '') then
@@ -3921,7 +3921,18 @@ begin
           CheckEnumRepresentation(FRepresentation);
 
         if (AType <> TypeInfo(Boolean)) and FIgnoreIfDefault and FHasDefaultValue then
-          raise EgoBsonSerializerError.Create('Custom default values are not supported for enum types');
+        begin
+          { Enum values can have a default value, but it MUST be of an integer
+            type (the ordinal value). }
+          case FDefaultValue.FRepresentation of
+            TgoBsonRepresentation.Default:
+              FDefaultValue.FRepresentation := TgoBsonRepresentation.Int32;
+
+            TgoBsonRepresentation.Int32, TgoBsonRepresentation.Int64: ;
+          else
+            raise EgoBsonSerializerError.Create('Default value for enums must be of an integer type');
+          end;
+        end;
       end;
 
     tkSet:
@@ -4634,7 +4645,18 @@ begin
           CheckEnumRepresentation(FRepresentation);
 
         if (AType <> TypeInfo(Boolean)) and FIgnoreIfDefault and FHasDefaultValue then
-          raise EgoBsonSerializerError.Create('Custom default values are not supported for enum types');
+        begin
+          { Enum values can have a default value, but it MUST be of an integer
+            type (the ordinal value). }
+          case FDefaultValue.FRepresentation of
+            TgoBsonRepresentation.Default:
+              FDefaultValue.FRepresentation := TgoBsonRepresentation.Int32;
+
+            TgoBsonRepresentation.Int32, TgoBsonRepresentation.Int64: ;
+          else
+            raise EgoBsonSerializerError.Create('Default value for enums must be of an integer type');
+          end;
+        end;
       end;
 
     tkSet:
