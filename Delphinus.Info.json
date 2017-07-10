@@ -1,0 +1,12 @@
+{
+  "id": "{D8BC19AB-3A1A-4D3C-A407-A20C396128E7}",
+  "name": "Grijjy Foundation",
+  "picture": "Grijjy logo.png",
+  "license_type": "Simplified BSD",
+  "license_file": "License.txt",
+  "platforms": "Win32;Win64;OSX32;Android;iOSDevice32;iOSDevice64;Linux64",
+  "package_compiler_min": 31,
+  "package_compiler_max": 32,
+  "compiler_min": 31,
+  "compiler_max": 32
+}
