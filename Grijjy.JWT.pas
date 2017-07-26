@@ -19,7 +19,7 @@ function JavaWebToken(const APrivateKey: TBytes; const AHeader, APayload: String
 implementation
 
 uses
-  Grijjy.OpenSSL.API,
+  Grijjy.OpenSSL,
   Grijjy.BinaryCoding;
 
 function JavaWebToken(const APrivateKey: TBytes; const AHeader, APayload: String; out AJWT: String): Boolean;
