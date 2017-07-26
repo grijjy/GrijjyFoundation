@@ -7,8 +7,8 @@ interface
 
 {$I Grijjy.inc}
 
-{$DEFINE HTTP2}
 //{$DEFINE LOGGING}
+{$DEFINE HTTP2}
 
 uses
   System.Classes,
@@ -17,15 +17,16 @@ uses
   System.SyncObjs,
   System.DateUtils,
   System.Messaging,
+  System.Net.URLClient,
+  System.Net.Socket,
   System.Generics.Collections,
-  Grijjy.Uri,
   {$IFDEF MSWINDOWS}
-  Windows,
   Grijjy.SocketPool.Win,
+  Windows,
   {$ENDIF}
   {$IFDEF LINUX}
-  Posix.Pthread,
   Grijjy.SocketPool.Linux,
+  Posix.Pthread,
   {$ENDIF}
   {$IFDEF HTTP2}
   Nghttp2,
@@ -37,7 +38,7 @@ const
   BUFFER_SIZE = 32768;
 
   { Timeout for operations }
-  TIMEOUT_CONNECT = 5000;
+  TIMEOUT_CONNECT = 20000;
   TIMEOUT_RECV = 5000;
 
   { Strings }
@@ -163,6 +164,7 @@ type
     FConnection: TgoSocketConnection;
     FConnectionLock: TCriticalSection;
     FState: TgoHttpClientState;
+    FConnectTimeout: Integer;
     FRecvTimeout: Integer;
 
     { SSL }
@@ -183,8 +185,8 @@ type
     { Http request }
     FURL: String;
     FMethod: String;
-    FURI: TgoURI;
-    FLastURI: TgoURI;
+    FURI: TURI;
+    FLastURI: TURI;
     FContentLength: Int64;
     FTransferEncoding: String;
     FHttpVersion: String;
@@ -259,7 +261,7 @@ type
     function WaitForRecv: Boolean;
     function DoResponse(var AAgain: Boolean): TBytes;
     function DoRequest(const AMethod, AURL: String;
-      out AResponse: TBytes; const ARecvTimeout: Integer): Boolean;
+      out AResponse: TBytes; const AConnectTimeout, ARecvTimeout: Integer): Boolean;
   protected
     { Socket routines }
     procedure OnSocketConnected;
@@ -274,46 +276,62 @@ type
   public
     { Get method }
     function Get(const AURL: String; out AResponse: TBytes;
+      const AConnectTimeout: Integer = TIMEOUT_CONNECT;
       const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
     function Get(const AURL: String; out AResponse: String;
+      const AConnectTimeout: Integer = TIMEOUT_CONNECT;
       const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
     function Get(const AURL: String;
+      const AConnectTimeout: Integer = TIMEOUT_CONNECT;
       const ARecvTimeout: Integer = TIMEOUT_RECV): String; overload;
 
     { Head method }
     function Head(const AURL: String;
+      const AConnectTimeout: Integer = TIMEOUT_CONNECT;
       const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean;
 
     { Post method }
     function Post(const AURL: String; out AResponse: TBytes;
+      const AConnectTimeout: Integer = TIMEOUT_CONNECT;
       const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
     function Post(const AURL: String; out AResponse: String;
+      const AConnectTimeout: Integer = TIMEOUT_CONNECT;
       const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
     function Post(const AURL: String;
+      const AConnectTimeout: Integer = TIMEOUT_CONNECT;
       const ARecvTimeout: Integer = TIMEOUT_RECV): String; overload;
 
     { Put method }
     function Put(const AURL: String; out AResponse: TBytes;
+      const AConnectTimeout: Integer = TIMEOUT_CONNECT;
       const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
     function Put(const AURL: String; out AResponse: String;
+      const AConnectTimeout: Integer = TIMEOUT_CONNECT;
       const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
     function Put(const AURL: String;
+      const AConnectTimeout: Integer = TIMEOUT_CONNECT;
       const ARecvTimeout: Integer = TIMEOUT_RECV): String; overload;
 
     { Delete method }
     function Delete(const AURL: String; out AResponse: TBytes;
+      const AConnectTimeout: Integer = TIMEOUT_CONNECT;
       const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
     function Delete(const AURL: String; out AResponse: String;
+      const AConnectTimeout: Integer = TIMEOUT_CONNECT;
       const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
     function Delete(const AURL: String;
+      const AConnectTimeout: Integer = TIMEOUT_CONNECT;
       const ARecvTimeout: Integer = TIMEOUT_RECV): String; overload;
 
     { Options method }
     function Options(const AURL: String; out AResponse: TBytes;
+      const AConnectTimeout: Integer = TIMEOUT_CONNECT;
       const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
     function Options(const AURL: String; out AResponse: String;
+      const AConnectTimeout: Integer = TIMEOUT_CONNECT;
       const ARecvTimeout: Integer = TIMEOUT_RECV): Boolean; overload;
     function Options(const AURL: String;
+      const AConnectTimeout: Integer = TIMEOUT_CONNECT;
       const ARecvTimeout: Integer = TIMEOUT_RECV): String; overload;
 
     { Close connection }
@@ -676,7 +694,7 @@ end;
 {$IFDEF LOGGING}
 procedure TThreadSafeBuffer.Log(const AText: String);
 begin
-  grLog(Format('RecvBuffer %s (Size=%d)', [AText, FSize]), @FBuffer[0], FSize);
+  //grLog(Format('RecvBuffer %s (Size=%d)', [AText, FSize]), @FBuffer[0], FSize);
 end;
 {$ENDIF}
 
@@ -993,7 +1011,7 @@ var
   Index: Integer;
 begin
   {$IFDEF LOGGING}
-  grLog('on_header_callback');
+  //grLog('on_header_callback');
   {$ENDIF}
   if frame.hd.&type = _NGHTTP2_HEADERS then
     if (frame.headers.cat = NGHTTP2_HCAT_RESPONSE) then
@@ -1002,7 +1020,7 @@ begin
       AValue := TEncoding.ASCII.GetString(BytesOf(value, valuelen));
       FResponseHeaders.AddOrSet(AName, AValue);
       {$IFDEF LOGGING}
-      grLog(AName, AValue);
+      //grLog(AName, AValue);
       {$ENDIF}
 
       { response status code }
@@ -1031,14 +1049,14 @@ function TgoHttpClient.nghttp2_on_frame_recv_callback(session: pnghttp2_session;
   const frame: pnghttp2_frame; user_data: Pointer): Integer;
 begin
   {$IFDEF LOGGING}
-  grLog('on_frame_recv_callback');
+  //grLog('on_frame_recv_callback');
   {$ENDIF}
   if frame.hd.&type = _NGHTTP2_HEADERS then
     if (frame.headers.cat = NGHTTP2_HCAT_RESPONSE) then
     begin
       // all headers received
       {$IFDEF LOGGING}
-      grLog('All headers received');
+      //grLog('All headers received');
       {$ENDIF}
       FResponseHeader2 := True;
     end;
@@ -1052,7 +1070,7 @@ begin
   if stream_id = FStreamId2 then
   begin
     {$IFDEF LOGGING}
-    grLog('on_data_chunk_recv_callback ' + stream_id.ToString, data, len);
+    //grLog('on_data_chunk_recv_callback ' + stream_id.ToString, data, len);
     {$ENDIF}
     // response chunk
     FRecvBuffer2.Write(data, len);
@@ -1066,7 +1084,7 @@ begin
   if stream_id = FStreamId2 then
   begin
     {$IFDEF LOGGING}
-    grLog('on_stream_close_callback ' + stream_id.ToString);
+    //grLog('on_stream_close_callback ' + stream_id.ToString);
     {$ENDIF}
     FResponseContent2 := True;
   end;
@@ -1160,7 +1178,7 @@ var
   Index: Integer;
 begin
   { parse the URL into a URI }
-  FURI := TgoURI.Create(FURL);
+  FURI := TURI.Create(FURL);
 
   { http or https }
   if (FURI.Port = 0) then
@@ -1213,7 +1231,7 @@ begin
     { add header status line }
     Path := FURI.Path;
     if Length(FURI.Params) > 0 then
-      Path := Path + '?' + FURI.Params;
+      Path := Path + '?' + FURI.Query;
     FRequestStatusLine := FMethod.ToUpper + ' ' + Path + ' ' + 'HTTP/' + FHttpVersion;
 
     { add host }
@@ -1236,7 +1254,9 @@ begin
       FInternalHeaders.AddOrSet('Content-Length', Length(FRequestBody).ToString)
     else
     if (FRequestData <> nil) then
-      FInternalHeaders.AddOrSet('Content-Length', Length(FRequestData).ToString);
+      FInternalHeaders.AddOrSet('Content-Length', Length(FRequestData).ToString)
+    else
+      FInternalHeaders.AddOrSet('Content-Length', '0');
 
     { add authorization }
     if (_Username <> '') then
@@ -1277,7 +1297,7 @@ var
   {$ENDIF}
 begin
   {$IFDEF LOGGING}
-  grLog('SendRequest Thread', GetCurrentThreadId);
+  //grLog('SendRequest Thread', GetCurrentThreadId);
   {$ENDIF}
   Result := False;
 //  FConnectionLock.Enter;
@@ -1315,7 +1335,7 @@ begin
           FInternalHeaders.AsString +
           FRequestHeaders.AsString + CRLF;
         {$IFDEF LOGGING}
-        grLog('RequestHeader', TEncoding.ASCII.GetBytes(Headers));
+        //grLog('RequestHeader', TEncoding.ASCII.GetBytes(Headers));
         {$ENDIF}
         if (FRequestBody <> '') then
           Result := FConnection.Send(TEncoding.ASCII.GetBytes(Headers) + TEncoding.Utf8.GetBytes(FRequestBody))
@@ -1331,7 +1351,7 @@ end;
 function TgoHttpClient.WaitForRecv: Boolean;
 begin
   {$IFDEF LOGGING}
-  grLog('WaitForRecv Thread', GetCurrentThreadId);
+  //grLog('WaitForRecv Thread', GetCurrentThreadId);
   {$ENDIF}
   Result := False;
   FLastRecv := Now;
@@ -1342,7 +1362,7 @@ begin
       Break;
     end;
   {$IFDEF LOGGING}
-  grLog('WaitForRecv ', Result);
+  //grLog('WaitForRecv ', Result);
   {$ENDIF}
 end;
 
@@ -1394,12 +1414,15 @@ begin
 end;
 
 function TgoHttpClient.DoRequest(const AMethod, AURL: String;
-  out AResponse: TBytes; const ARecvTimeout: Integer): Boolean;
+  out AResponse: TBytes; const AConnectTimeout, ARecvTimeout: Integer): Boolean;
 var
   Again: Boolean;
 
   function Connect: Boolean;
   begin
+    {$IFDEF LOGGING}
+    //grLog('ConnectToUrl', AUrl);
+    {$ENDIF}
     FConnectionLock.Enter;
     try
       if (FConnection <> nil) and
@@ -1432,8 +1455,16 @@ var
       end;
       Result := FConnection.State = TgoConnectionState.Connected;
       if not Result then
+      begin
+        {$IFDEF LOGGING}
+        //grLog('Connecting');
+        {$ENDIF}
         if FConnection.Connect then
-          Result := FConnected.WaitFor(TIMEOUT_CONNECT) <> wrTimeout;
+          Result := FConnected.WaitFor(FConnectTimeout) <> wrTimeout;
+        {$IFDEF LOGGING}
+        //grLog('Connected', Result);
+        {$ENDIF}
+      end;
     finally
       FConnectionLock.Leave;
     end;
@@ -1444,6 +1475,7 @@ begin
   Result := False;
   FURL := AURL;
   FMethod := AMethod;
+  FConnectTimeout := AConnectTimeout;
   FRecvTimeout := ARecvTimeout;
   repeat
     AResponse := nil;
@@ -1476,14 +1508,14 @@ begin
       FState := TgoHttpClientState.Error;
   until not Again;
   {$IFDEF LOGGING}
-  grLog('ResponseLength', Length(AResponse));
+  //grLog('ResponseLength', Length(AResponse));
   {$ENDIF}
 end;
 
 procedure TgoHttpClient.OnSocketConnected;
 begin
   {$IFDEF LOGGING}
-  grLog('OnSocketConnected');
+  //grLog('OnSocketConnected');
   {$ENDIF}
   FConnected.SetEvent;
 end;
@@ -1491,7 +1523,7 @@ end;
 procedure TgoHttpClient.OnSocketDisconnected;
 begin
   {$IFDEF LOGGING}
-  grLog('OnSocketDisconnected');
+  //grLog('OnSocketDisconnected');
   {$ENDIF}
 end;
 
@@ -1510,7 +1542,7 @@ var
   CreateResponse: Boolean;
 begin
   {$IFDEF LOGGING}
-  grLog(Format('DoRecv (Size=%d)', [ASize]), ABuffer, ASize);
+  //grLog(Format('DoRecv (Size=%d)', [ASize]), ABuffer, ASize);
   {$ENDIF}
 
   FResponseBytes := FResponseBytes + ASize;
@@ -1593,7 +1625,7 @@ begin
     end;
   end;
   {$IFDEF LOGGING}
-  grLog('ResponseHeader', Result);
+  //grLog('ResponseHeader', Result);
   {$ENDIF}
 end;
 
@@ -1673,7 +1705,7 @@ begin
     end;
   end;
   {$IFDEF LOGGING}
-//  grLog('ResponseContent', Result);
+  //grLog('ResponseContent', Result);
   {$ENDIF}
 end;
 
@@ -1686,7 +1718,7 @@ var
   ResponseMessage: TgoHttpResponseMessage;
 begin
   {$IFDEF LOGGING}
-//  grLog(Format('OnSocketRecv (ThreadId=%d, Size=%d)', [GetCurrentThreadId, ASize]), ABuffer, ASize);
+  //grLog(Format('OnSocketRecv (ThreadId=%d, Size=%d)', [GetCurrentThreadId, ASize]), ABuffer, ASize);
   {$ENDIF}
   FLastRecv := Now;
   FRecvBuffer.Write(ABuffer, ASize);
@@ -1731,17 +1763,17 @@ begin
 end;
 
 function TgoHttpClient.Get(const AURL: String; out AResponse: TBytes;
-  const ARecvTimeout: Integer): Boolean;
+  const AConnectTimeout, ARecvTimeout: Integer): Boolean;
 begin
-  Result := DoRequest('GET', AURL, AResponse, ARecvTimeout);
+  Result := DoRequest('GET', AURL, AResponse, AConnectTimeout, ARecvTimeout);
 end;
 
 function TgoHttpClient.Get(const AURL: String; out AResponse: String;
-  const ARecvTimeout: Integer): Boolean;
+  const AConnectTimeout, ARecvTimeout: Integer): Boolean;
 var
   Response: TBytes;
 begin
-  if Get(AURL, Response, ARecvTimeout) then
+  if Get(AURL, Response, AConnectTimeout, ARecvTimeout) then
   begin
     AResponse := BytesToString(Response, FResponseContentCharset);
     Result := True;
@@ -1750,33 +1782,33 @@ begin
     Result := False;
 end;
 
-function TgoHttpClient.Get(const AURL: String; const ARecvTimeout: Integer): String;
+function TgoHttpClient.Get(const AURL: String; const AConnectTimeout, ARecvTimeout: Integer): String;
 var
   Response: TBytes;
 begin
-  if Get(AURL, Response, ARecvTimeout) then
+  if Get(AURL, Response, AConnectTimeout, ARecvTimeout) then
     Result := BytesToString(Response, FResponseContentCharset);
 end;
 
-function TgoHttpClient.Head(const AURL: String; const ARecvTimeout: Integer): Boolean;
+function TgoHttpClient.Head(const AURL: String; const AConnectTimeout, ARecvTimeout: Integer): Boolean;
 var
   AResponse: TBytes;
 begin
-  Result := DoRequest('HEAD', AURL, AResponse, ARecvTimeout);
+  Result := DoRequest('HEAD', AURL, AResponse, AConnectTimeout, ARecvTimeout);
 end;
 
 function TgoHttpClient.Post(const AURL: String; out AResponse: TBytes;
-  const ARecvTimeout: Integer): Boolean;
+  const AConnectTimeout, ARecvTimeout: Integer): Boolean;
 begin
-  Result := DoRequest('POST', AURL, AResponse, ARecvTimeout);
+  Result := DoRequest('POST', AURL, AResponse, AConnectTimeout, ARecvTimeout);
 end;
 
 function TgoHttpClient.Post(const AURL: String; out AResponse: String;
-  const ARecvTimeout: Integer): Boolean;
+  const AConnectTimeout, ARecvTimeout: Integer): Boolean;
 var
   Response: TBytes;
 begin
-  if Post(AURL, Response, ARecvTimeout) then
+  if Post(AURL, Response, AConnectTimeout, ARecvTimeout) then
   begin
     AResponse := BytesToString(Response, FResponseContentCharset);
     Result := True;
@@ -1785,26 +1817,26 @@ begin
     Result := False;
 end;
 
-function TgoHttpClient.Post(const AURL: String; const ARecvTimeout: Integer): String;
+function TgoHttpClient.Post(const AURL: String; const AConnectTimeout, ARecvTimeout: Integer): String;
 var
   Response: TBytes;
 begin
-  if Post(AURL, Response, ARecvTimeout) then
+  if Post(AURL, Response, AConnectTimeout, ARecvTimeout) then
     Result := BytesToString(Response, FResponseContentCharset);
 end;
 
 function TgoHttpClient.Put(const AURL: String; out AResponse: TBytes;
-  const ARecvTimeout: Integer): Boolean;
+  const AConnectTimeout, ARecvTimeout: Integer): Boolean;
 begin
-  Result := DoRequest('PUT', AURL, AResponse, ARecvTimeout);
+  Result := DoRequest('PUT', AURL, AResponse, AConnectTimeout, ARecvTimeout);
 end;
 
 function TgoHttpClient.Put(const AURL: String; out AResponse: String;
-  const ARecvTimeout: Integer): Boolean;
+  const AConnectTimeout, ARecvTimeout: Integer): Boolean;
 var
   Response: TBytes;
 begin
-  if Put(AURL, Response, ARecvTimeout) then
+  if Put(AURL, Response, AConnectTimeout, ARecvTimeout) then
   begin
     AResponse := BytesToString(Response, FResponseContentCharset);
     Result := True;
@@ -1813,26 +1845,26 @@ begin
     Result := False;
 end;
 
-function TgoHttpClient.Put(const AURL: String; const ARecvTimeout: Integer): String;
+function TgoHttpClient.Put(const AURL: String; const AConnectTimeout, ARecvTimeout: Integer): String;
 var
   Response: TBytes;
 begin
-  if Put(AURL, Response, ARecvTimeout) then
+  if Put(AURL, Response, AConnectTimeout, ARecvTimeout) then
     Result := BytesToString(Response, FResponseContentCharset);
 end;
 
 function TgoHttpClient.Delete(const AURL: String; out AResponse: TBytes;
-  const ARecvTimeout: Integer): Boolean;
+  const AConnectTimeout, ARecvTimeout: Integer): Boolean;
 begin
-  Result := DoRequest('DELETE', AURL, AResponse, ARecvTimeout);
+  Result := DoRequest('DELETE', AURL, AResponse, AConnectTimeout, ARecvTimeout);
 end;
 
 function TgoHttpClient.Delete(const AURL: String; out AResponse: String;
-  const ARecvTimeout: Integer): Boolean;
+  const AConnectTimeout, ARecvTimeout: Integer): Boolean;
 var
   Response: TBytes;
 begin
-  if Delete(AURL, Response, ARecvTimeout) then
+  if Delete(AURL, Response, AConnectTimeout, ARecvTimeout) then
   begin
     AResponse := BytesToString(Response, FResponseContentCharset);
     Result := True;
@@ -1841,26 +1873,26 @@ begin
     Result := False;
 end;
 
-function TgoHttpClient.Delete(const AURL: String; const ARecvTimeout: Integer): String;
+function TgoHttpClient.Delete(const AURL: String; const AConnectTimeout, ARecvTimeout: Integer): String;
 var
   Response: TBytes;
 begin
-  if Delete(AURL, Response, ARecvTimeout) then
+  if Delete(AURL, Response, AConnectTimeout, ARecvTimeout) then
     Result := BytesToString(Response, FResponseContentCharset);
 end;
 
 function TgoHttpClient.Options(const AURL: String; out AResponse: TBytes;
-  const ARecvTimeout: Integer): Boolean;
+  const AConnectTimeout, ARecvTimeout: Integer): Boolean;
 begin
-  Result := DoRequest('OPTIONS', AURL, AResponse, ARecvTimeout);
+  Result := DoRequest('OPTIONS', AURL, AResponse, AConnectTimeout, ARecvTimeout);
 end;
 
 function TgoHttpClient.Options(const AURL: String; out AResponse: String;
-  const ARecvTimeout: Integer): Boolean;
+  const AConnectTimeout, ARecvTimeout: Integer): Boolean;
 var
   Response: TBytes;
 begin
-  if Options(AURL, Response, ARecvTimeout) then
+  if Options(AURL, Response, AConnectTimeout, ARecvTimeout) then
   begin
     AResponse := BytesToString(Response, FResponseContentCharset);
     Result := True;
@@ -1869,11 +1901,11 @@ begin
     Result := False;
 end;
 
-function TgoHttpClient.Options(const AURL: String; const ARecvTimeout: Integer): String;
+function TgoHttpClient.Options(const AURL: String; const AConnectTimeout, ARecvTimeout: Integer): String;
 var
   Response: TBytes;
 begin
-  if Options(AURL, Response, ARecvTimeout) then
+  if Options(AURL, Response, AConnectTimeout, ARecvTimeout) then
     Result := BytesToString(Response, FResponseContentCharset);
 end;
 

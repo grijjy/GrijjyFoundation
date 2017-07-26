@@ -14,7 +14,6 @@ uses
   Classes,
   SysUtils,
   Grijjy.Http,
-  Grijjy.Http2,
   Grijjy.SocketPool.Win,
   Grijjy.Bson;
 
@@ -23,7 +22,7 @@ type
   TgoRemotePushSender = class(TObject)
   protected
     FHttp: TgoHTTPClient;
-    FHttp2: TgoHTTP2Client;
+    FHttp2: TgoHTTPClient;
   private
     { Android }
     FAndroidAPIKey: String;
@@ -137,13 +136,13 @@ function TgoRemotePushSender.APNs_Send(const AJSON: String; const ADeviceToken: 
 begin
   if FHttp2 = nil then
   begin
-    FHttp2 := TgoHTTP2Client.Create;
+    FHttp2 := TgoHTTPClient.Create(True);
     FHttp2.Certificate := FAPNSCertificate;
     FHttp2.PrivateKey := FAPNSKey;
-    FHttp2.RequestHeaders.Add('apns-topic', FAPNSTopic);
-//    FHttp2.RequestHeaders.Add('apns-id', '<guid>');
-//    FHttp2.RequestHeaders.Add('apns-expiration', '0');
-//    FHttp2.RequestHeaders.Add('apns-priority', '10');
+    FHttp2.RequestHeaders.AddOrSet('apns-topic', FAPNSTopic);
+//    FHttp2.RequestHeaders.AddOrSet('apns-id', '<guid>');
+//    FHttp2.RequestHeaders.AddOrSet('apns-expiration', '0');
+//    FHttp2.RequestHeaders.AddOrSet('apns-priority', '10');
   end;
   FHttp2.RequestBody := AJSON;
   AResponse := FHttp2.Post('https://api.push.apple.com/3/device/' + ADeviceToken);

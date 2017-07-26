@@ -1319,9 +1319,9 @@ end;
 procedure TgoClientSocketManager.FreeConnections;
 var
   Connection: TgoSocketConnection;
-  ConnectionsToFree: TList<Pointer>;
+  ConnectionsToFree: TList<TgoSocketConnection>;
 begin
-  ConnectionsToFree := TList<Pointer>.Create;
+  ConnectionsToFree := TList<TgoSocketConnection>.Create;
   try
     ConnectionsLock.Enter;
     try
