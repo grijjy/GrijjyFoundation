@@ -138,6 +138,9 @@ function goGetMachineName: String;
 { Returns the ID of the current process. }
 function goGetCurrentProcessId: UInt32;
 
+{ Retrieves the number of bytes currently allocated by the process. }
+function goGetAllocatedMemory: Int64;
+
 { Converts a byte array to a hex string.
 
   Parameters:
@@ -301,6 +304,10 @@ function goMurmurHash2(const AData; ALen: Integer): Integer;
     EArgumentOutOfRangeException (AIndex + ALength) is out of range. }
 procedure goReverseBytes(const ABytes: TBytes; const AIndex, ALength: Integer);
 
+{ Converts a number of bytes to a string, using KB, MB, GB, TB suffixes as
+  appropriate }
+function goByteCountToString(const AByteCount: Int64): String;
+
 var
   { Format settings that always use a period ('.') as a decimal separator }
   goUSFormatSettings: TFormatSettings;
@@ -308,9 +315,14 @@ var
 implementation
 
 uses
-  {$IFDEF MSWINDOWS}
+  {$IF Defined(MSWINDOWS)}
   Winapi.Windows,
-  {$ELSE}
+  Winapi.PSApi,
+  {$ELSEIF Defined(IOS)}
+  Macapi.Mach,
+  {$ENDIF}
+  {$IF Defined(POSIX)}
+  Posix.Base,
   Posix.UniStd,
   {$ENDIF}
   System.Math,
@@ -350,6 +362,120 @@ end;
 function goGetCurrentProcessId: UInt32;
 begin
   Result := getpid;
+end;
+{$ENDIF}
+
+{$IF Defined(MSWINDOWS)}
+function goGetAllocatedMemory: Int64;
+var
+  Counters: TProcessMemoryCounters;
+begin
+  {$HINTS OFF}
+  if (GetProcessMemoryInfo(GetCurrentProcess, @Counters, SizeOf(Counters))) then
+    Result := Counters.WorkingSetSize
+  else
+    Result := 0;
+  {$HINTS ON}
+end;
+{$ELSEIF Defined(IOS)}
+type
+  time_value_t = record
+    Seconds: Integer;
+    MicroSeconds: Integer;
+  end;
+
+type
+  policy_t = Integer;
+  task_flavor_t = natural_t;
+
+type
+  TTaskBasicInfo32 = record
+    SuspendCount: Integer;
+    VirtualSize: natural_t;
+    ResidentSize: natural_t;
+    UserTime: time_value_t;
+    SystemTime: time_value_t;
+    Policy: policy_t;
+  end;
+
+const
+  TASK_BASIC_INFO_32 = 4;
+  TASK_BASIC_INFO_32_COUNT = SizeOf(TTaskBasicInfo32) div SizeOf(natural_t);
+
+function task_info(task: mach_port_t; flavor: task_flavor_t; info: Pointer;
+  var count: mach_msg_type_number_t): kern_return_t; cdecl;
+  external libc name _PU + 'task_info';
+
+type
+  TVMStatistics = record
+    FreeCount: natural_t;
+    ActiveCount: natural_t;
+    InactiveCount: natural_t;
+    WireCount: natural_t;
+    ZeroFillCount: natural_t;
+    Reactivations: natural_t;
+    Pageins: natural_t;
+    Pageouts: natural_t;
+    Faults: natural_t;
+    CowFaults: natural_t;
+    Lookups: natural_t;
+    Hits: natural_t;
+    PurgeableCount: natural_t;
+    Purges: natural_t;
+    SpeculativeCount: natural_t;
+  end;
+
+const
+  HOST_VM_INFO = 2;
+
+function host_statistics(host_priv: host_t; flavor: host_flavor_t;
+  host_info_out: host_info_t;
+  var host_info_outCnt: mach_msg_type_number_t): kern_return_t; cdecl;
+  external libc name _PU + 'host_statistics';
+
+function goGetAllocatedMemory: Int64;
+var
+  Err: kern_return_t;
+  Count: mach_msg_type_number_t;
+  Info: TTaskBasicInfo32;
+begin
+  Count := TASK_BASIC_INFO_32_COUNT;
+  Err := task_info(mach_task_self, TASK_BASIC_INFO_32, @Info, Count);
+  if (Err = KERN_SUCCESS) then
+    Result := Info.ResidentSize
+  else
+    Result := 0;
+end;
+{$ELSEIF Defined(ANDROID)}
+type
+  TMallinfo = record
+    arena: Integer;
+    ordblks: Integer;
+    smblks: Integer;
+    hblks: Integer;
+    hblkhd: Integer;
+    usmblks: Integer;
+    fsmblks: Integer;
+    uordblks: Integer;
+    fordblks: Integer;
+    keepcost: Integer;
+  end;
+
+function mallinfo: TMallinfo; cdecl;
+  external libc name _PU + 'mallinfo';
+
+function goGetAllocatedMemory: Int64;
+var
+  Info: TMallinfo;
+begin
+  Info := mallinfo;
+  Result := Info.uordblks;
+end;
+{$ELSE}
+function goGetAllocatedMemory: Int64;
+begin
+  { TODO : Implement for this OS }
+  Result := 0;
 end;
 {$ENDIF}
 
@@ -862,6 +988,28 @@ begin
     Inc(B);
     Dec(E);
   end;
+end;
+
+function goByteCountToString(const AByteCount: Int64): String;
+const
+  KB = 1024;
+  MB = KB * KB;
+  GB = Int64(MB) * KB;
+  TB = Int64(GB) * KB;
+var
+  AbsCount: Int64;
+begin
+  AbsCount := Abs(AByteCount);
+  if (AbsCount < (2 * KB)) then
+    Result := Format('%d bytes', [AByteCount], goUSFormatSettings)
+  else if (AbsCount < (2 * MB)) then
+    Result := Format('%.3f KB', [AByteCount / KB], goUSFormatSettings)
+  else if (AbsCount < (2 * GB)) then
+    Result := Format('%.3f MB', [AByteCount / MB], goUSFormatSettings)
+  else if (AbsCount < (2 * TB)) then
+    Result := Format('%.3f GB', [AByteCount / GB], goUSFormatSettings)
+  else
+    Result := Format('%.3f TB', [AByteCount / TB], goUSFormatSettings);
 end;
 
 { TgoByteBuffer }
