@@ -1843,7 +1843,7 @@ uses
   System.Character,
   System.RTLConsts,
   System.DateUtils,
-  {$IF Defined(IOS)}
+  {$IF Defined(MACOS)}
   Macapi.CoreFoundation,
   {$ENDIF}
   Grijjy.SysUtils,

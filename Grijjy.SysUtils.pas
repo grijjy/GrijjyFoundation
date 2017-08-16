@@ -318,7 +318,7 @@ uses
   {$IF Defined(MSWINDOWS)}
   Winapi.Windows,
   Winapi.PSApi,
-  {$ELSEIF Defined(IOS)}
+  {$ELSEIF Defined(MACOS)}
   Macapi.Mach,
   {$ENDIF}
   {$IF Defined(POSIX)}
@@ -377,7 +377,7 @@ begin
     Result := 0;
   {$HINTS ON}
 end;
-{$ELSEIF Defined(IOS)}
+{$ELSEIF Defined(MACOS)}
 type
   time_value_t = record
     Seconds: Integer;
