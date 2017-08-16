@@ -4,9 +4,6 @@ unit Grijjy.Hash;
 
 interface
 
-uses
-  Grijjy.System;
-
 type
   { Incremental Murmur-2 hash.
       See https://sites.google.com/site/murmurhash/
