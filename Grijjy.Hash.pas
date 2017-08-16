@@ -8,8 +8,7 @@ type
   { Incremental Murmur-2 hash.
       See https://sites.google.com/site/murmurhash/
     Uses the CMurmurHash2A variant, which can be used incrementally.
-    The results are *not* the same as for grMurmurHash2 in
-    Grijjy.System.Generics.Collections }
+    The results are *not* the same as for goMurmurHash2 in Grijjy.SysUtils }
   TgoHashMurmur2 = record
   {$REGION 'Internal Declarations'}
   private const

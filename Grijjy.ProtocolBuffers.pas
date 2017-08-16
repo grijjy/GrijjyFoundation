@@ -835,7 +835,6 @@ begin
     end;
     Fields := RecordType.GetDeclaredFields;
     SetLength(FieldInfos, FieldCount);
-    Count := 0;
     for Field in Fields do
     begin
       if (OffsetToTag.TryGetValue(Field.Offset, Tag)) then

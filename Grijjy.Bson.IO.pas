@@ -6447,7 +6447,6 @@ begin
   ABuffer.ClearErrorPos;
   Current := ABuffer.Current;
   Start := Current - 1;
-  C := 0;
 
   { NumberLiteral: ['-'] DecimalLiteral }
   if (AChar = '-') then
