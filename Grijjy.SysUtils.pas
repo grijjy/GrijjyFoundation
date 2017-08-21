@@ -325,6 +325,9 @@ uses
   Posix.Base,
   Posix.UniStd,
   {$ENDIF}
+  {$IF Defined(LINUX)}
+  Posix.SysTime,
+  {$ENDIF}
   System.Math,
   System.RTLConsts;
 
@@ -470,6 +473,42 @@ var
 begin
   Info := mallinfo;
   Result := Info.uordblks;
+end;
+{$ELSEIF Defined(LINUX)}
+const
+  RUSAGE_SELF = 1;
+
+type
+  Trusage = record
+    ru_utime: timeval;
+    ru_stime: timeval;
+    ru_maxrss: Int64;        // maximum resident set size
+    ru_ixrss: Int64;         // integral shared memory size
+    ru_idrss: Int64;         // integral unshared data size
+    ru_isrss: Int64;         // integral unshared stack size
+    ru_minflt: Int64;        // page reclaims (soft page faults)
+    ru_majflt: Int64;        // page faults (hard page faults)
+    ru_nswap: Int64;         // swaps
+    ru_inblock: Int64;       // block input operations
+    ru_oublock: Int64;       // block output operations
+    ru_msgsnd: Int64;        // IPC messages sent
+    ru_msgrcv: Int64;        // IPC messages received
+    ru_nsignals: Int64;      // signals received
+    ru_nvcsw: Int64;         // voluntary context switches
+    ru_nivcsw: Int64;        // involuntary context switches
+  end;
+
+function getrusage(who: Integer; out rusage: Trusage): Integer; cdecl;
+  external libc name _PU + 'getrusage';
+
+function goGetAllocatedMemory: Int64;
+var
+  Rusage: Trusage;
+begin
+  if getrusage(RUSAGE_SELF, Rusage) = 0 then
+    Result := Rusage.ru_maxrss * 1024
+  else
+    Result := 0;
 end;
 {$ELSE}
 function goGetAllocatedMemory: Int64;
