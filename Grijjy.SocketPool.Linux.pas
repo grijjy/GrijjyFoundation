@@ -1079,8 +1079,8 @@ begin
   try
     {$IFDEF GRIJJYLOGGING}
     _Log.Send(Format('Add connection (Socket=%d, Connection=%d, ThreadId=%d)', [AConnection.Socket, Cardinal(AConnection), GetCurrentThreadId]));
-    Connections.Add(AConnection);
     {$ENDIF}
+    Connections.Add(AConnection);
   finally
     ConnectionsLock.Leave;
   end;
