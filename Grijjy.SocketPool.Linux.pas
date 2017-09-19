@@ -587,6 +587,9 @@ begin
   { add descriptor to the EPoll set }
   Event.data.ptr := Self;
 
+  { increment reference count to prevent automatic releasing of the object }
+  __ObjAddRef;
+
   { we use EPOLLOUT as an initial signal for connected }
   Event.events := EPOLLIN or EPOLLOUT or EPOLLET or EPOLLONESHOT or EPOLLRDHUP;
   if epoll_ctl(FOwner.Handle, EPOLL_CTL_ADD, FSocket, @Event) = -1 then
@@ -924,6 +927,9 @@ begin
       if not Connection.Closed then
         Posix.Unistd.__close(Connection.Socket);
       Connection.DisposeOf;
+
+      { decrement reference count }
+      Connection.__ObjRelease;
     end;
     Connections.DisposeOf;
   finally
@@ -1008,6 +1014,9 @@ begin
       _Log.Send(Format('Freeing connection (Socket=%d, Connection=%d, ThreadId=%d)', [Connection.Socket, Cardinal(Connection), GetCurrentThreadId]));
       {$ENDIF}
       Connection.DisposeOf;
+
+      { decrement reference count }
+      Connection.__ObjRelease;
     end;
   finally
     ConnectionsToFree.Free;
