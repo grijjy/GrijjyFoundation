@@ -2,6 +2,8 @@ unit Grijjy.Hash;
 
 {$INCLUDE 'Grijjy.inc'}
 
+{$OVERFLOWCHECKS OFF} // required since overflow checks will fail (code works ok w/o checking on)
+
 interface
 
 type
