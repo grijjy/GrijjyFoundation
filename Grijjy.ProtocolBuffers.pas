@@ -1812,7 +1812,7 @@ procedure TgoProtocolBuffer.TWriter.WriteVarInt(const AValue: Integer);
 var
   ZigZag: Cardinal;
 begin
-  ZigZag := AValue shl 1;
+  ZigZag := Cardinal(AValue) shl 1;
   if (AValue < 0) then
     ZigZag := ZigZag xor $FFFFFFFF;
   WriteVarUInt(ZigZag);
@@ -1822,7 +1822,7 @@ procedure TgoProtocolBuffer.TWriter.WriteVarInt64(const AValue: Int64);
 var
   ZigZag: UInt64;
 begin
-  ZigZag := AValue shl 1;
+  ZigZag := UInt64(AValue) shl 1;
   if (AValue < 0) then
     ZigZag := ZigZag xor UInt64($FFFFFFFFFFFFFFFF);
   WriteVarUInt64(ZigZag);

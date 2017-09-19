@@ -972,9 +972,6 @@ end;
 constructor TSocketPoolWorker.Create(const AOwner: TgoClientSocketManager);
 begin
   inherited Create;
-  {$IFDEF DEBUG}
-  NameThreadForDebugging('TSocketPoolWorker');
-  {$ENDIF}
   FOwner := AOwner;
 end;
 
@@ -992,6 +989,9 @@ var
   ReadBuffer: Pointer;
   Error: Integer;
 begin
+  {$IFDEF DEBUG}
+  NameThreadForDebugging('TSocketPoolWorker');
+  {$ENDIF}
   while True do
   begin
     ReturnValue := GetQueuedCompletionStatus(FOwner.FHandle, BytesTransferred,
@@ -1202,9 +1202,6 @@ var
   Workers: Integer;
 begin
   inherited Create;
-  {$IFDEF DEBUG}
-  NameThreadForDebugging('TgoClientSocketManager');
-  {$ENDIF}
   FOptimization := AOptimization;
   FBehavior := ABehavior;
 
@@ -1381,6 +1378,9 @@ procedure TgoClientSocketManager.Execute;
 var
   LastCleanup: TDateTime;
 begin
+  {$IFDEF DEBUG}
+  NameThreadForDebugging('TgoClientSocketManager');
+  {$ENDIF}
   LastCleanup := Now;
   while not Terminated do
   begin

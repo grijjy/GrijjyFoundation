@@ -3442,7 +3442,8 @@ end;
 
 procedure TgoJsonWriter.TOutput.Append(const AValue: String);
 begin
-  Append(AValue[Low(String)], Length(AValue) * SizeOf(Char));
+  if (AValue <> '') then
+    Append(AValue[Low(String)], Length(AValue) * SizeOf(Char));
 end;
 
 procedure TgoJsonWriter.TOutput.Append(const AValue: Integer);
