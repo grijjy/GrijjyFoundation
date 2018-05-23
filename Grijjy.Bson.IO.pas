@@ -7361,6 +7361,7 @@ procedure TgoBsonDocumentReader.TContext.Initialize(
 begin
   FContextType := AContextType;
   FDocument := ADocument;
+  FIndex := 0;
 end;
 
 procedure TgoBsonDocumentReader.TContext.Initialize(
@@ -7368,6 +7369,7 @@ procedure TgoBsonDocumentReader.TContext.Initialize(
 begin
   FContextType := AContextType;
   FArray := AArray;
+  FIndex := 0;
 end;
 
 function TgoBsonDocumentReader.TContext.TryGetNextElement(
