@@ -2321,7 +2321,8 @@ begin
 
   FOutput.WriteInt32(Length(Bytes));
   FOutput.WriteBinarySubType(SubType);
-  FOutput.Write(Bytes[0], Length(Bytes));
+  if Assigned(Bytes) then
+    FOutput.Write(Bytes[0], Length(Bytes));
   State := GetNextState;
 end;
 
@@ -4589,7 +4590,8 @@ function TgoBsonReader.TInput.ReadBytes(const ASize: Integer): TBytes;
 begin
   Assert(ASize >= 0);
   SetLength(Result, ASize);
-  Read(Result[0], ASize);
+  if (Result <> nil) then
+    Read(Result[0], ASize);
 end;
 
 function TgoBsonReader.TInput.ReadCString: String;
@@ -6422,6 +6424,10 @@ begin
   AToken.Initialize(TTokenType.LeftParen, @LEXEME_LEFT_PAREN, 1);
 end;
 
+{$IFOPT Q+}
+  {$DEFINE HAS_OVERFLOWCHECKS}
+  {$OVERFLOWCHECKS OFF}
+{$ENDIF}
 class procedure TgoJsonReader.TScanner.CharNumberToken(var ABuffer: TBuffer;
   const AChar: Char; const AToken: TToken);
 { Lexical grammar:
@@ -6613,6 +6619,9 @@ begin
   else
     raise ABuffer.ParseError(@RS_BSON_INVALID_NUMBER);
 end;
+{$IFDEF HAS_OVERFLOWCHECKS}
+  {$OVERFLOWCHECKS ON}
+{$ENDIF}
 
 class procedure TgoJsonReader.TScanner.CharRegularExpressionToken(
   var ABuffer: TBuffer; const AChar: Char; const AToken: TToken);

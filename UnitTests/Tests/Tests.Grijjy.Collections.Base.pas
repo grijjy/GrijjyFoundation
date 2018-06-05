@@ -232,12 +232,12 @@ begin
     tkEnumeration:
       begin
         case FTypeData.OrdType of
-          otSByte: I1 := AValue;
-          otUByte: U1 := AValue;
-          otSWord: I2 := AValue;
-          otUWord: U2 := AValue;
+          otSByte: I1 := Int8(AValue);
+          otUByte: U1 := UInt8(AValue);
+          otSWord: I2 := Int16(AValue);
+          otUWord: U2 := UInt16(AValue);
           otSLong: I4 := AValue;
-          otULong: U4 := AValue;
+          otULong: U4 := UInt32(AValue);
         else
           System.Assert(False);
         end;
@@ -378,7 +378,7 @@ begin
         begin
           MR.A := AValue;
           SetLength(MR.B, 1);
-          MR.B[0] := AValue;
+          MR.B[0] := Byte(AValue);
           MR.C := IntToStr(AValue);
         end
         else if (FTypeInfo.NameFld.ToString = 'TFooBarRecord') then

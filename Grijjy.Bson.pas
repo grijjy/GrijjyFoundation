@@ -5006,9 +5006,9 @@ begin
     raise EArgumentOutOfRangeException.CreateRes(@SArgumentOutOfRange);
   if ((AIncrement and $FF000000) <> 0) then
     raise EArgumentOutOfRangeException.CreateRes(@SArgumentOutOfRange);
-  Result.FData[0] := ATimestamp;
-  Result.FData[1] := (AMachine shl 8) or (APid shr 8);
-  Result.FData[2] := (APid shl 24) or AIncrement;
+  Result.FData[0] := UInt32(ATimestamp);
+  Result.FData[1] := UInt32((AMachine shl 8) or (APid shr 8));
+  Result.FData[2] := UInt32((APid shl 24) or AIncrement);
 end;
 
 procedure TgoObjectId.FromByteArray(const ABytes: TBytes);
@@ -5072,12 +5072,12 @@ end;
 
 function TgoObjectId.GetPid: UInt16;
 begin
-  Result := (FData[1] shl 8) or (FData[2] shr 24);
+  Result := UInt16((FData[1] shl 8) or (FData[2] shr 24));
 end;
 
 function TgoObjectId.GetTimestamp: Integer;
 begin
-  Result := FData[0];
+  Result := Int32(FData[0]);
 end;
 
 class function TgoObjectId.GetTimestampFromDateTime(
@@ -5550,7 +5550,7 @@ end;
 class operator TgoBsonValue.Implicit(const A: TgoBsonValue): UInt32;
 begin
   Assert(Assigned(A.FImpl));
-  Result := A.FImpl.ToInteger(0);
+  Result := UInt32(A.FImpl.ToInteger(0));
 end;
 
 class operator TgoBsonValue.Implicit(const A: UInt32): TgoBsonValue;
@@ -5558,7 +5558,7 @@ begin
   if (A <= TValueIntegerConst.MAX_PRECREATED_VALUE) then
     Result.FImpl := TValueIntegerConst.FPrecreatedValues[A]
   else
-    Result.FImpl := TValueInteger.Create(A);
+    Result.FImpl := TValueInteger.Create(Int32(A));
 end;
 
 class operator TgoBsonValue.Implicit(const A: TgoBsonValue): UInt16;
@@ -5596,7 +5596,7 @@ end;
 class operator TgoBsonValue.Implicit(const A: TgoBsonValue): UInt64;
 begin
   Assert(Assigned(A.FImpl));
-  Result := A.FImpl.ToInt64(0);
+  Result := UInt64(A.FImpl.ToInt64(0));
 end;
 
 function TgoBsonValue.IsNil: Boolean;
@@ -9300,7 +9300,7 @@ begin
   if (FCount >= FGrowThreshold) then
     Resize(Length(FEntries) * 2);
 
-  HashCode := goMurmurHash2(AName[Low(String)], Length(AName) * SizeOf(Char)) and $7FFFFFFF;
+  HashCode := goMurmurHash2(Pointer(AName)^, Length(AName) * SizeOf(Char)) and $7FFFFFFF;
   Mask := Length(FEntries) - 1;
   Index := HashCode and Mask;
 
@@ -9340,7 +9340,7 @@ begin
     Exit(-1);
 
   Mask := Length(FEntries) - 1;
-  HashCode := goMurmurHash2(AName[Low(String)], Length(AName) * SizeOf(Char)) and $7FFFFFFF;
+  HashCode := goMurmurHash2(Pointer(AName)^, Length(AName) * SizeOf(Char)) and $7FFFFFFF;
   Index := HashCode and Mask;
 
   while True do

@@ -2166,7 +2166,7 @@ begin
       Result := UInt32(AReader.ReadInt32);
 
     TgoBsonType.Int64:
-      Result := AReader.ReadInt64;
+      Result := UInt32(AReader.ReadInt64);
 
     TgoBsonType.String:
       Result := StrToInt64(AReader.ReadString);
@@ -2186,7 +2186,7 @@ begin
       Result := UInt32(AReader.ReadInt32);
 
     TgoBsonType.Int64:
-      Result := AReader.ReadInt64;
+      Result := UInt64(AReader.ReadInt64);
 
     TgoBsonType.String:
       Result := StrToUInt64(AReader.ReadString);
@@ -2543,7 +2543,7 @@ end;
 class procedure TgoBsonSerializer.SerializeEnum(const AInfo: TInfo;
   const AValue: UInt32; const AWriter: IgoBsonBaseWriter);
 begin
-  if (AInfo.IgnoreIfDefault) and (AValue = AInfo.DefaultValue.FAsInt32) then
+  if (AInfo.IgnoreIfDefault) and (Integer(AValue) = AInfo.DefaultValue.FAsInt32) then
     Exit;
 
   if (AInfo.Name <> '') then
@@ -2638,7 +2638,7 @@ begin
       AWriter.WriteDouble(AValue);
 
     TgoBsonRepresentation.Int32:
-      AWriter.WriteInt32(AValue);
+      AWriter.WriteInt32(Int32(AValue));
 
     TgoBsonRepresentation.Int64:
       AWriter.WriteInt64(AValue);
@@ -2819,7 +2819,7 @@ begin
       AWriter.WriteDouble(AValue);
 
     TgoBsonRepresentation.Int32:
-      AWriter.WriteInt32(AValue);
+      AWriter.WriteInt32(Int32(AValue));
 
     TgoBsonRepresentation.Int64:
       AWriter.WriteInt64(AValue);
@@ -4484,7 +4484,7 @@ class procedure TgoBsonSerializer.TPropertyInfo.DeserializeUInt32(
   const AProp: TPropertyInfo; const AInstance: TObject;
   const AReader: IgoBsonBaseReader);
 begin
-  SetOrdProp(AInstance, AProp.Info, TgoBsonSerializer.DeserializeUInt32(AProp, AReader));
+  SetOrdProp(AInstance, AProp.Info, Int32(TgoBsonSerializer.DeserializeUInt32(AProp, AReader)));
 end;
 
 class procedure TgoBsonSerializer.TPropertyInfo.DeserializeUInt64(
@@ -4891,14 +4891,14 @@ class procedure TgoBsonSerializer.TPropertyInfo.SerializeUInt32(
   const AProp: TPropertyInfo; const AInstance: TObject;
   const AWriter: IgoBsonBaseWriter);
 begin
-  TgoBsonSerializer.SerializeUInt32(AProp, GetOrdProp(AInstance, AProp.Info), AWriter);
+  TgoBsonSerializer.SerializeUInt32(AProp, UInt32(GetOrdProp(AInstance, AProp.Info)), AWriter);
 end;
 
 class procedure TgoBsonSerializer.TPropertyInfo.SerializeUInt64(
   const AProp: TPropertyInfo; const AInstance: TObject;
   const AWriter: IgoBsonBaseWriter);
 begin
-  TgoBsonSerializer.SerializeUInt64(AProp, GetInt64Prop(AInstance, AProp.Info), AWriter);
+  TgoBsonSerializer.SerializeUInt64(AProp, UInt64(GetInt64Prop(AInstance, AProp.Info)), AWriter);
 end;
 
 end.

@@ -308,17 +308,20 @@ var
   I: Integer;
   Item: PItem;
 begin
-  Item := @FItems[0];
-  for I := 0 to Length(FItems) - 1 do
+  if (FItems <> nil) then
   begin
-    if (Item.Hash <> EMPTY_HASH) then
+    Item := @FItems[0];
+    for I := 0 to Length(FItems) - 1 do
     begin
-      Cleanup(Item);
-      String(Item.Name) := ''; { Decreases ref count }
+      if (Item.Hash <> EMPTY_HASH) then
+      begin
+        Cleanup(Item);
+        String(Item.Name) := ''; { Decreases ref count }
+      end;
+      Inc(Item);
     end;
-    Inc(Item);
+    FItems := nil;
   end;
-  FItems := nil;
   FCount := 0;
   FGrowThreshold := 0;
 end;

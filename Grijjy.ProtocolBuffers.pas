@@ -685,7 +685,7 @@ end;
 class procedure TgoProtocolBuffer.Deserialize(const ARecordType: Pointer;
   out ARecord; const AData: TBytes);
 begin
-  Deserialize(ARecordType, ARecord, @AData[0], Length(AData));
+  Deserialize(ARecordType, ARecord, Pointer(AData), Length(AData));
 end;
 
 class procedure TgoProtocolBuffer.Deserialize(const ARecordType: Pointer;
@@ -1808,6 +1808,10 @@ end;
 
 { TgoProtocolBuffer.TWriter }
 
+{$IFOPT R+}
+  {$DEFINE HAS_RANGECHECKS}
+  {$RANGECHECKS OFF}
+{$ENDIF}
 procedure TgoProtocolBuffer.TWriter.WriteVarInt(const AValue: Integer);
 var
   ZigZag: Cardinal;
@@ -1827,6 +1831,9 @@ begin
     ZigZag := ZigZag xor UInt64($FFFFFFFFFFFFFFFF);
   WriteVarUInt64(ZigZag);
 end;
+{$IFDEF HAS_RANGECHECKS}
+  {$RANGECHECKS ON}
+{$ENDIF}
 
 procedure TgoProtocolBuffer.TWriter.WriteVarUInt(const AValue: Cardinal);
 begin
@@ -1857,6 +1864,10 @@ begin
     Append(Byte(AValue));
 end;
 
+{$IFOPT R+}
+  {$DEFINE HAS_RANGECHECKS}
+  {$RANGECHECKS OFF}
+{$ENDIF}
 procedure TgoProtocolBuffer.TWriter.WriteVarUInt64(const AValue: UInt64);
 var
   A, B, C: UInt32;
@@ -1939,6 +1950,9 @@ Size1: Target[0] := (A       ) or $80;
   Target[Size - 1] := Target[Size - 1] and $7F;
   Append(Target, 0, Size);
 end;
+{$IFDEF HAS_RANGECHECKS}
+  {$RANGECHECKS ON}
+{$ENDIF}
 
 { TgoProtocolBuffer.TReader }
 
