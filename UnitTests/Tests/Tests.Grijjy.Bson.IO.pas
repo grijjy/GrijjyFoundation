@@ -2646,7 +2646,7 @@ procedure TestJsonData.WriteValueTree(const Builder: TStringBuilder;
 
   procedure WriteLine(const S: UnicodeString; const Args: array of const);
   begin
-    Builder.Append(Format(S, Args)).AppendLine;
+    Builder.Append(Format(S, Args, goUSFormatSettings)).AppendLine;
   end;
 
 var
