@@ -13,6 +13,7 @@ Take a look at our [Grijjy Blog](https://blog.grijjy.com/) for discussions of ou
 * [Working with big data databases in Delphi – Cassandra, Couchbase and MongoDB](https://blog.grijjy.com/2017/01/11/working-with-big-data-databases-in-delphi-cassandra-couchbase-and-mongodb-part-2-of-3/)
 * [Efficient and easy-to-use JSON and BSON library](https://blog.grijjy.com/2017/01/30/efficient-and-easy-to-use-json-and-bson-library/)
 * [Binary Serialization with Google Protocol Buffers](https://blog.grijjy.com/2017/04/25/binary-serialization-with-google-protocol-buffers/)
+* [Query JSON documents with JSONPath](https://blog.grijjy.com/2018/10/29/query-json-documents-with-jsonpath/)
 
 ## API Documentation
 
