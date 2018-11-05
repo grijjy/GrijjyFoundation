@@ -1812,6 +1812,10 @@ begin
     tkRecord:
       begin
         Assert(Serializer is TRecordSerializer);
+
+        { Issue #8: finalize previous value before clearing }
+        Finalize(AValue);
+
         if Assigned(RecordSerializer.InitializeProc) then
           RecordSerializer.InitializeProc(@AValue)
         else
