@@ -63,6 +63,7 @@ type
   TOnRedirect = procedure(Sender: TObject; var ALocation: String; const AFollow: Boolean) of object;
   TOnPassword = procedure(Sender: TObject; var AAgain: Boolean) of object;
   TOnRecv = procedure(Sender: TObject; const ABuffer: Pointer; const ASize: Integer; var ACreateResponse: Boolean) of object;
+  TOnSent = procedure(Sender: TObject; const ABuffer: Pointer; const ASize: Integer) of object;
 
   { ISO-8859-1 ASCII compatible string }
   {$IFDEF MSWINDOWS}
@@ -247,6 +248,7 @@ type
   protected
     FOnPassword: TOnPassword;
     FOnRedirect: TOnRedirect;
+    FOnSent: TOnSent;
     FOnRecv: TOnRecv;
     procedure SetCookies(const AValue: TStrings);
     function GetIdleTime: Integer;
@@ -388,6 +390,9 @@ type
 
     { Called when a buffer is received from the socket }
     property OnRecv: TOnRecv read FOnRecv write FOnRecv;
+
+    { Called when the data has been sent by the socket }
+    property OnSent: TOnSent read FOnSent write FOnSent;
 
     { Username and password for Basic Authentication }
     property UserName: String read FUserName write FUserName;
@@ -1132,7 +1137,8 @@ procedure TgoHttpClient.Close;
 begin
   FRecvAbort := True;
   FRecv.SetEvent;
-  FConnection.Disconnect;
+  if FConnection <> nil then
+    FConnection.Disconnect;
 end;
 
 { Cookies received from the server }
@@ -1438,6 +1444,7 @@ var
         FConnection := _HttpClientSocketManager.Request(FURI.Host, FURI.Port);
         FConnection.OnConnected := OnSocketConnected;
         FConnection.OnDisconnected := OnSocketDisconnected;
+        FConnection.OnSent := OnSocketSent;
         FConnection.OnRecv := OnSocketRecv;
         if FURI.Scheme.ToLower = 'https' then
         begin
@@ -1531,6 +1538,9 @@ procedure TgoHttpClient.OnSocketSent(const ABuffer: Pointer;
   const ASize: Integer);
 begin
   FLastSent := Now;
+
+  if Assigned(FOnSent) then
+    FOnSent(Self, ABuffer, ASize);
 end;
 
 { DoRecv is always called with a copy buffer and outside of the main buffer

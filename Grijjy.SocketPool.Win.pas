@@ -200,10 +200,10 @@ type
     property Socket: THandle read FSocket write FSocket;
 
     { Hostname }
-    property Hostname: String read FHostname;
+    property Hostname: String read FHostname write FHostname;
 
     { Port }
-    property Port: Word read FPort;
+    property Port: Word read FPort write FPort;
 
     { Current state of the socket connection }
     property State: TgoConnectionState read FState write FState;
