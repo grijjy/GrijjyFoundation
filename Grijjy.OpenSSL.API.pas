@@ -138,6 +138,7 @@ var
   SSL_set_cipher_list: function(s: PSSL; ciphers: MarshaledAString): Integer; cdecl = nil;
   SSL_get0_alpn_selected: procedure (s: PSSL; out data: MarshaledAString; out len: Integer); cdecl = nil;
   SSL_clear: function(s: PSSL): Integer; cdecl = nil;
+  SSL_ctrl: function(s: PSSL; cmd: Integer; larg: LongInt; parg: Pointer): Integer; cdecl = nil;
   CRYPTO_num_locks: function: Integer; cdecl = nil;
   CRYPTO_set_locking_callback: procedure(callback: TStatLockLockCallback); cdecl = nil;
   CRYPTO_set_dynlock_create_callback: procedure(callback: TDynLockCreateCallBack); cdecl = nil;
@@ -196,6 +197,7 @@ function SetSSLCTXOptions(const ACTX: Pointer; const AOP: Integer): Integer;
 
 function SSLErrorFatal(const AError: Integer): Boolean;
 function SSLError(const ASSL: PSSL; const AReturnCode: Integer; out AErrorMsg: String): Integer;
+function SSL_set_tlsext_host_name(s: PSSL; name: String): Integer;
 
 procedure LoadSSLEAY;
 procedure UnloadSSLEAY;
@@ -259,6 +261,16 @@ begin
 		end;
 	end;
 	Result := error;
+end;
+
+function SSL_set_tlsext_host_name(s: PSSL; name: String): Integer;
+const
+  SSL_CTRL_SET_TLSEXT_HOSTNAME = 55;
+  TLSEXT_NAMETYPE_host_name = 0;
+var
+  M: TMarshaller;
+begin
+  Result := SSL_ctrl(s, SSL_CTRL_SET_TLSEXT_HOSTNAME, TLSEXT_NAMETYPE_host_name, M.AsAnsi(name).ToPointer);
 end;
 
 function LoadLib(const ALibFile: String): HMODULE;
@@ -326,6 +338,7 @@ begin
   SSL_set_cipher_list := GetProc(_SSLEAYHandle, 'SSL_set_cipher_list');
   SSL_get0_alpn_selected := GetProc(_SSLEAYHandle, 'SSL_get0_alpn_selected');
   SSL_clear := GetProc(_SSLEAYHandle, 'SSL_clear');
+  SSL_ctrl := GetProc(_SSLEAYHandle, 'SSL_ctrl');
 end;
 
 procedure UnloadSSLEAY;

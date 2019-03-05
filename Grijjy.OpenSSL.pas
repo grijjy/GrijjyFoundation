@@ -35,6 +35,10 @@ type
     FSSLWriteBuffer: Pointer;
     FSSLReadBuffer: Pointer;
 
+    { Hostname for SNI }
+    FHost: String;
+    FPort: Word;
+
     { Certificate and Private Key }
     FCertificate: TBytes;
     FPrivateKey: TBytes;
@@ -58,6 +62,12 @@ type
     { Returns True if ALPN is negotiated }
     function ALPN: Boolean;
   public
+    { Host }
+    property Host: String read FHost write FHost;
+
+    { Port }
+    property Port: Word read FPort write FPort;
+
     { Certificate in PEM format }
     property Certificate: TBytes read FCertificate write FCertificate;
 
@@ -176,6 +186,9 @@ begin
     FSSL := SSL_new(FSSLContext);
     if FSSL <> nil then
     begin
+      { Apply SNI hostname }
+      SSL_set_tlsext_host_name(FSSL, FHost);
+
       { create the read and write BIO }
       FBIORead := BIO_new(BIO_s_mem);
       if FBIORead <> nil then
