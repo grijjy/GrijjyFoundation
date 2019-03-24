@@ -1272,13 +1272,13 @@ begin
       if not Connection.Closed then
       begin
         closesocket(Connection.Socket);
+        CancelIoEx(Connection.Socket, nil);
         Start := Now;
         while (MillisecondsBetween(Now, Start) < TIMEOUT_CLOSE) and
           (not Connection.Closed) do
           Sleep(5);
       end;
-      if Connection.Closed then
-        Connection.Free;
+      Connection.Free;
     end;
     Connections.Free;
   finally
