@@ -8,7 +8,7 @@ interface
 
 uses
   {$IFDEF MSWINDOWS}
-  Windows,
+  Winapi.Windows,
   {$ENDIF}
   System.Classes,
   System.SyncObjs,
@@ -274,10 +274,20 @@ begin
 end;
 
 function LoadLib(const ALibFile: String): HMODULE;
+const
+  loadErrorMask =
+    {$IFDEF MSWINDOWS}
+    #13#10 + // CRLF ensures this is on a new-line: most Windows localisations otherwise append this without whitespace to the RaiseLastOSError text.
+    {$ENDIF}
+    'LoadLibrary(%s) failed';
 begin
   Result := LoadLibrary(PChar(ALibFile));
   if (Result = 0) then
-    raise Exception.CreateFmt('load %s failed', [ALibFile]);
+    {$IFDEF MSWINDOWS}
+    RaiseLastOSError(GetLastError, Format(loadErrorMask, [ALibFile]));
+    {$ELSE}
+    raise Exception.CreateFmt(loadErrorMask, [ALibFile]);
+    {$ENDIF}
 end;
 
 function FreeLib(ALibModule: HMODULE): Boolean;
@@ -285,11 +295,23 @@ begin
   Result := FreeLibrary(ALibModule);
 end;
 
+function GetModuleFileName(const AModule: HMODULE): string;
+var
+  FileName: array [0..MAX_PATH] of Char;
+begin
+  {$IFDEF MSWINDOWS}
+  Winapi.Windows.GetModuleFileName(AModule, FileName, Length(FileName) - 1);
+  Result := FileName;
+  {$ELSE}
+  Result := 'unknown';
+  {$ENDIF}
+end;
+
 function GetProc(AModule: HMODULE; const AProcName: String): Pointer;
 begin
   Result := GetProcAddress(AModule, PChar(AProcName));
   if (Result = nil) then
-    raise Exception.CreateFmt('%s is not found', [AProcName]);
+    raise Exception.CreateFmt('%s is not found in %s, which might be too old for our library to use', [AProcName, GetModuleFileName(AModule)]);
 end;
 
 procedure LoadSSLEAY;
