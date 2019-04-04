@@ -261,21 +261,26 @@ begin
 	Result := error;
 end;
 
-function LoadLib(const ALibFile: String): HMODULE;
+function LoadLib(const ALibFile: string): HMODULE;
 const
   loadErrorMask =
     {$IFDEF MSWINDOWS}
     #13#10 + // CRLF ensures this is on a new-line: most Windows localisations otherwise append this without whitespace to the RaiseLastOSError text.
     {$ENDIF}
-    'LoadLibrary(%s) failed';
+    'LoadLibrary(%s expanded to %s) failed';
+var
+  ExpandedLibFile: string;
 begin
   Result := LoadLibrary(PChar(ALibFile));
   if (Result = 0) then
+  begin
+    ExpandedLibFile := ExpandFileName(ALibFile);
     {$IFDEF MSWINDOWS}
-    RaiseLastOSError(GetLastError, Format(loadErrorMask, [ALibFile]));
+    RaiseLastOSError(GetLastError, Format(loadErrorMask, [ALibFile, ExpandedLibFile]));
     {$ELSE}
-    raise Exception.CreateFmt(loadErrorMask, [ALibFile]);
+    raise Exception.CreateFmt(loadErrorMask, [ALibFile, ExpandedLibFile]);
     {$ENDIF}
+  end;
 end;
 
 function FreeLib(ALibModule: HMODULE): Boolean;
@@ -306,11 +311,6 @@ procedure LoadSSLEAY;
 begin
   if (_SSLEAYHandle <> 0) then Exit;
   _SSLEAYHandle := LoadLib(SSLEAY_DLL);
-  if (_SSLEAYHandle = 0) then
-  begin
-    raise Exception.CreateFmt('Load %s failed', [SSLEAY_DLL]);
-    Exit;
-  end;
 
   SSL_library_init := GetProc(_SSLEAYHandle, 'SSL_library_init');
   SSL_load_error_strings := GetProc(_SSLEAYHandle, 'SSL_load_error_strings');
