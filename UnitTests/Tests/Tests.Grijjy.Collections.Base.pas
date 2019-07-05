@@ -35,7 +35,12 @@ type
 
 {$IFNDEF NEXTGEN}
 type
+  {$IF (RTLVersion = 33)}
+  // For some reason, Delphi 10.3 Rio raises AVs with short string of length 1
+  TStr1 = String[2];
+  {$ELSE}
   TStr1 = String[1];
+  {$ENDIF}
   TStr2 = String[2];
   TStr3 = String[3];
 {$ENDIF}
