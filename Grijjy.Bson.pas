@@ -1946,10 +1946,10 @@ type
     class function Create(const AName: String; const AValue: TgoBsonValue): TgoBsonDocument; overload; static;
 
     { See TgoBsonValue.Parse }
-    class function Parse(const AJson: String): TgoBsonDocument; static;
+    class function Parse(const AJson: String; AllowDuplicateNames : Boolean = false): TgoBsonDocument; static;
 
     { See TgoBsonValue.TryParse }
-    class function TryParse(const AJson: String; out ADocument: TgoBsonDocument): Boolean; static;
+    class function TryParse(const AJson: String; out ADocument: TgoBsonDocument; AllowDuplicateNames : Boolean = false): Boolean; static;
 
     { See TgoBsonValue.Load }
     class function Load(const ABson: TBytes): TgoBsonDocument; static;
@@ -6573,11 +6573,11 @@ begin
   Result := (TgoBsonValue(A) <> TgoBsonValue(B));
 end;
 
-class function TgoBsonDocument.Parse(const AJson: String): TgoBsonDocument;
+class function TgoBsonDocument.Parse(const AJson: String; AllowDuplicateNames : Boolean = false): TgoBsonDocument;
 var
   Reader: IgoJsonReader;
 begin
-  Reader := TgoJsonReader.Create(AJson);
+  Reader := TgoJsonReader.Create(AJson, AllowDuplicateNames);
   Result := Reader.ReadDocument;
 end;
 
@@ -6721,12 +6721,12 @@ begin
 end;
 
 class function TgoBsonDocument.TryParse(const AJson: String;
-  out ADocument: TgoBsonDocument): Boolean;
+  out ADocument: TgoBsonDocument; AllowDuplicateNames : Boolean = false): Boolean;
 var
   Reader: IgoJsonReader;
 begin
   try
-    Reader := TgoJsonReader.Create(AJson);
+    Reader := TgoJsonReader.Create(AJson, AllowDuplicateNames);
     ADocument := Reader.ReadDocument;
     Result := True;
   except

@@ -1243,6 +1243,7 @@ type
     FState: TgoBsonReaderState;
     FCurrentBsonType: TgoBsonType;
     FCurrentName: String;
+    FAllowDuplicateNames: Boolean;
   private
     function DoReadJavaScriptWithScope: TgoBsonValue;
   protected
@@ -1299,6 +1300,7 @@ type
     property State: TgoBsonReaderState read FState write FState;
     property CurrentBsonType: TgoBsonType read FCurrentBsonType write FCurrentBsonType;
     property CurrentName: String read FCurrentName write FCurrentName;
+    property AllowDuplicateNames: Boolean read FAllowDuplicateNames write FAllowDuplicateNames;
   {$ENDREGION 'Internal Declarations'}
   end;
 
@@ -1694,7 +1696,7 @@ type
 
       Parameters:
         AJson: the JSON string to parse. }
-    constructor Create(const AJson: String);
+    constructor Create(const AJson: String; AllowDuplicateNames : Boolean = false);
 
     { Destructor }
     destructor Destroy; override;
@@ -1703,13 +1705,13 @@ type
 
       Parameters:
         AFilename: the name of the file containing the JSON data. }
-    class function Load(const AFilename: String): IgoJsonReader; overload; static;
+    class function Load(const AFilename: String; AllowDuplicateNames : Boolean = false): IgoJsonReader; overload; static;
 
     { Creates a JSON reader from a stream.
 
       Parameters:
         AStream: the stream containing the JSON data. }
-    class function Load(const AStream: TStream): IgoJsonReader; overload; static;
+    class function Load(const AStream: TStream; AllowDuplicateNames : Boolean = false): IgoJsonReader; overload; static;
   end;
 
 type
@@ -3899,8 +3901,10 @@ begin
 
   ReadStartDocument;
 
-  Result := TgoBsonDocument.Create;
+  Result := TgoBsonDocument.Create(FAllowDuplicateNames);
+
   Doc := Result._Impl;
+
   while (ReadBsonType <> TgoBsonType.EndOfDocument) do
   begin
     Name := ReadName;
@@ -3921,6 +3925,8 @@ begin
   ReadStartDocument;
 
   Result := _goCreateDocument;
+  Result.AllowDuplicateNames := FAllowDuplicateNames;
+
   while (ReadBsonType <> TgoBsonType.EndOfDocument) do
   begin
     Name := ReadName;
@@ -4696,9 +4702,10 @@ end;
 
 { TgoJsonReader }
 
-constructor TgoJsonReader.Create(const AJson: String);
+constructor TgoJsonReader.Create(const AJson: String; AllowDuplicateNames : Boolean = false);
 begin
   inherited Create;
+  FAllowDuplicateNames := AllowDuplicateNames;
   FBuffer := TBuffer.Create(AJson);
   FTokenBase := TToken.Create;
   FTokenToPush := TToken.Create;
@@ -4779,19 +4786,19 @@ begin
   end;
 end;
 
-class function TgoJsonReader.Load(const AFilename: String): IgoJsonReader;
+class function TgoJsonReader.Load(const AFilename: String; AllowDuplicateNames : Boolean = false): IgoJsonReader;
 var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(AFilename, fmOpenRead or fmShareDenyWrite);
   try
-    Result := Load(Stream);
+    Result := Load(Stream, AllowDuplicateNames);
   finally
     Stream.Free;
   end;
 end;
 
-class function TgoJsonReader.Load(const AStream: TStream): IgoJsonReader;
+class function TgoJsonReader.Load(const AStream: TStream; AllowDuplicateNames : Boolean = false): IgoJsonReader;
 var
   Reader: TStreamReader;
   Json: String;
@@ -4802,7 +4809,7 @@ begin
   finally
     Reader.Free;
   end;
-  Result := TgoJsonReader.Create(Json);
+  Result := TgoJsonReader.Create(Json, AllowDuplicateNames);
 end;
 
 procedure TgoJsonReader.ParseConstructorBinaryData;
