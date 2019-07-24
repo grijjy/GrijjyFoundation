@@ -1271,7 +1271,8 @@ begin
     begin
       if not Connection.Closed then
       begin
-        closesocket(Connection.Socket);
+        Connection.PostDisconnect;
+        //closesocket(Connection.Socket);
         CancelIoEx(Connection.Socket, nil);
         Start := Now;
         while (MillisecondsBetween(Now, Start) < TIMEOUT_CLOSE) and
