@@ -144,11 +144,16 @@ end;
 
 function InitializeCodeHooks: Boolean;
 begin
+  {$IFDEF MACOS64}
+  { Code hooking does not work on 64-bit macOS }
+  Result := False;
+  {$ELSE}
   { This function tries HookCode to hook the implementations of the
     TObject.NewInstance and TObject.FreeInstance methods. This will most likely
     only succeed on Windows, macOS, iOS Simulator and Linux. }
   Result := HookCode(@TObject.NewInstance, @HookedObjectNewInstance)
         and HookCode(@TObject.FreeInstance, @HookedObjectFreeInstance);
+  {$ENDIF}
 end;
 
 { We are using the vmtNewInstance and vmtFreeInstance constants, which have been
