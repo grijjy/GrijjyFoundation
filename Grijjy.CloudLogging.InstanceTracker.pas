@@ -16,7 +16,7 @@ interface
 
 implementation
 
-{$IFDEF DEBUG}
+{$IFDEF TRACK_MEMORY}
 
 uses
   System.Rtti,
@@ -348,8 +348,11 @@ begin
       for Pair in Counts do
       begin
         Assert(Count < Length(Msg.Protocol.Entries));
-        Msg.Protocol.Entries[Count].ClassName := Pair.Key.ClassName;
-        Msg.Protocol.Entries[Count].ClassHandle := THandle(Pair.Key);
+        if Assigned(Pair.Key) then
+        begin
+          Msg.Protocol.Entries[Count].ClassName := Pair.Key.ClassName;
+          Msg.Protocol.Entries[Count].ClassHandle := THandle(Pair.Key);
+        end;
         Msg.Protocol.Entries[Count].InstanceCount := Pair.Value;
 
         if (DetailClasses.TryGetValue(Pair.Key, DetailInstances)) then
@@ -390,5 +393,5 @@ initialization
 finalization
   FinalizeGlobals;
 
-{$ENDIF !DEBUG}
+{$ENDIF !TRACK_MEMORY}
 end.
