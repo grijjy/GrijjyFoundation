@@ -119,7 +119,7 @@ begin
     "sysconf(_SC_PAGESIZE)" API. }
   AlignedCodeAddress := UIntPtr(ACodeAddress) and (not (GPageSize - 1));
 
-  Result := (mprotect(Pointer(AlignedCodeAddress), GPageSize, PROT_READ or PROT_WRITE) = 0);
+  Result := (mprotect(Pointer(AlignedCodeAddress), GPageSize, PROT_READ or PROT_WRITE or PROT_EXEC) = 0);
 
   if (Result) then
   begin
@@ -202,3 +202,4 @@ initialization
   {$ENDIF}
 
 end.
+

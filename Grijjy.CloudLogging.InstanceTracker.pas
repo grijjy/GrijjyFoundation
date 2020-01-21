@@ -1,16 +1,16 @@
 unit Grijjy.CloudLogging.InstanceTracker;
 
-{ When using this unit in DEBUG mode, instances of most classes will be tracked
-  for reporting to the Grijjy Log Viewer.
+{ When using this unit with TRACK_MEMORY defined, instances of most classes will
+  be tracked for reporting to the Grijjy Log Viewer.
 
   For most accurate results, it is recommended to put this unit at the top of
   the uses-clause of the project (.dpr) file.
 
-  In RELEASE mode, this unit does nothing and has no impact on the application
-  whatsoever.
+  When TRACK_MEMORY is *not* defined, this unit does nothing and has no impact
+  on the application whatsoever.
 
-  Note that using this unit in DEBUG mode may slow down the application a bit
-  and consume extra memory. }
+  Note that using this unit with TRACK_MEMORY defined may slow down the
+  application a bit and consume extra memory. }
 
 interface
 
@@ -144,16 +144,11 @@ end;
 
 function InitializeCodeHooks: Boolean;
 begin
-  {$IFDEF MACOS64}
-  { Code hooking does not work on 64-bit macOS }
-  Result := False;
-  {$ELSE}
   { This function tries HookCode to hook the implementations of the
     TObject.NewInstance and TObject.FreeInstance methods. This will most likely
     only succeed on Windows, macOS, iOS Simulator and Linux. }
   Result := HookCode(@TObject.NewInstance, @HookedObjectNewInstance)
         and HookCode(@TObject.FreeInstance, @HookedObjectFreeInstance);
-  {$ENDIF}
 end;
 
 { We are using the vmtNewInstance and vmtFreeInstance constants, which have been
