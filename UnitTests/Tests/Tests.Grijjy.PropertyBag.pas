@@ -45,7 +45,7 @@ uses
   System.SysUtils;
 
 type
-  TStringArray = TArray<String>;
+  TIntegerArray = TArray<Integer>;
 
 type
   TManagedRecord = record
@@ -143,20 +143,20 @@ end;
 
 procedure TTestTgoPropertyBag.TestAsArray;
 var
-  Strings: TStringArray;
+  Integers: TIntegerArray;
 begin
-  Assert.AreEqual<TStringArray>(nil, FCUT.AsArray<String>('foo'));
+  Assert.AreEqual<TIntegerArray>(nil, FCUT.AsArray<Integer>('foo'));
 
-  Strings := TStringArray.Create('Foo', 'Bar', 'Baz');
-  FCUT.SetAsArray<String>('foo', Strings);
-  Assert.AreEqual<TStringArray>(Strings, FCUT.AsArray<String>('foo'));
+  Integers := TIntegerArray.Create(-3, 42, 10000000);
+  FCUT.SetAsArray<Integer>('foo', Integers);
+  Assert.AreEqual<TIntegerArray>(Integers, FCUT.AsArray<Integer>('foo'));
 
-  Strings := nil;
-  Strings := FCUT.AsArray<String>('foo');
-  Assert.AreEqual(3, Length(Strings));
-  Assert.AreEqual('Foo', Strings[0]);
-  Assert.AreEqual('Bar', Strings[1]);
-  Assert.AreEqual('Baz', Strings[2]);
+  Integers := nil;
+  Integers := FCUT.AsArray<Integer>('foo');
+  Assert.AreEqual(3, Length(Integers));
+  Assert.AreEqual(-3, Integers[0]);
+  Assert.AreEqual(42, Integers[1]);
+  Assert.AreEqual(10000000, Integers[2]);
 
   {$IFDEF DEBUG}
   Assert.WillRaise(
@@ -166,8 +166,8 @@ begin
     end, EAssertionFailed);
   {$ENDIF}
 
-  FCUT.AsCardinal['foo'] := 42;
-  Assert.AreEqual<TStringArray>(nil, FCUT.AsArray<String>('foo'));
+  FCUT.AsSingle['foo'] := 1.5;
+  Assert.AreEqual<TIntegerArray>(nil, FCUT.AsArray<Integer>('foo'));
 end;
 
 procedure TTestTgoPropertyBag.TestAsBoolean;
@@ -423,7 +423,7 @@ const
 var
   Foo1, Foo2: TFoo;
   A1, A1A: TArray<Integer>;
-  A2, A2A: TArray<String>;
+  A2, A2A: TArray<Single>;
   R1, R1A: TPointF;
   R2, R2A: TRect;
 begin
@@ -435,7 +435,7 @@ begin
     Foo1 := TFoo.Create(1);
     Foo2 := TFoo.Create(2);
     A1 := TArray<Integer>.Create(1, 2, 3);
-    A2 := TArray<String>.Create('Foo', 'Bar', 'Baz');
+    A2 := TArray<Single>.Create(1.5, -2.25, 3.125);
     R1 := PointF(-1.2, 3.4);
     R2 := Rect(5, 6, 7, 8);
 
@@ -464,7 +464,7 @@ begin
     FCUT.AsBytes['BytesProp1'] := BytesOf('Foo');
     FCUT.AsBytes['BytesProp2'] := BytesOf('Bar');
     FCUT.SetAsArray<Integer>('ArrayProp1', A1);
-    FCUT.SetAsArray<String>('ArrayProp2', A2);
+    FCUT.SetAsArray<Single>('ArrayProp2', A2);
     FCUT.SetAsRecord('RecordProp1', R1);
     FCUT.SetAsRecord('RecordProp2', R2);
 
@@ -529,11 +529,11 @@ begin
     Assert.AreEqual(2, A1A[1]);
     Assert.AreEqual(3, A1A[2]);
 
-    A2A := FCUT.AsArray<String>('ArrayProp2');
+    A2A := FCUT.AsArray<Single>('ArrayProp2');
     Assert.AreEqual(3, Length(A2A));
-    Assert.AreEqual('Foo', A2A[0]);
-    Assert.AreEqual('Bar', A2A[1]);
-    Assert.AreEqual('Baz', A2A[2]);
+    Assert.AreEqual<Single>(1.5, A2A[0]);
+    Assert.AreEqual<Single>(-2.25, A2A[1]);
+    Assert.AreEqual<Single>(3.125, A2A[2]);
 
     A1 := FCUT.AsArray<Integer>('ArrayProp3');
     Assert.AreEqual(0, Length(A1));

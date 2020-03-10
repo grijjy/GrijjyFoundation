@@ -112,12 +112,16 @@ type
         bag does not contain a property called AName, or the property is not
         of a dynamic array type.
 
+      NOTE: only simple "unmanaged" array element types are supported (that is,
+      T cannot be a managed type such as a String or Interface). This is checked
+      with an assertion.
+
       NOTE: The type parameter <T> MUST be the same as uses when the property
       was added using SetAsArray. Calling SetAsArray<Byte>('foo', ...) followed
       by AsArray<String>('foo') leads to undefined behavior and a probably
       crash. When compiling in DEBUG mode, an assertion is raised when <T> is
       different from the call to SetAsArray<T>. }
-    function AsArray<T>(const AName: String): TArray<T>;
+    function AsArray<T: record>(const AName: String): TArray<T>;
 
     { Adds or replaces a generic dynamic array in the property bag.
 
@@ -126,7 +130,7 @@ type
         AValue: the dynamic array to associate with AName.
 
       See AsArray<T> for important information about type safety. }
-    procedure SetAsArray<T>(const AName: String; const AValue: TArray<T>);
+    procedure SetAsArray<T: record>(const AName: String; const AValue: TArray<T>);
 
     { Retrieves a record from the property bag given a name.
 
@@ -242,6 +246,7 @@ function TgoPropertyBag.AsArray<T>(const AName: String): TArray<T>;
 var
   Item: PItem;
 begin
+  Assert(not IsManagedType(T), 'Only unmanaged array element types are supported.');
   Item := Get(AName);
   if (Item <> nil) and (Item.Kind = vkDynArray) then
   begin
@@ -579,6 +584,7 @@ procedure TgoPropertyBag.SetAsArray<T>(const AName: String;
 var
   Item: PItem;
 begin
+  Assert(not IsManagedType(T), 'Only unmanaged array element types are supported.');
   Item := Get(AName);
   if (Item = nil) then
     Item := Add(AName)
