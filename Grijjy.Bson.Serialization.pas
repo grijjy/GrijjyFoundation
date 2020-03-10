@@ -3456,28 +3456,35 @@ begin
   ElementSize := FElementSize;
   ElementInfo := FElementInfo;
   ElementDeserializeProc := ElementInfo.DeserializeProc;
-  while (AReader.ReadBsonType <> TgoBsonType.EndOfDocument) do
-  begin
-    if (Count >= Capacity) then
+  try
+    while (AReader.ReadBsonType <> TgoBsonType.EndOfDocument) do
     begin
-      if (Capacity > 64) then
-        Inc(Capacity, Capacity div 4)
-      else if (Capacity > 8) then
-        Inc(Capacity, 16)
-      else
-        Inc(Capacity, 4);
-      DynArraySetLength(Result, FTypeInfo, 1, @Capacity);
-      Element := PByte(Result) + (Count * ElementSize);
+      if (Count >= Capacity) then
+      begin
+        if (Capacity > 64) then
+          Inc(Capacity, Capacity div 4)
+        else if (Capacity > 8) then
+          Inc(Capacity, 16)
+        else
+          Inc(Capacity, 4);
+        DynArraySetLength(Result, FTypeInfo, 1, @Capacity);
+        Element := PByte(Result) + (Count * ElementSize);
+      end;
+
+      Inc(Count);
+      ElementDeserializeProc(ElementInfo, Element, AReader);
+      Inc(Element, ElementSize);
     end;
+    if (Count > 0) then
+      DynArraySetLength(Result, FTypeInfo, 1, @Count);
 
-    Inc(Count);
-    ElementDeserializeProc(ElementInfo, Element, AReader);
-    Inc(Element, ElementSize);
+    AReader.ReadEndArray;
+  except
+    { Issue #32: clear array in case of exception }
+    if (Result <> nil) then
+      DynArrayClear(Result, FTypeInfo);
+    raise;
   end;
-  if (Count > 0) then
-    DynArraySetLength(Result, FTypeInfo, 1, @Count);
-
-  AReader.ReadEndArray;
 end;
 
 destructor TgoBsonSerializer.TArraySerializer.Destroy;
