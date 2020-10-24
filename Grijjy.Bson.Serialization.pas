@@ -150,6 +150,7 @@ TgoObjectId:
 TBytes:
 * Binary (default)
 * String (hex string, using 2 hex digits per byte)
+* Array (a regular JSON array of bytes)
 
 Note that for array members, the BsonRepresentation attribute applies to the
 element types, not to the array itself:
@@ -591,7 +592,7 @@ type
 type
   { Possible representation types for use with BsonRepresentationAttribute }
   TgoBsonRepresentation = (Default, Boolean, Int32, Int64, Double, &String,
-    DateTime, Document, Binary, ObjectId, Symbol);
+    DateTime, Document, Binary, ObjectId, Symbol, &Array);
 
 type
   { Used internally by BsonDefaultValueAttribute to specify a default value }
@@ -1741,7 +1742,7 @@ class procedure TgoBsonSerializer.CheckTBytesRepresentation(
   const ARepresentation: TgoBsonRepresentation);
 begin
   if (not (ARepresentation in [TgoBsonRepresentation.Binary,
-    TgoBsonRepresentation.String]))
+    TgoBsonRepresentation.String, TgoBsonRepresentation.Array]))
   then
     raise EgoBsonSerializerError.Create('Invalid TBytes representation');
 end;
@@ -4049,7 +4050,7 @@ begin
         if FIgnoreIfDefault and FHasDefaultValue then
           raise EgoBsonSerializerError.Create('Custom default values are not supported for array types');
 
-        if (AType = TypeInfo(TBytes)) then
+        if (AType = TypeInfo(TBytes)) and (FRepresentation <> TgoBsonRepresentation.Array) then
         begin
           FSerializeProc := SerializeTBytes;
           FDeserializeProc := DeserializeTBytes;
@@ -4060,6 +4061,7 @@ begin
         end
         else
         begin
+          FRepresentation := TgoBsonRepresentation.Default;
           FSerializeProc := SerializeArray;
           FDeserializeProc := DeserializeArray;
           FSerializer := TgoBsonSerializer.GetOrAddSerializer(AType);
@@ -4754,7 +4756,7 @@ begin
         if FIgnoreIfDefault and FHasDefaultValue then
           raise EgoBsonSerializerError.Create('Custom default values are not supported for array types');
 
-        if (AType = TypeInfo(TBytes)) then
+        if (AType = TypeInfo(TBytes)) and (FRepresentation <> TgoBsonRepresentation.Array) then
         begin
           FSerializeProc := SerializeTBytes;
           FDeserializeProc := DeserializeTBytes;
@@ -4765,6 +4767,7 @@ begin
         end
         else
         begin
+          FRepresentation := TgoBsonRepresentation.Default;
           FSerializeProc := SerializeArray;
           FDeserializeProc := DeserializeArray;
           FSerializer := TgoBsonSerializer.GetOrAddSerializer(AType);
