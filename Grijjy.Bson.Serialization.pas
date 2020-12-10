@@ -1810,7 +1810,7 @@ begin
   end;
 
   case Serializer.TypeKind of
-    tkRecord:
+    tkRecord {$IF (RTLVersion >= 34)},tkMRecord{$ENDIF}:
       begin
         Assert(Serializer is TRecordSerializer);
 
@@ -1820,7 +1820,14 @@ begin
         if Assigned(RecordSerializer.InitializeProc) then
           RecordSerializer.InitializeProc(@AValue)
         else
+        begin
           FillChar(AValue, SizeOf(T), 0);
+          {$IF (RTLVersion >= 34)}
+          if (Serializer.TypeKind = tkMRecord) then
+            { Make sure Initialize operator is called (if available). }
+            Initialize(AValue);
+          {$ENDIF}
+        end;
         RecordSerializer.Deserialize(@AValue, AReader);
       end;
 
@@ -2228,6 +2235,9 @@ begin
   case ATypeInfo.Kind of
     tkClass   : Result := TClassSerializer.Create(ATypeInfo);
     tkRecord  : Result := TRecordSerializer.Create(ATypeInfo);
+    {$IF (RTLVersion >= 34)}
+    tkMRecord : Result := TRecordSerializer.Create(ATypeInfo);
+    {$ENDIF}
     tkDynArray: Result := TArraySerializer.Create(ATypeInfo);
   else
     raise EgoBsonSerializerError.Create('Only class and record types can be serialized');
@@ -2374,7 +2384,7 @@ begin
   end;
 
   case Serializer.TypeKind of
-    tkRecord:
+    tkRecord {$IF (RTLVersion >= 34)},tkMRecord{$ENDIF}:
       begin
         Assert(Serializer is TRecordSerializer);
         RecordSerializer.Serialize(@AValue, AWriter);
@@ -4014,7 +4024,7 @@ begin
         end;
       end;
 
-    tkRecord:
+    tkRecord {$IF (RTLVersion >= 34)},tkMRecord{$ENDIF}:
       begin
         if (AType = TypeInfo(TGUID)) then
         begin
@@ -4061,7 +4071,6 @@ begin
         end
         else
         begin
-          FRepresentation := TgoBsonRepresentation.Default;
           FSerializeProc := SerializeArray;
           FDeserializeProc := DeserializeArray;
           FSerializer := TgoBsonSerializer.GetOrAddSerializer(AType);
@@ -4720,7 +4729,7 @@ begin
         end;
       end;
 
-    tkRecord:
+    tkRecord {$IF (RTLVersion >= 34)},tkMRecord{$ENDIF}:
       begin
         if (AType = TypeInfo(TGUID)) then
         begin
@@ -4767,7 +4776,6 @@ begin
         end
         else
         begin
-          FRepresentation := TgoBsonRepresentation.Default;
           FSerializeProc := SerializeArray;
           FDeserializeProc := DeserializeArray;
           FSerializer := TgoBsonSerializer.GetOrAddSerializer(AType);

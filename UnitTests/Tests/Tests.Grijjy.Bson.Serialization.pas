@@ -548,6 +548,39 @@ type
     [Test] procedure TestRecord;
   end;
 
+{$IF (RTLVersion >= 34)}
+type
+  TestBsonCustomManagedRecord = class
+  public type
+    TRec = record
+    public class var
+      InstanceCount: Integer;
+    public
+      Y: Integer;
+    public
+      class operator Initialize(out ADest: TRec);
+      class operator Finalize(var ADest: TRec);
+      class operator Assign(var ADest: TRec;
+        const [ref] ASrc: TRec);
+    end;
+
+    TTestRecord = record
+    public class var
+      InstanceCount: Integer;
+    public
+      X: Integer;
+      R: TRec;
+    public
+      class operator Initialize(out ADest: TTestRecord);
+      class operator Finalize(var ADest: TTestRecord);
+      class operator Assign(var ADest: TTestRecord;
+        const [ref] ASrc: TTestRecord);
+    end;
+  public
+    [Test] procedure TestCustomManagedRecord;
+  end;
+{$ENDIF}
+
 type
   TestBsonObject = class
   public type
@@ -3019,6 +3052,84 @@ begin
   Assert.AreEqual(Bson, Actual);
 end;
 
+{$IF (RTLVersion >= 34)}
+
+{ TestBsonCustomManagedRecord.TRec }
+
+class operator TestBsonCustomManagedRecord.TRec.Initialize(out ADest: TRec);
+begin
+  ADest.Y := 42;
+  Inc(InstanceCount);
+end;
+
+class operator TestBsonCustomManagedRecord.TRec.Finalize(var ADest: TRec);
+begin
+  ADest.Y := 0;
+  Dec(InstanceCount);
+end;
+
+class operator TestBsonCustomManagedRecord.TRec.Assign(var ADest: TRec;
+  const [ref] ASrc: TRec);
+begin
+  ADest.Y := ASrc.Y * 2;
+end;
+
+{ TestBsonCustomManagedRecord.TTestRecord }
+
+class operator TestBsonCustomManagedRecord.TTestRecord.Initialize(out ADest: TTestRecord);
+begin
+  ADest.X := -123;
+  Inc(InstanceCount);
+end;
+
+class operator TestBsonCustomManagedRecord.TTestRecord.Finalize(var ADest: TTestRecord);
+begin
+  ADest.X := 0;
+  Dec(InstanceCount);
+end;
+
+class operator TestBsonCustomManagedRecord.TTestRecord.Assign(var ADest: TTestRecord;
+  const [ref] ASrc: TTestRecord);
+begin
+  ADest.X := -ASrc.X;
+  ADest.R := ASrc.R;
+end;
+
+{ TestBsonCustomManagedRecord }
+
+procedure TestBsonCustomManagedRecord.TestCustomManagedRecord;
+var
+  Json: String;
+begin
+  begin
+    var R1, R2, Rehydrated: TTestRecord;
+    Assert.AreEqual(-123, R1.X);
+    Assert.AreEqual(42, R1.R.Y);
+    Assert.AreEqual(-123, R2.X);
+    Assert.AreEqual(42, R2.R.Y);
+    Assert.AreEqual(-123, Rehydrated.X);
+    Assert.AreEqual(42, Rehydrated.R.Y);
+    Assert.AreEqual(3, TTestRecord.InstanceCount);
+    Assert.AreEqual(3, TRec.InstanceCount);
+
+    R1 := R2;
+    Assert.AreEqual(123, R1.X);
+    Assert.AreEqual(84, R1.R.Y);
+    Assert.IsTrue(TgoBsonSerializer.TrySerialize(R1, TgoJsonWriterSettings.Shell, Json));
+    Assert.AreEqual('{ "X" : 123, "R" : { "Y" : 84 } }', Json);
+    Assert.AreEqual(3, TTestRecord.InstanceCount);
+    Assert.AreEqual(3, TRec.InstanceCount);
+
+    Assert.IsTrue(TgoBsonSerializer.TryDeserialize(Json, Rehydrated));
+    Assert.AreEqual(123, Rehydrated.X);
+    Assert.AreEqual(84, Rehydrated.R.Y);
+  end;
+  Assert.AreEqual(0, TTestRecord.InstanceCount);
+  Assert.AreEqual(0, TRec.InstanceCount);
+end;
+
+{$ENDIF !(RTLVersion >= 34)}
+
 { TestBsonObject }
 
 procedure TestBsonObject.TestNilToNil;
@@ -4554,6 +4665,9 @@ initialization
   TDUnitX.RegisterTestFixture(TestBsonSerializeEnum);
   TDUnitX.RegisterTestFixture(TestBsonSerializeSet);
   TDUnitX.RegisterTestFixture(TestBsonRecord);
+  {$IF (RTLVersion >= 34)}
+  TDUnitX.RegisterTestFixture(TestBsonCustomManagedRecord);
+  {$ENDIF}
   TDUnitX.RegisterTestFixture(TestBsonObject);
   TDUnitX.RegisterTestFixture(TestBsonArrayOfInteger);
   TDUnitX.RegisterTestFixture(TestBsonArrayOfString);
