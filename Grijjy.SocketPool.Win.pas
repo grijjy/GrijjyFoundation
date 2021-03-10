@@ -268,6 +268,7 @@ type
     FBehavior: TgoSocketPoolBehavior;
     FWorkers: array of TSocketPoolWorker;
     FWorkerHandles: array of THandle;
+    FShutdown: Boolean;
   private
     Connections: TgoSet<TgoSocketConnection>;
     ConnectionsLock: TCriticalSection;
@@ -290,6 +291,9 @@ type
 
     { Optimization mode }
     property Optimization: TgoSocketOptimization read FOptimization;
+
+    { Shutdown }
+    property Shutdown: Boolean read FShutdown;
   end;
 
 implementation
@@ -1204,6 +1208,7 @@ begin
   inherited Create;
   FOptimization := AOptimization;
   FBehavior := ABehavior;
+  FShutdown := False;
 
   Connections := TgoSet<TgoSocketConnection>.Create;
   ConnectionsLock := TCriticalSection.Create;
@@ -1246,6 +1251,7 @@ var
   Connection: TgoSocketConnection;
   Start: TDateTime;
 begin
+  FShutdown := True;
   inherited Destroy;
 
   { There are 2 ways to shutdown and cleanup for IOCP:
@@ -1269,7 +1275,7 @@ begin
   try
     for Connection in Connections.ToArray do
     begin
-      if not Connection.Closed then
+      if (Connection.State <> TgoConnectionState.Disconnected) and (not Connection.Closed) then
       begin
         Connection.PostDisconnect;
         //closesocket(Connection.Socket);
@@ -1450,6 +1456,9 @@ begin
     Result := nil;
     ConnectionsLock.Enter;
     try
+      if FShutdown then
+        Exit(nil);
+
       for Connection in Connections.ToArray do
       begin
         if (Connection.State = TgoConnectionState.Connected) and
