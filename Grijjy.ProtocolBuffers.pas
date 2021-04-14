@@ -2149,9 +2149,6 @@ begin
     FInitProc(ARecord);
 
   FieldCount := Length(FFields);
-  if (FieldCount = 0) then
-    Exit;
-
   FieldIndex := 0;
   while (AReader.HasData) do
   begin
