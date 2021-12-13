@@ -638,7 +638,7 @@ begin
       { delete buffer }
       if FSize > ALength then
       begin
-        Move(FBuffer[Size], FBuffer[0], FSize - ALength);
+        Move(FBuffer[ALength], FBuffer[0], FSize - ALength);
         FSize := FSize - ALength;
       end
       else
