@@ -996,7 +996,7 @@ begin
   {$IFDEF DEBUG}
   NameThreadForDebugging('TSocketPoolWorker');
   {$ENDIF}
-  while True do
+  while Terminated = false do
   begin
     ReturnValue := GetQueuedCompletionStatus(FOwner.FHandle, BytesTransferred,
       ULONG_PTR(Connection), POverlapped(PerIoData), WSA_INFINITE);
