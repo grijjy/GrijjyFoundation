@@ -710,7 +710,7 @@ var
   Close: Boolean;
   Error: Integer;
 begin
-  while True do
+  while Terminated = false do
   begin
     NumberOfEvents := epoll_pwait(FOwner.Handle, @FEvents, MAX_EVENTS, 100, nil);
     if NumberOfEvents = 0 then { timeout }
