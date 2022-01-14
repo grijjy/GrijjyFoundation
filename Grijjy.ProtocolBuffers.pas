@@ -1086,12 +1086,14 @@ begin
   Len := AReader.ReadVarUInt;
   SetLength(RecBytes, Len);
   if (Len > 0) then
+  begin
     AReader.ReadBytes(RecBytes[0], Len);
-  RecReader := TReader.Create(@RecBytes[0], Len);
-  try
-    Info.Deserialize(RecReader, P);
-  finally
-    RecReader.Free;
+    RecReader := TReader.Create(@RecBytes[0], Len);
+    try
+      Info.Deserialize(RecReader, P);
+    finally
+      RecReader.Free;
+    end;
   end;
 end;
 
