@@ -6832,7 +6832,7 @@ var
   C: Char;
 begin
   C := ABuffer.Read;
-  if (C >= #$80) then
+  if (Ord(C) >= $80) then
     CharError(ABuffer, C, AToken)
   else
     FCharHandlers[C](ABuffer, C, AToken);
@@ -6847,7 +6847,7 @@ begin
   while (C <> #0) and (C <= ' ') do
     C := ABuffer.Read;
 
-  if (C >= #$80) then
+  if (Ord(C) >= $80) then
     CharError(ABuffer, C, AToken)
   else
     FCharHandlers[C](ABuffer, C, AToken);
