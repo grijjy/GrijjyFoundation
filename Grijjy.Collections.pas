@@ -887,8 +887,9 @@ function TgoReadOnlySet<T>.Contains(const AItem: T): Boolean;
 var
   Mask, Index, HashCode, HC: Integer;
 begin
+  Result := False;
   if (FCount = 0) then
-    Exit(False);
+    Exit;
 
   HashCode := FComparer.GetHashCode(AItem) and $7FFFFFFF;
   Mask := Length(FItems) - 1;
@@ -905,8 +906,6 @@ begin
 
     Index := (Index + 1) and Mask;
   end;
-
-  Result := False;
 end;
 
 constructor TgoReadOnlySet<T>.Create;
@@ -1785,8 +1784,9 @@ function TgoValueDictionary<TKey, TValue>.ContainsKey(
 var
   Mask, Index, HashCode, HC: Integer;
 begin
+  Result := False;
   if (FCount = 0) then
-    Exit(False);
+    Exit;
 
   HashCode := FComparer.GetHashCode(AKey) and $7FFFFFFF;
   Mask := Length(FItems) - 1;
@@ -1803,8 +1803,6 @@ begin
 
     Index := (Index + 1) and Mask;
   end;
-
-  Result := False;
 end;
 
 constructor TgoValueDictionary<TKey, TValue>.Create(
