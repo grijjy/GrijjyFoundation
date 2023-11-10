@@ -996,7 +996,7 @@ begin
   {$IFDEF DEBUG}
   NameThreadForDebugging('TSocketPoolWorker');
   {$ENDIF}
-  while True do
+  while Terminated = false do
   begin
     ReturnValue := GetQueuedCompletionStatus(FOwner.FHandle, BytesTransferred,
       ULONG_PTR(Connection), POverlapped(PerIoData), WSA_INFINITE);
@@ -1271,25 +1271,28 @@ begin
     safe to exit the thread. }
 
   { destroy all pending connections }
-  ConnectionsLock.Enter;
   try
-    for Connection in Connections.ToArray do
-    begin
-      if (Connection.State <> TgoConnectionState.Disconnected) and (not Connection.Closed) then
+    ConnectionsLock.Enter;
+    try
+      for Connection in Connections.ToArray do
       begin
-        Connection.PostDisconnect;
-        //closesocket(Connection.Socket);
-        CancelIoEx(Connection.Socket, nil);
-        Start := Now;
-        while (MillisecondsBetween(Now, Start) < TIMEOUT_CLOSE) and
-          (not Connection.Closed) do
-          Sleep(5);
+        if (Connection.State <> TgoConnectionState.Disconnected) and (not Connection.Closed) then
+        begin
+          Connection.PostDisconnect;
+          //closesocket(Connection.Socket);
+          CancelIoEx(Connection.Socket, nil);
+          Start := Now;
+          while (MillisecondsBetween(Now, Start) < TIMEOUT_CLOSE) and
+            (not Connection.Closed) do
+            Sleep(5);
+        end;
+        Connection.Free;
       end;
-      Connection.Free;
+      Connections.Free;
+    finally
+      ConnectionsLock.Leave;
     end;
-    Connections.Free;
-  finally
-    ConnectionsLock.Leave;
+  except
   end;
   ConnectionsLock.Free;
 
