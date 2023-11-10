@@ -2960,7 +2960,7 @@ end;
 
 destructor TgoBsonSerializer.TStructSerializer.Destroy;
 begin
-  FInfoByName.DisposeOf;
+  FInfoByName.Free;
   inherited;
 end;
 
@@ -4457,7 +4457,7 @@ begin
       SetObjectProp(AInstance, AProp.Info, Obj)
     else
     begin
-      Obj.DisposeOf;
+      Obj.Free;
       raise EgoBsonSerializerError.CreateFmt('Cannot set read-only property %s.%s', [Obj.ClassName, AProp.Name]);
     end;
   end;

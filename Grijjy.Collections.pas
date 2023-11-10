@@ -1137,7 +1137,7 @@ begin
     if (FItems[I].HashCode <> EMPTY_HASH) then
     begin
       Item := FItems[I].Item;
-      PObject(@Item)^.DisposeOf;
+      PObject(@Item)^.Free;
     end;
   end;
   inherited;
@@ -1180,7 +1180,7 @@ begin
   if IsManagedType(T) then
     FItems[Gap].Item := Default(T);
 
-  PObject(@Item)^.DisposeOf;
+  PObject(@Item)^.Free;
 
   Dec(FCount);
 end;

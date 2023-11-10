@@ -873,7 +873,7 @@ begin
     FLock.Leave;
   end;
   for HttpClient in ClientsToFree do
-    HttpClient.DisposeOf;
+    HttpClient.Free;
 end;
 
 procedure TgoHttpClientManager.Execute;

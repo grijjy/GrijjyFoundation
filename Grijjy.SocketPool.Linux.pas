@@ -923,9 +923,9 @@ begin
     begin
       if not Connection.Closed then
         Posix.Unistd.__close(Connection.Socket);
-      Connection.DisposeOf;
+      Connection.Free;
     end;
-    Connections.DisposeOf;
+    Connections.Free;
   finally
     ConnectionsLock.Leave;
   end;
@@ -1007,7 +1007,7 @@ begin
       {$IFDEF GRIJJYLOGGING}
       _Log.Send(Format('Freeing connection (Socket=%d, Connection=%d, ThreadId=%d)', [Connection.Socket, Cardinal(Connection), GetCurrentThreadId]));
       {$ENDIF}
-      Connection.DisposeOf;
+      Connection.Free;
     end;
   finally
     ConnectionsToFree.Free;
@@ -1119,4 +1119,4 @@ finalization
   _Log.Free;
   {$ENDIF}
 
-end.
+end.
