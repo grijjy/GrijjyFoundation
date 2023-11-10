@@ -10,6 +10,10 @@ type
   TTestTgoPropertyBag = class
   private
     FCUT: TgoPropertyBag;
+    FChangedProp: String;
+    FChangedCount: Integer;
+    procedure HandleChanged(const ASender: TgoPropertyBag;
+      const APropertyName: String);
   public
     [Setup] procedure SetUp;
     [Teardown] procedure TearDown;
@@ -36,6 +40,7 @@ type
     [Test] procedure TestStringCopyOnWrite;
     [Test] procedure TestTBytesCopyOnWrite;
     [Test] procedure TestMixedTypes;
+    [Test] procedure TestOnChanged;
   end;
 
 implementation
@@ -61,7 +66,6 @@ type
   public
     constructor Create(const AValue: Integer);
     destructor Destroy; override;
-
     property Value: Integer read FValue write FValue;
   end;
 
@@ -70,7 +74,6 @@ type
   ['{CC3437FD-CDE2-4A3A-BAFE-266394DF4018}']
     function GetValue: Integer;
     procedure SetValue(const AValue: Integer);
-
     property Value: Integer read GetValue write SetValue;
   end;
 
@@ -129,6 +132,14 @@ begin
 end;
 
 { TTestTgoPropertyBag }
+
+procedure TTestTgoPropertyBag.HandleChanged(const ASender: TgoPropertyBag;
+  const APropertyName: String);
+begin
+  Assert.AreEqual(FCUT, ASender);
+  FChangedProp := APropertyName;
+  Inc(FChangedCount);
+end;
 
 procedure TTestTgoPropertyBag.SetUp;
 begin
@@ -428,7 +439,6 @@ var
   R2, R2A: TRect;
 begin
   ReportMemoryLeaksOnShutdown := True;
-
   Foo1 := nil;
   Foo2 := nil;
   try
@@ -438,7 +448,6 @@ begin
     A2 := TArray<Single>.Create(1.5, -2.25, 3.125);
     R1 := PointF(-1.2, 3.4);
     R2 := Rect(5, 6, 7, 8);
-
     { Set properties }
     FCUT.AsBoolean['BoolProp1'] := False;
     FCUT.AsBoolean['BoolProp2'] := True;
@@ -467,91 +476,72 @@ begin
     FCUT.SetAsArray<Single>('ArrayProp2', A2);
     FCUT.SetAsRecord('RecordProp1', R1);
     FCUT.SetAsRecord('RecordProp2', R2);
-
     { Check properties, including non-existing ones and wrong-case names }
     Assert.AreEqual(False, FCUT.AsBoolean['BoolProp1']);
     Assert.AreEqual(True, FCUT.AsBoolean['BoolProp2']);
     Assert.AreEqual(False, FCUT.AsBoolean['BoolProp3']);
     Assert.AreEqual(False, FCUT.AsBoolean['boolProp1']);
-
     Assert.AreEqual(42, FCUT.AsInteger['IntProp1']);
     Assert.AreEqual(-42, FCUT.AsInteger['IntProp2']);
     Assert.AreEqual(0, FCUT.AsInteger['IntProp3']);
     Assert.AreEqual(0, FCUT.AsInteger['Intprop1']);
-
     Assert.AreEqual(1, FCUT.AsCardinal['CardinalProp1']);
     Assert.AreEqual($FFFFFFFF, FCUT.AsCardinal['CardinalProp2']);
     Assert.AreEqual(0, FCUT.AsCardinal['CardinalProp3']);
     Assert.AreEqual(0, FCUT.AsCardinal['cardinalprop1']);
-
     Assert.AreEqual(-$1234567890, FCUT.AsInt64['Int64Prop1']);
     Assert.AreEqual($1234567890, FCUT.AsInt64['Int64Prop2']);
     Assert.AreEqual<Int64>(0, FCUT.AsInt64['Int64Prop3']);
-
     Assert.AreEqual<UInt64>(2, FCUT.AsUInt64['UInt64Prop1']);
     Assert.AreEqual($FEDCBA9876543210, FCUT.AsUInt64['UInt64Prop2']);
     Assert.AreEqual<UInt64>(0, FCUT.AsUInt64['UInt64Prop3']);
-
     Assert.AreEqual(Pi, FCUT.AsSingle['SingleProp1'], EPSILON);
     Assert.AreEqual(-Pi, FCUT.AsSingle['SingleProp2'], EPSILON);
     Assert.AreEqual<Single>(0, FCUT.AsSingle['SingleProp3']);
-
     Assert.AreEqual(Pi * Pi, FCUT.AsDouble['DoubleProp1'], EPSILON);
     Assert.AreEqual(-Pi * Pi, FCUT.AsDouble['DoubleProp2'], EPSILON);
     Assert.AreEqual<Double>(0, FCUT.AsDouble['DoubleProp3']);
-
     Assert.AreEqual(@FCUT, FCUT.AsPointer['PointerProp1']);
     Assert.AreEqual(nil, FCUT.AsPointer['PointerProp2']);
-
     Assert.AreEqual('Foo', FCUT.AsString['StringProp1']);
     Assert.AreEqual('Bar', FCUT.AsString['StringProp2']);
     Assert.AreEqual('', FCUT.AsString['StringProp3']);
-
     Assert.IsNotNull(FCUT.AsInterface['InterfaceProp1']);
     Assert.AreEqual(1, (FCUT.AsInterface['InterfaceProp1'] as IBar).Value);
     Assert.IsNotNull(FCUT.AsInterface['InterfaceProp2']);
     Assert.AreEqual(2, (FCUT.AsInterface['InterfaceProp2'] as IBar).Value);
     Assert.IsNull(FCUT.AsInterface['InterfaceProp3']);
-
     Assert.IsNotNull(FCUT.AsObject['ObjectProp1']);
     Assert.AreEqual(1, (FCUT.AsObject['ObjectProp1'] as TFoo).Value);
     Assert.IsNotNull(FCUT.AsObject['ObjectProp2']);
     Assert.AreEqual(2, (FCUT.AsObject['ObjectProp2'] as TFoo).Value);
     Assert.IsNull(FCUT.AsObject['ObjectProp3']);
-
     Assert.AreEqual('Foo', StringOf(FCUT.AsBytes['BytesProp1']));
     Assert.AreEqual('Bar', StringOf(FCUT.AsBytes['BytesProp2']));
     Assert.AreEqual(0, Length(FCUT.AsBytes['BytesProp3']));
-
     A1A := FCUT.AsArray<Integer>('ArrayProp1');
     Assert.AreEqual(3, Length(A1A));
     Assert.AreEqual(1, A1A[0]);
     Assert.AreEqual(2, A1A[1]);
     Assert.AreEqual(3, A1A[2]);
-
     A2A := FCUT.AsArray<Single>('ArrayProp2');
     Assert.AreEqual(3, Length(A2A));
     Assert.AreEqual<Single>(1.5, A2A[0]);
     Assert.AreEqual<Single>(-2.25, A2A[1]);
     Assert.AreEqual<Single>(3.125, A2A[2]);
-
     A1 := FCUT.AsArray<Integer>('ArrayProp3');
     Assert.AreEqual(0, Length(A1));
-
     R1A := FCUT.AsRecord<TPointF>('RecordProp1');
     Assert.AreEqual(-1.2, R1A.X, EPSILON);
     Assert.AreEqual( 3.4, R1A.Y, EPSILON);
-
     R2A := FCUT.AsRecord<TRect>('RecordProp2');
     Assert.AreEqual(5, R2A.Left);
     Assert.AreEqual(6, R2A.Top);
     Assert.AreEqual(7, R2A.Right);
     Assert.AreEqual(8, R2A.Bottom);
-
     R1 := FCUT.AsRecord<TPointF>('RecordProp3');
     Assert.AreEqual<Single>(0, R1.X);
     Assert.AreEqual<Single>(0, R1.Y);
-
     { Check type mismatches (no conversion is performed) }
     Assert.AreEqual(False, FCUT.AsBoolean['IntProp1']);
     Assert.AreEqual(0, FCUT.AsInteger['CardinalProp2']);
@@ -589,6 +579,205 @@ begin
 
   Foo2.Free;
   Assert.AreEqual(0, TFoo.InstanceCount);
+end;
+
+procedure TTestTgoPropertyBag.TestOnChanged;
+begin
+  FCUT.OnChanged := HandleChanged;
+  FChangedProp := '';
+  FChangedCount := 0;
+
+  var Obj2: TObject := nil;
+  var Obj := TObject.Create;
+  try
+    { Add new properties. Should always fire OnChange. }
+    FCUT.SetAsArray<Integer>('array', TArray<Integer>.Create(1, 2, 3));
+    Assert.AreEqual(1, FChangedCount);
+    Assert.AreEqual('array', FChangedProp);
+
+    var DifferentArray := TArray<Integer>.Create(1, 2, 3);
+    var DifferentBytes := TBytes.Create(1, 2, 3);
+
+    FCUT.SetAsArray<Integer>('array', DifferentArray);
+    Assert.AreEqual(2, FChangedCount);
+    Assert.AreEqual('array', FChangedProp);
+
+    FCUT.SetAsRecord<TPoint>('record', Point(1, 2));
+    Assert.AreEqual(3, FChangedCount);
+    Assert.AreEqual('record', FChangedProp);
+
+    FCUT.AsBoolean['boolean'] := True;
+    Assert.AreEqual(4, FChangedCount);
+    Assert.AreEqual('boolean', FChangedProp);
+
+    FCUT.AsInteger['integer'] := -42;
+    Assert.AreEqual(5, FChangedCount);
+    Assert.AreEqual('integer', FChangedProp);
+
+    FCUT.AsCardinal['cardinal'] := 42;
+    Assert.AreEqual(6, FChangedCount);
+    Assert.AreEqual('cardinal', FChangedProp);
+
+    FCUT.AsInt64['int64'] := -$1234567890ABC;
+    Assert.AreEqual(7, FChangedCount);
+    Assert.AreEqual('int64', FChangedProp);
+
+    FCUT.AsUInt64['uint64'] := $1234567890ABC;
+    Assert.AreEqual(8, FChangedCount);
+    Assert.AreEqual('uint64', FChangedProp);
+
+    FCUT.AsSingle['single'] := -1.25;
+    Assert.AreEqual(9, FChangedCount);
+    Assert.AreEqual('single', FChangedProp);
+
+    FCUT.AsDouble['double'] := 3.75;
+    Assert.AreEqual(10, FChangedCount);
+    Assert.AreEqual('double', FChangedProp);
+
+    FCUT.AsPointer['pointer'] := Pointer(123);
+    Assert.AreEqual(11, FChangedCount);
+    Assert.AreEqual('pointer', FChangedProp);
+
+    FCUT.AsString['string'] := 'foo';
+    Assert.AreEqual(12, FChangedCount);
+    Assert.AreEqual('string', FChangedProp);
+
+    var Intf: IInterface := TInterfacedObject.Create;
+    FCUT.AsInterface['interface'] := Intf;
+    Assert.AreEqual(13, FChangedCount);
+    Assert.AreEqual('interface', FChangedProp);
+
+    FCUT.AsObject['object'] := Obj;
+    Assert.AreEqual(14, FChangedCount);
+    Assert.AreEqual('object', FChangedProp);
+
+    FCUT.AsBytes['bytes'] := TBytes.Create(1, 2, 3);
+    Assert.AreEqual(15, FChangedCount);
+    Assert.AreEqual('bytes', FChangedProp);
+
+    FCUT.AsBytes['bytes'] := DifferentBytes;
+    Assert.AreEqual(16, FChangedCount);
+    Assert.AreEqual('bytes', FChangedProp);
+
+    { Set properties to their current values. This shouldn't fire OnChanged. }
+    FCUT.SetAsArray<Integer>('array', DifferentArray);
+    Assert.AreEqual(16, FChangedCount);
+    Assert.AreEqual('bytes', FChangedProp);
+
+    FCUT.SetAsRecord<TPoint>('record', Point(1, 2));
+    Assert.AreEqual(16, FChangedCount);
+    Assert.AreEqual('bytes', FChangedProp);
+
+    FCUT.AsBoolean['boolean'] := True;
+    Assert.AreEqual(16, FChangedCount);
+    Assert.AreEqual('bytes', FChangedProp);
+
+    FCUT.AsInteger['integer'] := -42;
+    Assert.AreEqual(16, FChangedCount);
+    Assert.AreEqual('bytes', FChangedProp);
+
+    FCUT.AsCardinal['cardinal'] := 42;
+    Assert.AreEqual(16, FChangedCount);
+    Assert.AreEqual('bytes', FChangedProp);
+
+    FCUT.AsInt64['int64'] := -$1234567890ABC;
+    Assert.AreEqual(16, FChangedCount);
+    Assert.AreEqual('bytes', FChangedProp);
+
+    FCUT.AsUInt64['uint64'] := $1234567890ABC;
+    Assert.AreEqual(16, FChangedCount);
+    Assert.AreEqual('bytes', FChangedProp);
+
+    FCUT.AsSingle['single'] := -1.25;
+    Assert.AreEqual(16, FChangedCount);
+    Assert.AreEqual('bytes', FChangedProp);
+
+    FCUT.AsDouble['double'] := 3.75;
+    Assert.AreEqual(16, FChangedCount);
+    Assert.AreEqual('bytes', FChangedProp);
+
+    FCUT.AsPointer['pointer'] := Pointer(123);
+    Assert.AreEqual(16, FChangedCount);
+    Assert.AreEqual('bytes', FChangedProp);
+
+    FCUT.AsString['string'] := 'foo';
+    Assert.AreEqual(16, FChangedCount);
+    Assert.AreEqual('bytes', FChangedProp);
+
+    FCUT.AsInterface['interface'] := Intf;
+    Assert.AreEqual(16, FChangedCount);
+    Assert.AreEqual('bytes', FChangedProp);
+
+    FCUT.AsObject['object'] := Obj;
+    Assert.AreEqual(16, FChangedCount);
+    Assert.AreEqual('bytes', FChangedProp);
+
+    FCUT.AsBytes['bytes'] := DifferentBytes;
+    Assert.AreEqual(16, FChangedCount);
+    Assert.AreEqual('bytes', FChangedProp);
+
+    { Change current values. This should fire OnChanged. }
+    FCUT.SetAsArray<Integer>('array', TArray<Integer>.Create(1, 2, 3));
+    Assert.AreEqual(17, FChangedCount);
+    Assert.AreEqual('array', FChangedProp);
+
+    FCUT.AsBoolean['boolean'] := False;
+    Assert.AreEqual(18, FChangedCount);
+    Assert.AreEqual('boolean', FChangedProp);
+
+    FCUT.AsInteger['integer'] := -142;
+    Assert.AreEqual(19, FChangedCount);
+    Assert.AreEqual('integer', FChangedProp);
+
+    FCUT.AsCardinal['cardinal'] := 142;
+    Assert.AreEqual(20, FChangedCount);
+    Assert.AreEqual('cardinal', FChangedProp);
+
+    FCUT.AsInt64['int64'] := -$1234567890ABCD;
+    Assert.AreEqual(21, FChangedCount);
+    Assert.AreEqual('int64', FChangedProp);
+
+    FCUT.AsUInt64['uint64'] := $1234567890ABCD;
+    Assert.AreEqual(22, FChangedCount);
+    Assert.AreEqual('uint64', FChangedProp);
+
+    FCUT.AsSingle['single'] := 1.25;
+    Assert.AreEqual(23, FChangedCount);
+    Assert.AreEqual('single', FChangedProp);
+
+    FCUT.AsDouble['double'] := -3.75;
+    Assert.AreEqual(24, FChangedCount);
+    Assert.AreEqual('double', FChangedProp);
+
+    FCUT.AsPointer['pointer'] := Pointer(1234);
+    Assert.AreEqual(25, FChangedCount);
+    Assert.AreEqual('pointer', FChangedProp);
+
+    FCUT.AsString['string'] := 'bar';
+    Assert.AreEqual(26, FChangedCount);
+    Assert.AreEqual('string', FChangedProp);
+
+    FCUT.AsString['string'] := '';
+    Assert.AreEqual(27, FChangedCount);
+    Assert.AreEqual('string', FChangedProp);
+
+    Intf := TInterfacedObject.Create;
+    FCUT.AsInterface['interface'] := Intf;
+    Assert.AreEqual(28, FChangedCount);
+    Assert.AreEqual('interface', FChangedProp);
+
+    Obj2 := TObject.Create;
+    FCUT.AsObject['object'] := Obj2;
+    Assert.AreEqual(29, FChangedCount);
+    Assert.AreEqual('object', FChangedProp);
+
+    FCUT.AsBytes['bytes'] := TBytes.Create(1, 2, 3);
+    Assert.AreEqual(30, FChangedCount);
+    Assert.AreEqual('bytes', FChangedProp);
+  finally
+    Obj2.Free;
+    Obj.Free;
+  end;
 end;
 
 procedure TTestTgoPropertyBag.TestRemove;
