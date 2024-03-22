@@ -123,6 +123,47 @@ type
   end;
 
 type
+  { Protocol buffer for requesting recent memory allocations }
+  TgoLogAllocationsRequestProtocol = record
+    { Last number of milliseconds }
+    [Serialize(1)] LastMs: Integer;
+  end;
+
+type
+  { Represents a single memory allocation }
+  TgoMemoryAllocation = record
+    { Allocation number }
+    [Serialize(1)] AllocationNumber: Integer;
+
+    { Memory address }
+    [Serialize(2)] Address: UInt64;
+
+    { Size of memory as requested by user }
+    [Serialize(3)] Size: Integer;
+
+    { Size of memory including headers }
+    [Serialize(4)] BlockSize: Integer;
+
+    { Number of milliseconds ago the allocation was made }
+    [Serialize(5)] TimeAgoMs: Integer;
+
+    { The type of memory allocated. Will be the text 'AnsiString',
+      'UnicodeString', a class name or an empty string for rawe memory. }
+    [Serialize(6)] MemoryType: String;
+
+    { The stack trace leading to this allocation, in FastMM5 log format }
+    [Serialize(7)] StackTrace: String;
+  end;
+
+type
+  { Protocol buffer that defines a memory allocations report }
+  TgoLogMemoryAllocationsProtocol = record
+  public
+    { Array of memory allocations }
+    [Serialize(1)] Allocations: TArray<TgoMemoryAllocation>;
+  end;
+
+type
   TgoCloudLogger = class(TZMQClientProtocol)
   private
     { Internal }
@@ -179,6 +220,7 @@ const
   LOG_FORMAT_CONNECTED    = -1;
   LOG_FORMAT_MEMORY_USAGE = -2;
   LOG_FORMAT_LIVE_WATCHES = -3;
+  LOG_FORMAT_ALLOCATIONS  = -4;
 
 implementation
 
