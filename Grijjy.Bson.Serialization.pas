@@ -568,7 +568,7 @@ TgoBsonSerializer.RegisterCustomSerializer<TgoAlias>(TgoAliasSerializer);
   not serializable, or if the JSON/BSON to deserialize is invalid. To prevent
   exceptions, you can use the TrySerialize and TryDeserialize methods instead.
   These return False if (de)serialization failed.
-* Members of type TDateTime are expected to be un UTC format. No attempt is made
+* Members of type TDateTime are expected to be in UTC format. No attempt is made
   to convert from local time to UTC and vice versa. *)
 
 {$INCLUDE 'Grijjy.inc'}
@@ -2507,10 +2507,10 @@ begin
 
     TgoBsonRepresentation.String:
       begin
-        S := FormatDateTime('yyyy-mm-dd"T"hh:nn:ss', AValue, goUSFormatSettings);
-        MS := MilliSecondOf(AValue);
-        if (MS <> 0) then
-          S := S + '.' + IntToStr(MS * 10000);
+        S := DateToISO8601(AValue);
+        if (S.EndsWith('.000Z')) then
+          { Only include milliseconds if not 0 }
+          S := S.Remove(S.Length - 5, 4);
         AWriter.WriteString(S);
       end
   else

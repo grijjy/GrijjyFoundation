@@ -2,6 +2,7 @@ program GrijjyFoundationTests;
 
 {$IFNDEF TESTINSIGHT}
 {$APPTYPE CONSOLE}
+{$WARN SYMBOL_PLATFORM OFF}
 {$ENDIF}
 
 {$STRONGLINKTYPES ON}
@@ -56,7 +57,7 @@ begin
 
     {$IFNDEF CI}
     //We don't want this happening when running under CI.
-    if TDUnitX.Options.ExitBehavior = TDUnitXExitBehavior.Pause then
+    if (DebugHook <> 0) then
     begin
       System.Write('Done.. press <Enter> key to quit.');
       System.Readln;

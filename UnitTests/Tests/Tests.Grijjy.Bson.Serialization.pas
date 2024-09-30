@@ -415,6 +415,7 @@ type
     [Test] procedure TestMin;
     [Test] procedure TestMax;
     [Test] procedure TestSample;
+    [Test] procedure TestIssue58;
   end;
 
 type
@@ -2642,6 +2643,25 @@ end;
 
 { TestBsonSerializeDateTime }
 
+procedure TestBsonSerializeDateTime.TestIssue58;
+var
+  R, Rehydrated: TTestRecord;
+  Json: String;
+  Bson, Actual: TBytes;
+begin
+  R.Initialize(45562.3361695139);
+  Assert.IsTrue(TgoBsonSerializer.TrySerialize(R, TgoJsonWriterSettings.Shell, Json));
+  Assert.AreEqual('{ "N" : ISODate("2024-09-27T08:04:05.046Z"), "D" : ISODate("2024-09-27T08:04:05.046Z"), ' +
+    '"S" : "2024-09-27T08:04:05.046Z", "L" : NumberLong("638630210450460000"), ' +
+    '"O" : { "DateTime" : ISODate("2024-09-27T08:04:05.046Z"), "Ticks" : NumberLong("638630210450460000") } }', Json);
+
+  Assert.IsTrue(TgoBsonSerializer.TrySerialize(R, Bson));
+  Assert.IsTrue(TgoBsonSerializer.TryDeserialize(Bson, Rehydrated));
+
+  Assert.IsTrue(TgoBsonSerializer.TrySerialize(Rehydrated, Actual));
+  Assert.AreEqual(Bson, Actual);
+end;
+
 procedure TestBsonSerializeDateTime.TestMax;
 var
   R, Rehydrated: TTestRecord;
@@ -2651,7 +2671,7 @@ begin
   R.Initialize(EncodeDateTime(9999, 12, 31, 23, 59, 59, 999));
   Assert.IsTrue(TgoBsonSerializer.TrySerialize(R, TgoJsonWriterSettings.Shell, Json));
   Assert.AreEqual('{ "N" : ISODate("9999-12-31T23:59:59.999Z"), "D" : ISODate("9999-12-31T23:59:59.999Z"), ' +
-    '"S" : "9999-12-31T23:59:59.9990000", "L" : NumberLong("3155378975999990000"), ' +
+    '"S" : "9999-12-31T23:59:59.999Z", "L" : NumberLong("3155378975999990000"), ' +
     '"O" : { "DateTime" : ISODate("9999-12-31T23:59:59.999Z"), "Ticks" : NumberLong("3155378975999990000") } }', Json);
 
   Assert.IsTrue(TgoBsonSerializer.TrySerialize(R, Bson));
@@ -2670,7 +2690,7 @@ begin
   R.Initialize(EncodeDateTime(1, 1, 1, 0, 0, 0, 0));
   Assert.IsTrue(TgoBsonSerializer.TrySerialize(R, TgoJsonWriterSettings.Shell, Json));
   Assert.AreEqual('{ "N" : ISODate("0001-01-01T00:00:00Z"), "D" : ISODate("0001-01-01T00:00:00Z"), ' +
-    '"S" : "0001-01-01T00:00:00", "L" : NumberLong(0), ' +
+    '"S" : "0001-01-01T00:00:00Z", "L" : NumberLong(0), ' +
     '"O" : { "DateTime" : ISODate("0001-01-01T00:00:00Z"), "Ticks" : NumberLong(0) } }', Json);
 
   Assert.IsTrue(TgoBsonSerializer.TrySerialize(R, Bson));
@@ -2689,7 +2709,7 @@ begin
   R.Initialize(EncodeDateTime(2016, 5, 1, 15, 28, 57, 784));
   Assert.IsTrue(TgoBsonSerializer.TrySerialize(R, TgoJsonWriterSettings.Shell, Json));
   Assert.AreEqual('{ "N" : ISODate("2016-05-01T15:28:57.784Z"), "D" : ISODate("2016-05-01T15:28:57.784Z"), ' +
-    '"S" : "2016-05-01T15:28:57.7840000", "L" : NumberLong("635977133377840000"), ' +
+    '"S" : "2016-05-01T15:28:57.784Z", "L" : NumberLong("635977133377840000"), ' +
     '"O" : { "DateTime" : ISODate("2016-05-01T15:28:57.784Z"), "Ticks" : NumberLong("635977133377840000") } }', Json);
 
   Assert.IsTrue(TgoBsonSerializer.TrySerialize(R, Bson));
