@@ -2141,6 +2141,12 @@ class function TgoBsonSerializer.DeserializeString(const AInfo: TInfo;
   const AReader: IgoBsonBaseReader): String;
 begin
   case AReader.GetCurrentBsonType of
+    // do not be so strict with the type casts. We can cast a int to a string - no problems.
+    TgoBsonType.Int32:
+      Exit(AReader.ReadInt32.ToString);
+    TgoBsonType.Int64:
+      Exit(AReader.ReadInt64.ToString);
+
     TgoBsonType.String:
       Exit(AReader.ReadString);
 
