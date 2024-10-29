@@ -1909,6 +1909,7 @@ class function TgoBsonSerializer.DeserializeDateTime(const AInfo: TInfo;
 var
   DT: TgoBsonDateTime;
   Name: String;
+  lDateStr: String;
 begin
   case AReader.GetCurrentBsonType of
     TgoBsonType.DateTime:
@@ -1937,7 +1938,13 @@ begin
       Result := goDateTimeFromTicks(AReader.ReadInt64, True);
 
     TgoBsonType.String:
-      Result := ISO8601ToDate(AReader.ReadString, True);
+    begin
+      // the ISO8601ToDate() requires a "T" to separate the date part from the time part
+      lDateStr:= AReader.ReadString;
+      if Copy(lDateStr, 11, 1) = ' ' then
+        lDateStr[11]:= 'T';
+      Result := ISO8601ToDate(lDateStr, True);
+    end;
   else
     raise EgoBsonSerializerError.Create('Unsupported TDateTime deserialization type');
   end;
