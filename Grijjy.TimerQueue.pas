@@ -34,7 +34,6 @@ uses
   {$ELSEIF Defined(ANDROID)}
   Androidapi.JNI.Os,
   Androidapi.JNI.JavaTypes,
-  Androidapi.JNI.JavaUtil,
   Androidapi.JNIBridge,
   {$ELSEIF Defined(LINUX)}
   Posix.Time,
