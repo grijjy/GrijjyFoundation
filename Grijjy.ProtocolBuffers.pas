@@ -1299,7 +1299,7 @@ begin
           ASerializeProc := SerializeBytes;
           ADeserializeProc := DeserializeBytes;
         end
-        else if (ArrayInfo.ElementType.Kind in [tkInteger, tkFloat, tkEnumeration, tkInt64]) then
+        else if (ArrayInfo.ElementType.Kind in [tkInteger, tkFloat, tkInt64]) then
         begin
           { Use "packed" arrays for 32-bit and 64-bit types }
           ASerializeProc := SerializeDynArrayPacked;
