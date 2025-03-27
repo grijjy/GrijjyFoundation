@@ -167,7 +167,7 @@ type
         AValue: the record to associate with AName.
 
       See AsRecord<T> for important information about type safety. }
-    procedure SetAsRecord<T: record>(const AName: String; const AValue: T);
+    procedure SetAsRecord<T{$IF (RTLVersion < 36)}: record{$ENDIF}>(const AName: String; const AValue: T);
 
     { The following properties are used to set and retrieve values in from the
       property bag, using a given (property) name. They behave like this:

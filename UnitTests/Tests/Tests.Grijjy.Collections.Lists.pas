@@ -8,7 +8,7 @@ uses
   Grijjy.Collections;
 
 type
-  TTestTgoValueList<T: record> = class(TTestCollectionBase<T>)
+  TTestTgoValueList<T{$IF (RTLVersion < 36)}: record{$ENDIF}> = class(TTestCollectionBase<T>)
   private const
     LIMIT = 1000;
   private type

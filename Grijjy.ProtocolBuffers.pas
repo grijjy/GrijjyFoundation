@@ -395,7 +395,7 @@ type
 
       Returns:
         A byte array containing the serialized record. }
-    class function Serialize<T: record>(const ARecord: T): TBytes; overload; static; inline;
+    class function Serialize<T{$IF (RTLVersion < 36)}: record{$ENDIF}>(const ARecord: T): TBytes; overload; static; inline;
 
     { Serializes a record to an array of bytes.
 
@@ -415,7 +415,7 @@ type
         T: the type of the record to serialize.
         ARecord: the record (of type T) to serialize.
         AFilename: the name of the file to serialize the record to. }
-    class procedure Serialize<T: record>(const ARecord: T;
+    class procedure Serialize<T{$IF (RTLVersion < 36)}: record{$ENDIF}>(const ARecord: T;
       const AFilename: String); overload; static; inline;
 
     { Serializes a record to a file.
@@ -434,7 +434,7 @@ type
         T: the type of the record to serialize.
         ARecord: the record (of type T) to serialize.
         AStream: the stream to serialize the record to. }
-    class procedure Serialize<T: record>(const ARecord: T;
+    class procedure Serialize<T{$IF (RTLVersion < 36)}: record{$ENDIF}>(const ARecord: T;
       const AStream: TStream); overload; static; inline;
 
     { Serializes a record to a stream.
@@ -455,7 +455,7 @@ type
         T: the type of the record to deserialize.
         ARecord: the record (of type T) to deserialize.
         AData: the byte array containing the serialized record. }
-    class procedure Deserialize<T: record>(out ARecord: T;
+    class procedure Deserialize<T{$IF (RTLVersion < 36)}: record{$ENDIF}>(out ARecord: T;
       const AData: TBytes); overload; static; inline;
 
     { Deserializes a record from an array of bytes.
@@ -479,7 +479,7 @@ type
         ARecord: the record (of type T) to deserialize.
         ABuffer: the memory buffer containing the serialized record.
         ABufferSize: the size of the buffer }
-    class procedure Deserialize<T: record>(out ARecord: T; const ABuffer: Pointer;
+    class procedure Deserialize<T{$IF (RTLVersion < 36)}: record{$ENDIF}>(out ARecord: T; const ABuffer: Pointer;
       const ABufferSize: Integer); overload; static; inline;
 
     { Deserializes a record from a stream.
@@ -504,7 +504,7 @@ type
         T: the type of the record to deserialize.
         ARecord: the record (of type T) to deserialize.
         AFilename: the name of the file containing the serialized record. }
-    class procedure Deserialize<T: record>(out ARecord: T; const AFilename: String); overload; static; inline;
+    class procedure Deserialize<T{$IF (RTLVersion < 36)}: record{$ENDIF}>(out ARecord: T; const AFilename: String); overload; static; inline;
 
     { Deserializes a record from a file.
       When the record contains a parameterless @code(Initialize) procedure, then
@@ -526,7 +526,7 @@ type
         T: the type of the record to deserialize.
         ARecord: the record (of type T) to deserialize.
         AStream: the stream containing the serialized record. }
-    class procedure Deserialize<T: record>(out ARecord: T; const AStream: TStream); overload; static; inline;
+    class procedure Deserialize<T{$IF (RTLVersion < 36)}: record{$ENDIF}>(out ARecord: T; const AStream: TStream); overload; static; inline;
 
     { Deserializes a record from a stream.
       When the record contains a parameterless @code(Initialize) procedure, then

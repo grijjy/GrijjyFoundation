@@ -408,7 +408,7 @@ type
     var
       FooPtr: TgoValueDictionary<Integer, TFoo>.P;
     </source> }
-  TgoPtr<T: record> = record
+  TgoPtr<T{$IF (RTLVersion < 36)}: record{$ENDIF}> = record
   public type
     P = ^T;
   end;
@@ -430,7 +430,7 @@ type
 
     Note that you should not cache these pointers for long-term use as they
     become invalid when you modify the list (add or remove items). }
-  TgoValueList<T: record> = class
+  TgoValueList<T{$IF (RTLVersion < 36)}: record{$ENDIF}> = class
   public type
     { The pointer type for referencing items in this list. }
     P = TgoPtr<T>.P;
@@ -555,7 +555,7 @@ type
 
     Note that you should not cache these pointers for long-term use as they
     become invalid when you modify the dictionary (add or remove items). }
-  TgoValueDictionary<TKey; TValue: record> = class
+  TgoValueDictionary<TKey; TValue{$IF (RTLVersion < 36)}: record{$ENDIF}> = class
   public type
     { The pointer type for referencing values in this dictionary. }
     PValue = TgoPtr<TValue>.P;

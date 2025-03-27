@@ -1376,7 +1376,7 @@ type
         T: the type for which to use the custom serializer.
         ASerializerClass: the serializer class to use to (de)serialize values
           of type T. }
-    class procedure RegisterCustomSerializer<T: record>(const ASerializerClass: TCustomSerializerClass); overload; static;
+    class procedure RegisterCustomSerializer<T{$IF (RTLVersion < 36)}: record{$ENDIF}>(const ASerializerClass: TCustomSerializerClass); overload; static;
 
     { Registers a custom serializer for a specific type.
       See unit documentation for details.

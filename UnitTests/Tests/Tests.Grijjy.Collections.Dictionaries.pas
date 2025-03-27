@@ -59,7 +59,7 @@ type
   end;
 
 type
-  TTestTgoValueDictionaryByValue<TValue: record> = class(TTestCollectionBase<TValue>)
+  TTestTgoValueDictionaryByValue<TValue{$IF (RTLVersion < 36)}: record{$ENDIF}> = class(TTestCollectionBase<TValue>)
   private type
     PValue = ^TValue;
     TPair = TPair<Integer, PValue>;
