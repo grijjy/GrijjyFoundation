@@ -2837,7 +2837,7 @@ begin
       AWriter.WriteInt32(Int32(AValue));
 
     TgoBsonRepresentation.Int64:
-      AWriter.WriteInt64(AValue);
+      AWriter.WriteInt64(Int64(AValue));
 
     TgoBsonRepresentation.String:
       AWriter.WriteString(UIntToStr(AValue));
@@ -4513,7 +4513,7 @@ class procedure TgoBsonSerializer.TPropertyInfo.DeserializeUInt64(
   const AProp: TPropertyInfo; const AInstance: TObject;
   const AReader: IgoBsonBaseReader);
 begin
-  SetInt64Prop(AInstance, AProp.Info, TgoBsonSerializer.DeserializeUInt64(AProp, AReader));
+  SetInt64Prop(AInstance, AProp.Info, Int64(TgoBsonSerializer.DeserializeUInt64(AProp, AReader)));
 end;
 
 procedure TgoBsonSerializer.TPropertyInfo.GetSerializationProcs(

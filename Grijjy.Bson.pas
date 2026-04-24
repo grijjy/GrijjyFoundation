@@ -5590,7 +5590,7 @@ begin
   if (A <= TValueInt64Const.MAX_PRECREATED_VALUE) then
     Result.FImpl := TValueInt64Const.FPrecreatedValues[A]
   else
-    Result.FImpl := TValueInt64.Create(A);
+    Result.FImpl := TValueInt64.Create(Int64(A));
 end;
 
 class operator TgoBsonValue.Implicit(const A: TgoBsonValue): UInt64;

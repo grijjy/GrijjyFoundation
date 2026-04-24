@@ -5062,7 +5062,7 @@ begin
     raise FBuffer.ParseError(@RS_BSON_INT_EXPECTED);
 
   VerifyToken(')');
-  FCurrentValue.Int64Val := (UInt64(SecondsSinceEpoch) shl 32) or UInt32(Increment);
+  FCurrentValue.Int64Val := Int64((UInt64(SecondsSinceEpoch) shl 32) or UInt32(Increment));
 end;
 
 procedure TgoJsonReader.ParseConstructorUUID(const ALexemeStart: Char);
@@ -5428,7 +5428,7 @@ begin
 
   VerifyToken('}');
   VerifyToken('}');
-  Result := (UInt64(SecondsSinceEpoch) shl 32) or UInt32(Increment);
+  Result := Int64((UInt64(SecondsSinceEpoch) shl 32) or UInt32(Increment));
 end;
 
 function TgoJsonReader.ParseExtendedJsonTimestampOld(
