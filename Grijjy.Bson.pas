@@ -9420,7 +9420,8 @@ end;
 
 function TValueNull.ToString(const ADefault: String): String;
 begin
-  Result := 'null';
+  // if a string value is empty, or not present, rather return '' instead of 'null'
+  Result := '';
 end;
 
 { TValueUndefined }
