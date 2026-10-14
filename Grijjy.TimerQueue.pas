@@ -349,7 +349,7 @@ destructor TgoTimer.Destroy;
 begin
   {$IF Defined(MSWINDOWS)}
   // DeleteTimerQueueTimer API will block until all the callbacks are completed
-  DeleteTimerQueueTimer(FTimerQueue.HandleTimerQueue, FHandle, INVALID_HANDLE_VALUE);
+  DeleteTimerQueueTimer(FTimerQueue.HandleTimerQueue, FHandle, 0);
 
   {$ELSEIF Defined(ANDROID)}
   ScheduledThreadPoolExecutor.remove(FRunnable);
