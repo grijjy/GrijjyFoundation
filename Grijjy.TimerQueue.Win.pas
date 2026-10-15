@@ -139,7 +139,7 @@ begin
   ATimer.OnTimer := nil;
 
   { the DeleteTimerQueueTimer API will block until all the callbacks are completed }
-  if DeleteTimerQueueTimer(FHandle, ATimer.Handle, INVALID_HANDLE_VALUE) then
+  if DeleteTimerQueueTimer(FHandle, ATimer.Handle, 0) then
     ATimer.Free;
 end;
 
